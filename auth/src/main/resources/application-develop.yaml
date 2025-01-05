@@ -3,4 +3,9 @@ spring:
   config:
     activate:
       on-profile: develop
-## 홈서버 환경에 맞게 작성할 것
+  data:
+    redis:
+      host: localhost
+      port: 16379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver

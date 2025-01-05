@@ -6,24 +6,34 @@ on:
       - develop
 
 jobs:
-  pull_request_develop_build_modules:
+  pull_request_develop_build_services:
     runs-on: ubuntu-latest
     steps:
-      - name: check out repository
+      # 코드 체크아웃
+      - name: Check out repository
         uses: actions/checkout@v4
-      - name: auth build
+
+      # JDK 설정
+      - name: Setup JDK 19
+        uses: actions/setup-java@v4
+        with:
+          java-version: '19'
+          distribution: 'temurin'
+
+      # 각 모듈 빌드
+      - name: Service auth build
         uses: ./.github/actions/build
         with:
           target: auth
-      - name: content build
+      - name: Service content build
         uses: ./.github/actions/build
         with:
           target: content
-      - name: user build
+      - name: Service user build
         uses: ./.github/actions/build
         with:
           target: user
-      - name: gateway build
+      - name: Service gateway build
         uses: ./.github/actions/build
         with:
           target: gateway
