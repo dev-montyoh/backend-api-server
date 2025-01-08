@@ -1,4 +1,4 @@
-name: Build Workflow
+name: Package Workflow
 
 inputs:
   target:
@@ -11,5 +11,5 @@ runs:
     - name: Gradle Build (${{ inputs.target }})
       run: |
         cd ${{ inputs.target }}
-        ./gradlew build --info
+        ./gradlew bootJar
       shell: bash
