@@ -59,3 +59,15 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           target: auth
+      - name: Service content Deploy
+        uses: ./.github/actions/deploy
+        with:
+          target: content
+      - name: Service user Deploy
+        uses: ./.github/actions/deploy
+        with:
+          target: user
+      - name: Service gateway Deploy
+        uses: ./.github/actions/deploy
+        with:
+          target: gateway
