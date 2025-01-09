@@ -16,6 +16,6 @@ runs:
 
     - name: Docker Push (${{ inputs.target }})
       run: |
-        docker push monty082/backend-api-server-${{ inputs.target }}:latest
-        docker push monty082/backend-api-server-${{ inputs.target }}:${{ github.run_number }}
+        docker push monty082/backend-api-server:${{ inputs.target }}-latest
+        docker push monty082/backend-api-server:${{ inputs.target }}-${{ github.run_number }}
       shell: bash
