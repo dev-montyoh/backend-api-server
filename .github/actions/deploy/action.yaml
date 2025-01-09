@@ -1,0 +1,19 @@
+name: Deploy Workflow
+
+inputs:
+  target:
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Docker Build (${{ inputs.target }})
+      run: |
+        cd .github/docker
+        ./package.sh ${{ inputs.target }} develop ${{ github.GITHUB_RUN_ID }}
+      shell: bash
+
+    - name: Docker Push (${{ inputs.target }})
+      run: |
+        docker push monty082/backend-api-server:latest

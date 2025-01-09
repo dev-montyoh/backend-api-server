@@ -55,3 +55,7 @@ jobs:
           target: gateway
 
       # 각 모듈 Docker 이미지 생성 및 Dockerhub 배포
+      - name: Service auth Deploy
+        uses: ./.github/actions/deploy
+        with:
+          target: auth
