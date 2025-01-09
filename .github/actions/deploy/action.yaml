@@ -17,3 +17,4 @@ runs:
     - name: Docker Push (${{ inputs.target }})
       run: |
         docker push monty082/backend-api-server:latest
+      shell: bash
