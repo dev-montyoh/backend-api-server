@@ -93,3 +93,8 @@ jacocoTestCoverageVerification {
     }
 }
 //  TEST SETUP END
+
+//  배포 파일명 변경
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
+}
