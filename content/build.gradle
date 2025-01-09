@@ -124,3 +124,8 @@ tasks.register('LOCAL_DATABASE_SETUP', Exec) {
     commandLine 'docker-compose', '-f', "${projectDir}/src/main/resources/db/docker-compose.yaml", '-p', 'inmemory-local', 'up', '-d'
     group 'build setup'
 }
+
+//  배포 파일명 변경
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
+}
