@@ -71,3 +71,5 @@ jobs:
         uses: ./.github/actions/deploy
         with:
           target: gateway
+
+      # TODO: EC2 접근 후 각 서비스 업데이트
