@@ -1,6 +1,12 @@
 # Backend API Server 
 개인 프로젝트에 쓰이는 Backend 서버  
 
+## 서비스 구성
+![backend-api-server](assets/backend-api-server.drawio.png)
+
+## CICD 구성  
+![CICD](assets/cicd.drawio.png)
+
 ---
 ## Getting Started
 깃허브 URL: https://github.com/Monty-Oh/inmemory  
