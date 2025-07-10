@@ -1,0 +1,9 @@
+name: Build Workflow
+description: "Gradle Build (all)"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Gradle Build (all)
+      run: ./gradlew build
+      shell: bash
