@@ -20,10 +20,6 @@ jobs:
           java-version: '19'
           distribution: 'temurin'
 
-      # 모듈 전체 빌드
-      - name: Services Build
-        uses: ./.github/actions/build-all
-
       # 각 모듈 빌드
       - name: Service auth build
         uses: ./.github/actions/build
