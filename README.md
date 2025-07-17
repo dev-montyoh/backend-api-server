@@ -9,8 +9,8 @@
 
 ---
 ## Getting Started
-깃허브 URL: https://github.com/Monty-Oh/inmemory  
-HTTPS clone URL: https://github.com/Monty-Oh/inmemory.git  
+깃허브 URL: https://github.com/Monty-Oh/backend-api-server  
+HTTPS clone URL: https://github.com/Monty-Oh/backend-api-server.git  
 깃허브 프로젝트 URL: https://github.com/users/Monty-Oh/projects/4
 
 ---
