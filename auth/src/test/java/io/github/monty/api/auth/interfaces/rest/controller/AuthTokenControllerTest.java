@@ -70,7 +70,7 @@ class AuthTokenControllerTest {
 
         //  when,   then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.AUTH_CREATE_TOKEN)
+                        MockMvcRequestBuilders.post(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.Token.CREATE_TOKEN)
                                 .content(objectMapper.writeValueAsString(authCreateTokenReqDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -108,7 +108,7 @@ class AuthTokenControllerTest {
 
         //  when,   then
         mockMvc.perform(
-                MockMvcRequestBuilders.put(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.AUTH_REFRESH_TOKEN)
+                MockMvcRequestBuilders.put(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.Token.REFRESH_TOKEN)
                         .header(CustomHeaders.REFRESH_TOKEN, inputRefreshToken)
         )
                 .andExpect(status().isOk())

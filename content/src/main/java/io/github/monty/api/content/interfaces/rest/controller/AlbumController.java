@@ -6,6 +6,8 @@ import io.github.monty.api.content.domain.model.query.AlbumListQuery;
 import io.github.monty.api.content.interfaces.rest.constants.ContentApiUrl;
 import io.github.monty.api.content.interfaces.rest.dto.AlbumListRspDto;
 import io.github.monty.api.content.interfaces.rest.mapper.AlbumListQueryMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ContentApiUrl.CONTENT_V1_BASE_URL)
+@Tag(name = "Content Album API", description = "앨범 컨텐츠 관련 API")
 public class AlbumController {
     private final AlbumListQueryService albumListQueryService;
     private final AlbumListQueryMapper albumListQueryMapper;
@@ -29,7 +32,8 @@ public class AlbumController {
      * @param tagList 조회하고 싶은 Tag
      * @return 조회 결과
      */
-    @GetMapping(ContentApiUrl.ALBUM_LIST)
+    @Operation(summary = "앨범 컨텐츠 목록 조회 API", description = "앨범 컨텐츠 목록을 조회한다.")
+    @GetMapping(ContentApiUrl.Album.ALBUM_LIST_URL)
     public ResponseEntity<AlbumListRspDto> getAlbumList(@RequestParam(value = "tag", required = false) List<String> tagList) {
         AlbumListQuery albumListQuery = albumListQueryMapper.mapToQuery(tagList);
         AlbumListVo albumListVo = albumListQueryService.getAlbumList(albumListQuery);

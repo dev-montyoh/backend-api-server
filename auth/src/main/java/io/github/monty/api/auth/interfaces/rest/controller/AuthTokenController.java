@@ -38,7 +38,7 @@ public class AuthTokenController {
      * @return 토큰 생성 결과
      */
     @Operation(summary = "토큰 생성 API", description = "엑세스 토큰, 리프레시 토큰을 생성하고 반환한다.")
-    @PostMapping(value = AuthApiUrl.AUTH_CREATE_TOKEN, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = AuthApiUrl.Token.CREATE_TOKEN, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthCreateTokenRspDto> createToken(@RequestBody AuthCreateTokenReqDto authCreateTokenReqDto) {
         AuthCreateTokenCommand authCreateTokenCommand = authCreateTokenCommandMapper.mapToCommand(authCreateTokenReqDto);
         AuthCreateTokenVo authCreateTokenVo = authTokenCommandService.createToken(authCreateTokenCommand);
@@ -53,7 +53,7 @@ public class AuthTokenController {
      * @return 토큰 갱신 결과
      */
     @Operation(summary = "토큰 갱신 API", description = "리프레시 토큰을 갖고 토큰 갱신 후 액세스 토큰과 리프레시 토큰을 반환한다.")
-    @PutMapping(value = AuthApiUrl.AUTH_REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = AuthApiUrl.Token.REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthRefreshTokenRspDto> refreshToken(@RequestHeader(CustomHeaders.REFRESH_TOKEN) String refreshToken) {
         AuthRefreshTokenCommand authRefreshTokenCommand = authRefreshTokenCommandMapper.mapToCommand(refreshToken);
         AuthRefreshTokenVo authRefreshTokenVo = authTokenCommandService.refreshToken(authRefreshTokenCommand);

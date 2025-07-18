@@ -1,17 +1,22 @@
 package io.github.monty.api.auth.interfaces.rest.constants;
 
-public class AuthApiUrl {
+import lombok.experimental.UtilityClass;
 
-    //  기본 도메인
+@UtilityClass
+public final class AuthApiUrl {
+
     public static final String AUTH_BASE_URL = "/auth";
-    //  Health Check 기본 URL
-    public static final String AUTH_HEALTH_CHECK_BASE_URL = "/monitor/healthcheck";
+    public static final String AUTH_VERSION = "/v1";
+    public static final String AUTH_V1_BASE_URL = AUTH_BASE_URL + AUTH_VERSION;
 
-    //  Base URL with versioning
-    public static final String AUTH_V1_BASE_URL = AUTH_BASE_URL + "/v1";
+    @UtilityClass
+    public static final class System {
+        public static final String HEALTH_CHECK_URL = "/monitor/healthcheck";
+    }
 
-    //  토큰 생성
-    public static final String AUTH_CREATE_TOKEN = "/token";
-
-    public static final String AUTH_REFRESH_TOKEN = "/token";
+    @UtilityClass
+    public static final class Token {
+        public static final String CREATE_TOKEN = "/token";
+        public static final String REFRESH_TOKEN = "/token";
+    }
 }

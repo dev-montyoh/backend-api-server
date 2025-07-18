@@ -7,6 +7,8 @@ import io.github.monty.api.user.interfaces.rest.constants.UserApiUrl;
 import io.github.monty.api.user.interfaces.rest.dto.UserLoginReqDto;
 import io.github.monty.api.user.interfaces.rest.dto.UserLoginRspDto;
 import io.github.monty.api.user.interfaces.rest.mapper.UserLoginCommandMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(UserApiUrl.USER_V1_BASE_URL)
-public class UserController {
+@Tag(name = "User Login API", description = "로그인 관련 API")
+public class LoginController {
 
     private final UserLoginCommandService userLoginCommandService;
 
@@ -32,7 +35,8 @@ public class UserController {
      * @param userLoginReqDto 로그인 요청 Dto
      * @return 토큰 생성 결과 값을 담은 응답
      */
-    @PostMapping(value = UserApiUrl.LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "회원 로그인 API", description = "회원 로그인 처리를 한 후 해당 정보를 반환한다.")
+    @PostMapping(value = UserApiUrl.Login.USER_LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserLoginRspDto> login(@RequestBody UserLoginReqDto userLoginReqDto) {
         UserLoginCommand userLoginCommand = userLoginCommandMapper.mapToCommand(userLoginReqDto);
         AuthCreateTokenVo authCreateTokenVo = userLoginCommandService.login(userLoginCommand);

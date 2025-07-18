@@ -21,7 +21,7 @@ class SystemControllerTest {
     @Test
     @DisplayName("HealthCheck API 요청에 성공한다.")
     void HealthCheck_API_call_success() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(AuthApiUrl.AUTH_HEALTH_CHECK_BASE_URL))
+        mockMvc.perform(MockMvcRequestBuilders.get(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.System.HEALTH_CHECK_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("health checked"))

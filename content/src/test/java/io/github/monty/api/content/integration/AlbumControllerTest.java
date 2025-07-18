@@ -54,7 +54,7 @@ public class AlbumControllerTest extends WireMockServerTest {
 
         //  when
         String requestUri = UriComponentsBuilder.fromPath(ContentApiUrl.CONTENT_V1_BASE_URL)
-                .path(ContentApiUrl.ALBUM_LIST)
+                .path(ContentApiUrl.Album.ALBUM_LIST_URL)
                 .queryParam("tag", tag1.getTagName())
                 .queryParam("tag", tag2.getTagName())
                 .build()
@@ -125,7 +125,7 @@ public class AlbumControllerTest extends WireMockServerTest {
 
         //  when
         String requestUri = UriComponentsBuilder.fromPath(ContentApiUrl.CONTENT_V1_BASE_URL)
-                .path(ContentApiUrl.ALBUM_LIST)
+                .path(ContentApiUrl.Album.ALBUM_LIST_URL)
                 .build()
                 .toUriString();
         ResponseEntity<AlbumListRspDto> responseEntity = restTemplate.getForEntity(requestUri, AlbumListRspDto.class);
@@ -157,7 +157,7 @@ public class AlbumControllerTest extends WireMockServerTest {
 
         //  when
         String requestUri = UriComponentsBuilder.fromPath(ContentApiUrl.CONTENT_V1_BASE_URL)
-                .path(ContentApiUrl.ALBUM_LIST)
+                .path(ContentApiUrl.Album.ALBUM_LIST_URL)
                 .queryParam("tag", tag1.getTagName())
                 .build()
                 .toUriString();

@@ -1,8 +1,21 @@
 package io.github.monty.api.user.interfaces.rest.constants;
 
-public class UserApiUrl {
+import lombok.experimental.UtilityClass;
 
-    public static final String MONITOR_HEALTHCHECK_BASE_URL = "/user/monitor/healthcheck";  //  Health Check 기본 URL
-    public static final String USER_V1_BASE_URL = "/user/v1";                               //  Base URL with versioning
-    public static final String LOGIN_URL = "/users/login";                                  //  로그인
+@UtilityClass
+public final class UserApiUrl {
+
+    public static final String USER_BASE_URL = "/user";
+    public static final String USER_VERSION = "/v1";
+    public static final String USER_V1_BASE_URL = USER_BASE_URL + USER_VERSION;
+
+    @UtilityClass
+    public static final class System {
+        public static final String HEALTH_CHECK_URL = "/monitor/healthcheck";
+    }
+
+    @UtilityClass
+    public static final class Login {
+        public static final String USER_LOGIN_URL = "/users/login";
+    }
 }
