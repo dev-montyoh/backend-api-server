@@ -1,6 +1,6 @@
-package io.github.monty.api.user.interfaces.rest.controller;
+package io.github.monty.api.content.interfaces.rest.controller;
 
-import io.github.monty.api.user.interfaces.rest.constants.UserApiUrl;
+import io.github.monty.api.content.interfaces.rest.constants.ContentApiUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(HealthCheckController.class)
-class HealthCheckControllerTest {
+@WebMvcTest(SystemController.class)
+class SystemControllerTest {
+
     @Autowired
     MockMvc mockMvc;
 
     @Test
     @DisplayName("HealthCheck API 요청에 성공한다.")
     void HealthCheck_API_call_success() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(UserApiUrl.MONITOR_HEALTHCHECK_BASE_URL))
+        mockMvc.perform(MockMvcRequestBuilders.get(ContentApiUrl.CONTENT_V1_BASE_URL + ContentApiUrl.System.HEALTH_CHECK_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("health checked"))

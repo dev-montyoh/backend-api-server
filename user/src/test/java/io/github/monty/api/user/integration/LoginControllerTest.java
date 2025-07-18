@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserControllerTest extends WireMockServerTest {
+public class LoginControllerTest extends WireMockServerTest {
 
     @Test
     @DisplayName("로그인 요청을 했고 성공 응답을 받는다.")
@@ -32,7 +32,7 @@ public class UserControllerTest extends WireMockServerTest {
         HttpEntity<UserLoginReqDto> requestHttpEntity = new HttpEntity<>(userLoginReqDto);
 
         //  when
-        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
+        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
         Optional<UserLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then
@@ -58,7 +58,7 @@ public class UserControllerTest extends WireMockServerTest {
         HttpEntity<UserLoginReqDto> requestHttpEntity = new HttpEntity<>(userLoginReqDto);
 
         //  when
-        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
+        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
         Optional<UserLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then

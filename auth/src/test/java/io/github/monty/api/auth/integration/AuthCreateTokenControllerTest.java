@@ -33,7 +33,7 @@ public class AuthCreateTokenControllerTest extends WireMockServerTest {
         HttpEntity<AuthCreateTokenReqDto> requestHttpEntity = new HttpEntity<>(authCreateTokenReqDto);
 
         //  when
-        ResponseEntity<AuthCreateTokenRspDto> responseEntity = restTemplate.postForEntity(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.AUTH_CREATE_TOKEN, requestHttpEntity, AuthCreateTokenRspDto.class);
+        ResponseEntity<AuthCreateTokenRspDto> responseEntity = restTemplate.postForEntity(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.Token.CREATE_TOKEN, requestHttpEntity, AuthCreateTokenRspDto.class);
         Optional<AuthCreateTokenRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then
@@ -56,7 +56,7 @@ public class AuthCreateTokenControllerTest extends WireMockServerTest {
         HttpEntity<AuthCreateTokenReqDto> requestHttpEntity = new HttpEntity<>(authCreateTokenReqDto);
 
         //  when
-        ResponseEntity<AuthCreateTokenRspDto> responseEntity = restTemplate.postForEntity(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.AUTH_CREATE_TOKEN, requestHttpEntity, AuthCreateTokenRspDto.class);
+        ResponseEntity<AuthCreateTokenRspDto> responseEntity = restTemplate.postForEntity(AuthApiUrl.AUTH_V1_BASE_URL + AuthApiUrl.Token.CREATE_TOKEN, requestHttpEntity, AuthCreateTokenRspDto.class);
         Optional<AuthCreateTokenRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then

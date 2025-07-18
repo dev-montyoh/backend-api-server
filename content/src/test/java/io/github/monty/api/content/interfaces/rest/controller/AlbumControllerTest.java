@@ -77,7 +77,7 @@ class AlbumControllerTest {
 
         //  when,   then
         mockMvc.perform(
-                        MockMvcRequestBuilders.get(ContentApiUrl.CONTENT_V1_BASE_URL + ContentApiUrl.ALBUM_LIST)
+                        MockMvcRequestBuilders.get(ContentApiUrl.CONTENT_V1_BASE_URL + ContentApiUrl.Album.ALBUM_LIST_URL)
                                 .queryParam("tag", tagName)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )

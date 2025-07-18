@@ -1,16 +1,21 @@
 package io.github.monty.api.content.interfaces.rest.constants;
 
-public class ContentApiUrl {
+import lombok.experimental.UtilityClass;
 
-    /** Health Check 기본 URL **/
-    public static final String CONTENT_HEALTH_CHECK_BASE_URL = "/content/monitor/healthcheck";
+@UtilityClass
+public final class ContentApiUrl {
 
-    //  Base URL with versioning
-    public static final String CONTENT_V1_BASE_URL = "/content/v1";
+    public static final String CONTENT_BASE_URL = "/content";
+    public static final String CONTENT_VERSION = "/v1";
+    public static final String CONTENT_V1_BASE_URL = CONTENT_BASE_URL + CONTENT_VERSION;
 
-    //  앨범 목록 조회
-    public static final String ALBUM_LIST = "/album";
+    @UtilityClass
+    public static final class System {
+        public static final String HEALTH_CHECK_URL = "/monitor/healthcheck";
+    }
 
-    //  컨텐츠 목록 조회
-    public static final String CONTENTS_LIST = "/contents";
+    @UtilityClass
+    public static final class Album {
+        public static final String ALBUM_LIST_URL = "/albums";
+    }
 }

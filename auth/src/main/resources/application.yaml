@@ -19,3 +19,7 @@ spring:
     enabled: false
 server:
   port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /docs

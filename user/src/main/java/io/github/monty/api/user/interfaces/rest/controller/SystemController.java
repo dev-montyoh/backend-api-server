@@ -1,6 +1,8 @@
 package io.github.monty.api.user.interfaces.rest.controller;
 
 import io.github.monty.api.user.interfaces.rest.constants.UserApiUrl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = UserApiUrl.MONITOR_HEALTHCHECK_BASE_URL)
-public class HealthCheckController {
+@RequestMapping(value = UserApiUrl.USER_V1_BASE_URL)
+@Tag(name = "Auth System API", description = "시스템 관련 API")
+public class SystemController {
 
-    @GetMapping
+    @Operation(summary = "상태 확인 API", description = "해당 서비스의 상태를 확인한다.")
+    @GetMapping(value = UserApiUrl.System.HEALTH_CHECK_URL)
     public ResponseEntity<String> healthCheck() {
         return new ResponseEntity<>("health checked", HttpStatus.OK);
     }

@@ -22,8 +22,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
-class UserControllerTest {
+@WebMvcTest(LoginController.class)
+class LoginControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -62,7 +62,7 @@ class UserControllerTest {
 
         //  when,   then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.LOGIN_URL)
+                        MockMvcRequestBuilders.post(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL)
                                 .content(objectMapper.writeValueAsString(userLoginReqDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
