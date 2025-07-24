@@ -1,7 +1,0 @@
-USE `payment`
-
-CREATE TABLE payment (
-    pay_no  varchar (100) comment '결제 번호',
-    PRIMARY KEY (pay_no)
-)
-comment '결제';
