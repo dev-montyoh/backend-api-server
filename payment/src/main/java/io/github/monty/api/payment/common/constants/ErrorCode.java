@@ -18,7 +18,10 @@ public enum ErrorCode {
     EXTERNAL_SERVER_ERROR("0002", "외부 서비스 호출 도중 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     //  결제 서비스 오류
-    NOT_EXIST_PAYMENT_SERVICE("0003", "잘못된 결제 서비스 요청 입니다.", HttpStatus.BAD_REQUEST)
+    NOT_EXIST_PAYMENT_SERVICE("0003", "잘못된 결제 서비스 요청 입니다.", HttpStatus.BAD_REQUEST),
+
+    //  암호화 오류
+    NOT_EXIST_ENCRYPT_ALGORITHM("0004", "서버 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR)
 
     ;
 

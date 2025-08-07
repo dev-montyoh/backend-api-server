@@ -2,9 +2,10 @@ package io.github.monty.api.payment.interfaces.rest.controller;
 
 import io.github.monty.api.payment.application.PaymentQueryService;
 import io.github.monty.api.payment.common.constants.PaymentType;
-import io.github.monty.api.payment.domain.model.query.PaymentInfoQuery;
+import io.github.monty.api.payment.domain.model.query.InisysPaymentAuthInfoQuery;
+import io.github.monty.api.payment.domain.model.vo.InisysPaymentAuthInfoVO;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
-import io.github.monty.api.payment.interfaces.rest.dto.PaymentAuthInfoResDto;
+import io.github.monty.api.payment.interfaces.rest.dto.InisysPaymentAuthInfoResponse;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentInfoQueryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,10 +27,11 @@ public class InisysPaymentController {
 
     @Operation(summary = "이니시스 결제 인증 정보 획득 API", description = "이니시스 결제 인증 단계에 필요한 정보를 획득한다.")
     @GetMapping(value = PaymentApiUrl.Inisys.AUTH_INFO_URL)
-    public ResponseEntity<PaymentAuthInfoResDto> requestPaymentInfo(@RequestParam String oid,
-                                                                    @RequestParam String price) {
-        PaymentInfoQuery paymentInfoQuery = paymentInfoQueryMapper.mapToQuery(oid, price, PaymentType.INISYS);
-        PaymentAuthInfoResDto paymentAuthInfoResDto = paymentQueryService.requestPaymentInfo(paymentInfoQuery);
-        return ResponseEntity.ok().body(paymentAuthInfoResDto);
+    public ResponseEntity<InisysPaymentAuthInfoResponse> requestPaymentInfo(@RequestParam String oid,
+                                                                            @RequestParam String price) {
+        InisysPaymentAuthInfoQuery inisysPaymentAuthInfoQuery = paymentInfoQueryMapper.mapToQuery(oid, price, PaymentType.INISYS);
+        InisysPaymentAuthInfoVO inisysPaymentAuthInfoVO = (InisysPaymentAuthInfoVO) paymentQueryService.requestPaymentInfo(inisysPaymentAuthInfoQuery);
+        InisysPaymentAuthInfoResponse inisysPaymentAuthInfoResponse = paymentInfoQueryMapper.mapToDTO(inisysPaymentAuthInfoVO);
+        return ResponseEntity.ok().body(inisysPaymentAuthInfoResponse);
     }
 }
