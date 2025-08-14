@@ -1,11 +1,13 @@
-package io.github.monty.api.payment.domain.strategy;
+package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.query.InisysPaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +17,7 @@ import java.text.MessageFormat;
 
 @Component
 @RequiredArgsConstructor
-public class InisysPaymentStrategy implements PaymentStrategy {
+public class InisysPaymentService implements PaymentService {
     private static final String SIGNATURE_MESSAGE_FORMAT = "oid={0}&price={1}&timestamp={2}";
     private static final String VERIFICATION_MESSAGE_FORMAT = "oid={0}&price={1}&signKey={2}&timestamp={3}";
 
@@ -43,5 +45,11 @@ public class InisysPaymentStrategy implements PaymentStrategy {
         String mKey = EncryptUtils.encrypt(inisysSignKey, EncryptType.SHA256);
 
         return new InisysPaymentSignatureVO(signature, verification, mKey, inisysMid,  timestamp);
+    }
+
+    @Override
+    public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
+
+        return null;
     }
 }

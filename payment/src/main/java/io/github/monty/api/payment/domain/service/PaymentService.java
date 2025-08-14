@@ -1,19 +1,33 @@
 package io.github.monty.api.payment.domain.service;
 
+import io.github.monty.api.payment.common.constants.PaymentType;
+import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureVO;
-import io.github.monty.api.payment.domain.strategy.PaymentStrategy;
-import io.github.monty.api.payment.domain.strategy.PaymentStrategyFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class PaymentService {
-    private final PaymentStrategyFactory paymentStrategyFactory;
+public interface PaymentService {
 
-    public PaymentSignatureVO getSignature(PaymentSignatureQuery paymentSignatureQuery) {
-        PaymentStrategy paymentService = paymentStrategyFactory.getPaymentService(paymentSignatureQuery.getPaymentType());
-        return paymentService.getSignature(paymentSignatureQuery);
-    }
+    /**
+     * 해당 전략의 결제 타입을 반환한다.
+     *
+     * @return 결제 타입
+     */
+    PaymentType getPaymentType();
+
+    /**
+     * 해당 결제의 결제 인증 정보를 반환한다.
+     *
+     * @param paymentSignatureQuery 결제 인증 정보 조회 요청 쿼리
+     * @return 결제 인증 정보 생성 결과
+     */
+    PaymentSignatureVO getSignature(PaymentSignatureQuery paymentSignatureQuery);
+
+    /**
+     * 해당 결제 정보를 바탕으로 결제 데이터를 저장한다.
+     *
+     * @param paymentCreateCommand 결제 인증 정보 저장 요청 Command
+     * @return 저장 결과
+     */
+    PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
 }

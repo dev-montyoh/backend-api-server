@@ -1,0 +1,3 @@
+ALTER TABLE payments
+    ADD COLUMN amount BIGINT NOT NULL COMMENT '결제 금액',
+    ADD COLUMN order_no VARCHAR(100) NOT NULL COMMENT '주문 번호';

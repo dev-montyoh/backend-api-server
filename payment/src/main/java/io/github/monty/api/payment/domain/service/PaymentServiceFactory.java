@@ -1,4 +1,4 @@
-package io.github.monty.api.payment.domain.strategy;
+package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentType;
@@ -13,17 +13,17 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentStrategyFactory {
-    private final Map<PaymentType, PaymentStrategy> paymentServiceMap = new HashMap<>();
+public class PaymentServiceFactory {
+    private final Map<PaymentType, PaymentService> paymentServiceMap = new HashMap<>();
 
     @Autowired
-    public PaymentStrategyFactory(List<PaymentStrategy> paymentStrategies) {
-        for (PaymentStrategy paymentStrategy : paymentStrategies) {
-            paymentServiceMap.put(paymentStrategy.getPaymentType(), paymentStrategy);
+    public PaymentServiceFactory(List<PaymentService> paymentServiceList) {
+        for (PaymentService paymentService : paymentServiceList) {
+            paymentServiceMap.put(paymentService.getPaymentType(), paymentService);
         }
     }
 
-    public PaymentStrategy getPaymentService(PaymentType paymentType) {
+    public PaymentService getPaymentService(PaymentType paymentType) {
         if (!paymentServiceMap.containsKey(paymentType)) {
             throw new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_SERVICE);
         }

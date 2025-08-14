@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapStructConfig.class)
-public interface PaymentInfoQueryMapper {
+public interface InisysPaymentSignatureQueryMapper {
 
     InisysPaymentSignatureQuery mapToQuery(String oid, String price, PaymentType paymentType);
 
@@ -22,7 +22,7 @@ public interface PaymentInfoQueryMapper {
     InisysPaymentSignatureResponse mapToDTO(InisysPaymentSignatureVO inisysPaymentSignatureVO);
 
     @AfterMapping
-    default void mapToDTO(@MappingTarget InisysPaymentSignatureResponse.InisysPaymentAuthInfoResponseBuilder builder, InisysPaymentSignatureVO inisysPaymentSignatureVO) {
+    default void mapToDTO(@MappingTarget InisysPaymentSignatureResponse.InisysPaymentSignatureResponseBuilder builder, InisysPaymentSignatureVO inisysPaymentSignatureVO) {
         builder.mKey(inisysPaymentSignatureVO.getMKey());
     }
 }
