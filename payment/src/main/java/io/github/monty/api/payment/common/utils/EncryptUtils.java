@@ -13,6 +13,13 @@ import java.security.NoSuchAlgorithmException;
 @UtilityClass
 public class EncryptUtils {
 
+    /**
+     * 암호화 함수
+     *
+     * @param plainText   암호화 대상 평문
+     * @param encryptType 암호화 알고리즘 타입
+     * @return 암호화 결과
+     */
     public static String encrypt(String plainText, EncryptType encryptType) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(encryptType.getName());

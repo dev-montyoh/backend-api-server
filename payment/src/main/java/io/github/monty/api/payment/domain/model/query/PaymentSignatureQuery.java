@@ -1,11 +1,11 @@
 package io.github.monty.api.payment.domain.model.query;
 
+import io.github.monty.api.payment.common.constants.PaymentType;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class InisysPaymentAuthInfoQuery extends PaymentAuthInfoQuery {
-    private String oid;
-    private String price;
+public class PaymentSignatureQuery {
+    private PaymentType paymentType;
 }

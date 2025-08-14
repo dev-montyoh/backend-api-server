@@ -3,10 +3,10 @@ package io.github.monty.api.payment.domain.strategy;
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
-import io.github.monty.api.payment.domain.model.query.InisysPaymentAuthInfoQuery;
-import io.github.monty.api.payment.domain.model.query.PaymentAuthInfoQuery;
-import io.github.monty.api.payment.domain.model.vo.InisysPaymentAuthInfoVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentAuthInfoVO;
+import io.github.monty.api.payment.domain.model.query.InisysPaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentSignatureVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,17 +31,17 @@ public class InisysPaymentStrategy implements PaymentStrategy {
     }
 
     @Override
-    public PaymentAuthInfoVO getAuthInfo(PaymentAuthInfoQuery paymentAuthInfoQuery) {
-        InisysPaymentAuthInfoQuery inisysPaymentAuthInfoQuery = (InisysPaymentAuthInfoQuery) paymentAuthInfoQuery;
+    public PaymentSignatureVO getSignature(PaymentSignatureQuery paymentSignatureQuery) {
+        InisysPaymentSignatureQuery inisysPaymentSignatureQuery = (InisysPaymentSignatureQuery) paymentSignatureQuery;
         long timestamp = System.currentTimeMillis();
 
-        String plainTextVerification = MessageFormat.format(VERIFICATION_MESSAGE_FORMAT, inisysPaymentAuthInfoQuery.getOid(), inisysPaymentAuthInfoQuery.getPrice(), inisysSignKey, timestamp);
-        String plainTextSignature = MessageFormat.format(SIGNATURE_MESSAGE_FORMAT, inisysPaymentAuthInfoQuery.getOid(), inisysPaymentAuthInfoQuery.getPrice(), timestamp);
+        String plainTextSignature = MessageFormat.format(SIGNATURE_MESSAGE_FORMAT, inisysPaymentSignatureQuery.getOid(), inisysPaymentSignatureQuery.getPrice(), String.valueOf(timestamp));
+        String plainTextVerification = MessageFormat.format(VERIFICATION_MESSAGE_FORMAT, inisysPaymentSignatureQuery.getOid(), inisysPaymentSignatureQuery.getPrice(), inisysSignKey, String.valueOf(timestamp));
 
-        String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
         String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
+        String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
         String mKey = EncryptUtils.encrypt(inisysSignKey, EncryptType.SHA256);
 
-        return new InisysPaymentAuthInfoVO(verification, signature, mKey, inisysMid);
+        return new InisysPaymentSignatureVO(signature, verification, mKey, inisysMid,  timestamp);
     }
 }

@@ -2,19 +2,16 @@ package io.github.monty.api.payment.interfaces.rest.controller;
 
 import io.github.monty.api.payment.application.PaymentQueryService;
 import io.github.monty.api.payment.common.constants.PaymentType;
-import io.github.monty.api.payment.domain.model.query.InisysPaymentAuthInfoQuery;
-import io.github.monty.api.payment.domain.model.vo.InisysPaymentAuthInfoVO;
+import io.github.monty.api.payment.domain.model.query.InisysPaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureVO;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
-import io.github.monty.api.payment.interfaces.rest.dto.InisysPaymentAuthInfoResponse;
+import io.github.monty.api.payment.interfaces.rest.dto.InisysPaymentSignatureResponse;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentInfoQueryMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,12 +23,19 @@ public class InisysPaymentController {
     private final PaymentQueryService paymentQueryService;
 
     @Operation(summary = "이니시스 결제 인증 정보 획득 API", description = "이니시스 결제 인증 단계에 필요한 정보를 획득한다.")
-    @GetMapping(value = PaymentApiUrl.Inisys.AUTH_INFO_URL)
-    public ResponseEntity<InisysPaymentAuthInfoResponse> requestPaymentInfo(@RequestParam String oid,
-                                                                            @RequestParam String price) {
-        InisysPaymentAuthInfoQuery inisysPaymentAuthInfoQuery = paymentInfoQueryMapper.mapToQuery(oid, price, PaymentType.INISYS);
-        InisysPaymentAuthInfoVO inisysPaymentAuthInfoVO = (InisysPaymentAuthInfoVO) paymentQueryService.requestPaymentInfo(inisysPaymentAuthInfoQuery);
-        InisysPaymentAuthInfoResponse inisysPaymentAuthInfoResponse = paymentInfoQueryMapper.mapToDTO(inisysPaymentAuthInfoVO);
-        return ResponseEntity.ok().body(inisysPaymentAuthInfoResponse);
+    @GetMapping(value = PaymentApiUrl.Inisys.INISYS_SIGNATURE_URL)
+    public ResponseEntity<InisysPaymentSignatureResponse> requestPaymentSignature(@RequestParam String oid,
+                                                                                  @RequestParam String price) {
+        InisysPaymentSignatureQuery inisysPaymentSignatureQuery = paymentInfoQueryMapper.mapToQuery(oid, price, PaymentType.INISYS);
+        InisysPaymentSignatureVO inisysPaymentSignatureVO = (InisysPaymentSignatureVO) paymentQueryService.requestPaymentSignature(inisysPaymentSignatureQuery);
+        InisysPaymentSignatureResponse inisysPaymentSignatureResponse = paymentInfoQueryMapper.mapToDTO(inisysPaymentSignatureVO);
+        return ResponseEntity.ok().body(inisysPaymentSignatureResponse);
+    }
+
+    @Operation(summary = "이니시스 결제 데이터 저장 API", description = "이니시스 결제 인증 결과를 저장한다.")
+    @PostMapping(value = PaymentApiUrl.Inisys.INISYS_URL);
+    public ResponseEntity<Void> requestCreatePayment() {
+
+        return ResponseEntity.ok().build();
     }
 }

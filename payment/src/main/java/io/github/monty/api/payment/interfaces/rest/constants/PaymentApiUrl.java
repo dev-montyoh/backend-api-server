@@ -11,6 +11,7 @@ public final class PaymentApiUrl {
 
     @UtilityClass
     public static final class Inisys {
-        public static final String AUTH_INFO_URL = "/inisys/auth/info";
+        public static final String INISYS_URL = "/payments/inisys";
+        public static final String INISYS_SIGNATURE_URL = "/payments/inisys/signature";
     }
 }
