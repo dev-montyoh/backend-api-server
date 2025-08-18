@@ -6,9 +6,9 @@ import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.query.InisysPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureResultResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class InisysPaymentService implements PaymentService {
     }
 
     @Override
-    public PaymentSignatureVO getSignature(PaymentSignatureQuery paymentSignatureQuery) {
+    public PaymentSignatureResultVO getSignature(PaymentSignatureQuery paymentSignatureQuery) {
         InisysPaymentSignatureQuery inisysPaymentSignatureQuery = (InisysPaymentSignatureQuery) paymentSignatureQuery;
         long timestamp = System.currentTimeMillis();
 
@@ -44,7 +44,7 @@ public class InisysPaymentService implements PaymentService {
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
         String mKey = EncryptUtils.encrypt(inisysSignKey, EncryptType.SHA256);
 
-        return new InisysPaymentSignatureVO(signature, verification, mKey, inisysMid,  timestamp);
+        return new InisysPaymentSignatureResultResultVO(signature, verification, mKey, inisysMid,  timestamp);
     }
 
     @Override

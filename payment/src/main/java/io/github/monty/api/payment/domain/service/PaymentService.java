@@ -4,7 +4,7 @@ import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 
 public interface PaymentService {
 
@@ -21,7 +21,7 @@ public interface PaymentService {
      * @param paymentSignatureQuery 결제 인증 정보 조회 요청 쿼리
      * @return 결제 인증 정보 생성 결과
      */
-    PaymentSignatureVO getSignature(PaymentSignatureQuery paymentSignatureQuery);
+    PaymentSignatureResultVO getSignature(PaymentSignatureQuery paymentSignatureQuery);
 
     /**
      * 해당 결제 정보를 바탕으로 결제 데이터를 저장한다.

@@ -4,7 +4,7 @@ import io.github.monty.api.payment.application.PaymentQueryService;
 import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.domain.model.command.InisysPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.InisysPaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureVO;
+import io.github.monty.api.payment.domain.model.vo.InisysPaymentSignatureResultResultVO;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
 import io.github.monty.api.payment.interfaces.rest.dto.InisysPaymentCreateRequest;
 import io.github.monty.api.payment.interfaces.rest.dto.InisysPaymentCreateResponse;
@@ -33,8 +33,8 @@ public class InisysPaymentController {
     public ResponseEntity<InisysPaymentSignatureResponse> requestPaymentSignature(@RequestParam String oid,
                                                                                   @RequestParam String price) {
         InisysPaymentSignatureQuery inisysPaymentSignatureQuery = inisysPaymentSignatureQueryMapper.mapToQuery(oid, price, PaymentType.INISYS);
-        InisysPaymentSignatureVO inisysPaymentSignatureVO = (InisysPaymentSignatureVO) paymentQueryService.requestPaymentSignature(inisysPaymentSignatureQuery);
-        InisysPaymentSignatureResponse inisysPaymentSignatureResponse = inisysPaymentSignatureQueryMapper.mapToDTO(inisysPaymentSignatureVO);
+        InisysPaymentSignatureResultResultVO inisysPaymentSignatureResultVO = (InisysPaymentSignatureResultResultVO) paymentQueryService.requestPaymentSignature(inisysPaymentSignatureQuery);
+        InisysPaymentSignatureResponse inisysPaymentSignatureResponse = inisysPaymentSignatureQueryMapper.mapToDTO(inisysPaymentSignatureResultVO);
         return ResponseEntity.ok().body(inisysPaymentSignatureResponse);
     }
 
