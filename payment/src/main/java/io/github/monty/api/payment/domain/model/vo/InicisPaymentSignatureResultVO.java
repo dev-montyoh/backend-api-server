@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class InisysPaymentSignatureResultResultVO extends PaymentSignatureResultVO {
+public class InicisPaymentSignatureResultVO extends PaymentSignatureResultVO {
     private String signature;
     private String verification;
     private String mKey;

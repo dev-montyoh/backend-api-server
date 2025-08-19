@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class InisysPaymentSignatureQuery extends PaymentSignatureQuery {
+public class InicisPaymentSignatureQuery extends PaymentSignatureQuery {
     private String oid;
     private String price;
 }

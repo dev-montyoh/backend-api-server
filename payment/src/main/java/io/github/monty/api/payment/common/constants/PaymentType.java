@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PaymentType {
-    INISYS("inisys"),
+    INICIS("inicis"),
     NICEPAY("nicepay")
     ;
 

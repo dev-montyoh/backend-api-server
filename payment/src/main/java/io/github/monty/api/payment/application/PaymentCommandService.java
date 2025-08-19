@@ -21,6 +21,6 @@ public class PaymentCommandService {
     @Transactional
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
         PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentType());
-
+        return paymentService.createPayment(paymentCreateCommand);
     }
 }

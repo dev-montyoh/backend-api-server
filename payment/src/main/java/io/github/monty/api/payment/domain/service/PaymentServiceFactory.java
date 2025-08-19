@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class PaymentServiceFactory {
-    private final Map<PaymentType, PaymentService> paymentServiceMap = new HashMap<>();
+    private final Map<PaymentType, PaymentService> paymentServiceMap = new EnumMap<>(PaymentType.class);
 
     @Autowired
     public PaymentServiceFactory(List<PaymentService> paymentServiceList) {

@@ -8,4 +8,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PaymentCreateCommand {
     private PaymentType paymentType;
+
+    private long amount;
+
+    private String orderNo;
 }

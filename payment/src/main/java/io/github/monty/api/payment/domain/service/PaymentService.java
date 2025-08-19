@@ -30,4 +30,9 @@ public interface PaymentService {
      * @return 저장 결과
      */
     PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
+
+
+    default String generatePaymentNo(PaymentType paymentType) {
+        return
+    }
 }
