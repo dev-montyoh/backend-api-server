@@ -6,10 +6,11 @@ import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 
-import java.util.Base64;
+import java.math.BigInteger;
 import java.util.UUID;
 
 public interface PaymentService {
+    String PAYMENT_NO_PREFIX = "PAY";
 
     /**
      * 해당 전략의 결제 타입을 반환한다.
@@ -34,11 +35,14 @@ public interface PaymentService {
      */
     PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
 
-
+    /**
+     * 해당 결제 수단의 결제번호 생성 후 반환
+     * @param paymentType   결제 타입
+     * @return  결제 번호
+     */
     default String generatePaymentNo(PaymentType paymentType) {
         UUID uuid = UUID.randomUUID();
-        uuid.
-        String uuidBase64 = Base64.getEncoder().encodeToString(uuid.toString().replace("-", "").getBytes());
-        return
+        String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
+        return PAYMENT_NO_PREFIX + paymentType.getCode() + base62;
     }
 }

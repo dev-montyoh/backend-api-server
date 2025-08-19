@@ -1,9 +1,12 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
+import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
+import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
+import io.github.monty.api.payment.domain.model.entity.InicisPayment;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResultVO;
@@ -51,11 +54,33 @@ public class InicisPaymentService implements PaymentService {
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
         String mKey = EncryptUtils.encrypt(inicisSignKey, EncryptType.SHA256);
 
-        return new InicisPaymentSignatureResultVO(signature, verification, mKey, inicisMid,  timestamp);
+        return new InicisPaymentSignatureResultVO(signature, verification, mKey, inicisMid, timestamp);
     }
 
     @Override
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
+        InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
+        InicisPayment inicisPayment = this.newInicisPayment(inicisPaymentCreateCommand);
         return null;
+    }
+
+    /**
+     * 이니시스 결제 엔티티 생성
+     *
+     * @param inicisPaymentCreateCommand 결제 생성 요청 Command
+     * @return 생성된 이니시스 엔티티
+     */
+    private InicisPayment newInicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
+        return InicisPayment.builder()
+                .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentType()))
+                .amount(inicisPaymentCreateCommand.getAmount())
+                .orderNo(inicisPaymentCreateCommand.getOrderNo())
+                .paymentType(inicisPaymentCreateCommand.getPaymentType())
+                .paymentStatus(PaymentStatus.AUTHENTICATED)
+                .authToken(inicisPaymentCreateCommand.getAuthorizationToken())
+                .idcName(inicisPaymentCreateCommand.getIdcName())
+                .authUrl(inicisPaymentCreateCommand.getAuthorizationUrl())
+                .netCancelUrl(inicisPaymentCreateCommand.getNetCancelUrl())
+                .build();
     }
 }

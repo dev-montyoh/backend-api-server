@@ -1,17 +1,22 @@
-package io.github.monty.api.payment.domain.model.aggregate;
+package io.github.monty.api.payment.domain.model.entity;
 
+import io.github.monty.api.payment.domain.model.aggregate.Payment;
+import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "inicis_payments")
 public class InicisPayment extends Payment {
     @Size(max = 255)

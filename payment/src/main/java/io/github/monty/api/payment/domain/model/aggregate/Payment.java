@@ -1,15 +1,20 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
+import io.github.monty.api.payment.common.constants.PaymentStatus;
+import io.github.monty.api.payment.common.constants.PaymentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
 @Getter
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "payments")
 public class Payment {
@@ -18,7 +23,12 @@ public class Payment {
     @Size(max = 100)
     @Column(name = "payment_id", nullable = false, length = 100)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID paymentId;
+    private String paymentId;
+
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "payment_no", nullable = false, length = 100)
+    private String paymentNo;
 
     @NotNull
     @Column(name = "amount", nullable = false)
@@ -32,15 +42,10 @@ public class Payment {
     @Size(max = 50)
     @NotNull
     @Column(name = "payment_type", nullable = false, length = 50)
-    private String paymentType;
-
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "payment_no", nullable = false, length = 100)
-    private String paymentNo;
+    private PaymentType paymentType;
 
     @Size(max = 20)
     @NotNull
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    @Column(name = "payment_status", nullable = false, length = 20)
+    private PaymentStatus paymentStatus;
 }
