@@ -6,6 +6,9 @@ import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 
+import java.util.Base64;
+import java.util.UUID;
+
 public interface PaymentService {
 
     /**
@@ -33,6 +36,9 @@ public interface PaymentService {
 
 
     default String generatePaymentNo(PaymentType paymentType) {
+        UUID uuid = UUID.randomUUID();
+        uuid.
+        String uuidBase64 = Base64.getEncoder().encodeToString(uuid.toString().replace("-", "").getBytes());
         return
     }
 }
