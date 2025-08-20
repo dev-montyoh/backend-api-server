@@ -14,10 +14,7 @@ import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.entity.InicisPayment;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
+import io.github.monty.api.payment.domain.model.vo.*;
 import io.github.monty.api.payment.domain.repository.InicisRepository;
 import io.github.monty.api.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +31,11 @@ public class InicisPaymentService implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final InicisRepository inicisRepository;
 
-    private static final String SIGNATURE_MESSAGE_FORMAT = "oid={0}&price={1}&timestamp={2}";
-    private static final String VERIFICATION_MESSAGE_FORMAT = "oid={0}&price={1}&signKey={2}&timestamp={3}";
+    private static final String AUTHENTICATION_SIGNATURE_MESSAGE_FORMAT = "oid={0}&price={1}&timestamp={2}";
+    private static final String AUTHENTICATION_VERIFICATION_MESSAGE_FORMAT = "oid={0}&price={1}&signKey={2}&timestamp={3}";
+
+    private static final String APPROVE_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
+    private static final String APPROVE_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
 
     @Value("${payment.type.inicis.sign.key}")
     private String inicisSignKey;
@@ -60,8 +60,8 @@ public class InicisPaymentService implements PaymentService {
         InicisPaymentSignatureQuery inicisPaymentSignatureQuery = (InicisPaymentSignatureQuery) paymentSignatureQuery;
         long timestamp = System.currentTimeMillis();
 
-        String plainTextSignature = MessageFormat.format(SIGNATURE_MESSAGE_FORMAT, inicisPaymentSignatureQuery.getOid(), inicisPaymentSignatureQuery.getPrice(), String.valueOf(timestamp));
-        String plainTextVerification = MessageFormat.format(VERIFICATION_MESSAGE_FORMAT, inicisPaymentSignatureQuery.getOid(), inicisPaymentSignatureQuery.getPrice(), inicisSignKey, String.valueOf(timestamp));
+        String plainTextSignature = MessageFormat.format(AUTHENTICATION_SIGNATURE_MESSAGE_FORMAT, inicisPaymentSignatureQuery.getOid(), inicisPaymentSignatureQuery.getPrice(), String.valueOf(timestamp));
+        String plainTextVerification = MessageFormat.format(AUTHENTICATION_VERIFICATION_MESSAGE_FORMAT, inicisPaymentSignatureQuery.getOid(), inicisPaymentSignatureQuery.getPrice(), inicisSignKey, String.valueOf(timestamp));
 
         String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
@@ -96,8 +96,17 @@ public class InicisPaymentService implements PaymentService {
     public void approvePayment(PaymentApproveCommand paymentApproveCommand) {
         InicisPaymentApproveCommand inicisPaymentApproveCommand = (InicisPaymentApproveCommand) paymentApproveCommand;
         Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(inicisPaymentApproveCommand.getPaymentNo());
-        Payment payment = paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
+        InicisPayment inicisPayment = (InicisPayment) paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
 
+        long timestamp = System.currentTimeMillis();
+        String plainTextSignature = MessageFormat.format(APPROVE_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
+        String plainTextVerification = MessageFormat.format(APPROVE_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey,  String.valueOf(timestamp));
+
+        String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
+        String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
+
+        InicisPaymentApproveRequestVO inicisPaymentApproveRequestVO = new InicisPaymentApproveRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getAuthUrl());
+        inicisRepository.requestApprovePayment(inicisPaymentApproveRequestVO);
     }
 
     /**
