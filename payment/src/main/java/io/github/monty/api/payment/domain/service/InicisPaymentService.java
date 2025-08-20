@@ -1,26 +1,39 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
+import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.constants.PaymentType;
+import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
+import io.github.monty.api.payment.domain.model.aggregate.Payment;
+import io.github.monty.api.payment.domain.model.command.InicisPaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
+import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.entity.InicisPayment;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
+import io.github.monty.api.payment.domain.repository.InicisRepository;
+import io.github.monty.api.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class InicisPaymentService implements PaymentService {
+
+    private final PaymentRepository paymentRepository;
+    private final InicisRepository inicisRepository;
+
     private static final String SIGNATURE_MESSAGE_FORMAT = "oid={0}&price={1}&timestamp={2}";
     private static final String VERIFICATION_MESSAGE_FORMAT = "oid={0}&price={1}&signKey={2}&timestamp={3}";
 
@@ -57,11 +70,34 @@ public class InicisPaymentService implements PaymentService {
         return new InicisPaymentSignatureResultVO(signature, verification, mKey, inicisMid, timestamp);
     }
 
+    /**
+     * 해당 결제 정보를 바탕으로 결제 데이터를 저장한다.
+     * 이니시스 결제 정보를 저장하고 반환한다.
+     *
+     * @param paymentCreateCommand 결제 인증 정보 저장 요청 Command
+     * @return 저장 결과
+     */
     @Override
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
         InicisPayment inicisPayment = this.newInicisPayment(inicisPaymentCreateCommand);
-        return null;
+        Payment payment = paymentRepository.save(inicisPayment);
+        return InicisPaymentCreateResultVO.builder()
+                .paymentNo(payment.getPaymentNo())
+                .build();
+    }
+
+    /**
+     * 해당 결제 정보를 바탕으로 결제 승인을 요청한다.
+     *
+     * @param paymentApproveCommand 결제 승인 요청 Command
+     */
+    @Override
+    public void approvePayment(PaymentApproveCommand paymentApproveCommand) {
+        InicisPaymentApproveCommand inicisPaymentApproveCommand = (InicisPaymentApproveCommand) paymentApproveCommand;
+        Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(inicisPaymentApproveCommand.getPaymentNo());
+        Payment payment = paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
+
     }
 
     /**
@@ -73,7 +109,7 @@ public class InicisPaymentService implements PaymentService {
     private InicisPayment newInicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
         return InicisPayment.builder()
                 .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentType()))
-                .amount(inicisPaymentCreateCommand.getAmount())
+                .amount(0L)
                 .orderNo(inicisPaymentCreateCommand.getOrderNo())
                 .paymentType(inicisPaymentCreateCommand.getPaymentType())
                 .paymentStatus(PaymentStatus.AUTHENTICATED)

@@ -1,6 +1,7 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.PaymentType;
+import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
@@ -10,7 +11,6 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 public interface PaymentService {
-    String PAYMENT_NO_PREFIX = "PAY";
 
     /**
      * 해당 전략의 결제 타입을 반환한다.
@@ -36,9 +36,19 @@ public interface PaymentService {
     PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
 
     /**
+     * 해당 결제 정보를 바탕으로 결제 승인을 요청한다.
+     *
+     * @param paymentApproveCommand 결제 승인 요청 Command
+     */
+    void approvePayment(PaymentApproveCommand paymentApproveCommand);
+
+    String PAYMENT_NO_PREFIX = "PAY";
+
+    /**
      * 해당 결제 수단의 결제번호 생성 후 반환
-     * @param paymentType   결제 타입
-     * @return  결제 번호
+     *
+     * @param paymentType 결제 타입
+     * @return 결제 번호
      */
     default String generatePaymentNo(PaymentType paymentType) {
         UUID uuid = UUID.randomUUID();

@@ -19,7 +19,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "inicis_payments")
 public class InicisPayment extends Payment {
-    @Size(max = 255)
     @NotNull
     @Column(name = "auth_token", nullable = false)
     private String authToken;

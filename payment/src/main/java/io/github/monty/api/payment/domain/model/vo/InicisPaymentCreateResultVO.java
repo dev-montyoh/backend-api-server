@@ -1,9 +1,9 @@
 package io.github.monty.api.payment.domain.model.vo;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
+@SuperBuilder
 public class InicisPaymentCreateResultVO extends PaymentCreateResultVO {
 }

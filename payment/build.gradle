@@ -53,6 +53,9 @@ dependencies {
 
     //  Encrypt
     implementation "commons-codec:commons-codec:1.19.0"
+
+    //  WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 ext {

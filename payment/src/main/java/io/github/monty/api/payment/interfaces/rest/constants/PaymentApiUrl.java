@@ -13,5 +13,6 @@ public final class PaymentApiUrl {
     public static final class Inicis {
         public static final String INICIS_URL = "/payments/inicis";
         public static final String INICIS_SIGNATURE_URL = "/payments/inicis/signature";
+        public static final String INICIS_APPROVAL_URL = "/payments/inicis/{paymentNo}/approval";
     }
 }

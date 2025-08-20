@@ -39,12 +39,10 @@ public class Payment {
     @Column(name = "order_no", nullable = false, length = 100)
     private String orderNo;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "payment_type", nullable = false, length = 50)
     private PaymentType paymentType;
 
-    @Size(max = 20)
     @NotNull
     @Column(name = "payment_status", nullable = false, length = 20)
     private PaymentStatus paymentStatus;

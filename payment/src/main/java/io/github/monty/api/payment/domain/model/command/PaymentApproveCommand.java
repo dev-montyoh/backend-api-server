@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class PaymentCreateCommand {
+public class PaymentApproveCommand {
     private PaymentType paymentType;
-    private String orderNo;
+    private String paymentNo;
 }
