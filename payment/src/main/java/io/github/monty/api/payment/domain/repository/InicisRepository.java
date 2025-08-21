@@ -1,7 +1,8 @@
 package io.github.monty.api.payment.domain.repository;
 
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApproveRequestVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalRequestVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
 
 public interface InicisRepository {
-    void requestApprovePayment(InicisPaymentApproveRequestVO inicisPaymentApproveRequestVO);
+    InicisPaymentApprovalResultVO requestApprovePayment(InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO);
 }

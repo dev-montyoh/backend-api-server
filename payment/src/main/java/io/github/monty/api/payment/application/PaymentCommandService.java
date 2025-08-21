@@ -1,6 +1,5 @@
 package io.github.monty.api.payment.application;
 
-import io.github.monty.api.payment.domain.model.command.InicisPaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
@@ -23,7 +22,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentGatewayType());
         return paymentService.createPayment(paymentCreateCommand);
     }
 
@@ -34,7 +33,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public void approvePayment(PaymentApproveCommand paymentApproveCommand) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentApproveCommand.getPaymentType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentApproveCommand.getPaymentGatewayType());
         paymentService.approvePayment(paymentApproveCommand);
     }
 }

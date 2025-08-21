@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class InicisPaymentApproveRequestVO {
+public class InicisPaymentApprovalRequestVO {
 
     private String mid;
 

@@ -2,8 +2,8 @@ package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.ErrorCode;
+import io.github.monty.api.payment.common.constants.PaymentGatewayType;
 import io.github.monty.api.payment.common.constants.PaymentStatus;
-import io.github.monty.api.payment.common.constants.PaymentType;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
@@ -44,8 +44,8 @@ public class InicisPaymentService implements PaymentService {
     private String inicisMid;
 
     @Override
-    public PaymentType getPaymentType() {
-        return PaymentType.INICIS;
+    public PaymentGatewayType getPaymentType() {
+        return PaymentGatewayType.INICIS;
     }
 
     /**
@@ -100,13 +100,15 @@ public class InicisPaymentService implements PaymentService {
 
         long timestamp = System.currentTimeMillis();
         String plainTextSignature = MessageFormat.format(APPROVE_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
-        String plainTextVerification = MessageFormat.format(APPROVE_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey,  String.valueOf(timestamp));
+        String plainTextVerification = MessageFormat.format(APPROVE_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey, String.valueOf(timestamp));
 
         String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
 
-        InicisPaymentApproveRequestVO inicisPaymentApproveRequestVO = new InicisPaymentApproveRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getAuthUrl());
-        inicisRepository.requestApprovePayment(inicisPaymentApproveRequestVO);
+        InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getAuthUrl());
+        InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
+        inicisPayment.applyApprovePaymentResult(inicisPaymentApprovalResultVO);
+        paymentRepository.save(inicisPayment);
     }
 
     /**
@@ -117,10 +119,10 @@ public class InicisPaymentService implements PaymentService {
      */
     private InicisPayment newInicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
         return InicisPayment.builder()
-                .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentType()))
+                .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentGatewayType()))
                 .amount(0L)
                 .orderNo(inicisPaymentCreateCommand.getOrderNo())
-                .paymentType(inicisPaymentCreateCommand.getPaymentType())
+                .paymentGatewayType(inicisPaymentCreateCommand.getPaymentGatewayType())
                 .paymentStatus(PaymentStatus.AUTHENTICATED)
                 .authToken(inicisPaymentCreateCommand.getAuthorizationToken())
                 .idcName(inicisPaymentCreateCommand.getIdcName())

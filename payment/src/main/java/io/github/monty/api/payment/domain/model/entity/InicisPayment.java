@@ -1,17 +1,15 @@
 package io.github.monty.api.payment.domain.model.entity;
 
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
-import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -37,4 +35,27 @@ public class InicisPayment extends Payment {
     @NotNull
     @Column(name = "net_cancel_url", nullable = false)
     private String netCancelUrl;
+
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payments;
+
+    @Size(max = 20)
+    @Column(name = "payment_method", length = 20)
+    private String paymentMethod;
+
+    @Column(name = "approval_date_time")
+    private LocalDateTime approvalDateTime;
+
+    /**
+     * 결제 승인 결과를 반영한다.
+     *
+     * @param inicisPaymentApprovalResultVO 이니시스 승인 요청 결과 VO
+     */
+    public void applyApprovePaymentResult(InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO) {
+        this.paymentMethod = inicisPaymentApprovalResultVO.getPaymentMethod();
+        this.approvalDateTime = inicisPaymentApprovalResultVO.getApprovalDateTime();
+        super.applyApprovePaymentResult(inicisPaymentApprovalResultVO);
+    }
 }

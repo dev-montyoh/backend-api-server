@@ -1,15 +1,14 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
+import io.github.monty.api.payment.common.constants.PaymentGatewayType;
 import io.github.monty.api.payment.common.constants.PaymentStatus;
-import io.github.monty.api.payment.common.constants.PaymentType;
+import io.github.monty.api.payment.domain.model.vo.PaymentApprovalResultVO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 @Getter
 @Entity
@@ -30,20 +29,39 @@ public class Payment {
     @Column(name = "payment_no", nullable = false, length = 100)
     private String paymentNo;
 
-    @NotNull
-    @Column(name = "amount", nullable = false)
-    private Long amount;
-
     @Size(max = 100)
     @NotNull
     @Column(name = "order_no", nullable = false, length = 100)
     private String orderNo;
 
     @NotNull
-    @Column(name = "payment_type", nullable = false, length = 50)
-    private PaymentType paymentType;
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
     @NotNull
-    @Column(name = "payment_status", nullable = false, length = 20)
+    @Column(name = "pg_type", nullable = false, length = 50)
+    private PaymentGatewayType paymentGatewayType;
+
+    @NotNull
+    @Column(name = "status", nullable = false, length = 20)
     private PaymentStatus paymentStatus;
+
+    @Size(max = 20)
+    @Column(name = "tid", length = 20)
+    private String tid;
+
+    @Size(max = 20)
+    @Column(name = "buyer_phone_number", length = 20)
+    private String buyerPhoneNumber;
+
+    @Size(max = 50)
+    @Column(name = "buyer_email", length = 50)
+    private String buyerEmail;
+
+    public void applyApprovePaymentResult(PaymentApprovalResultVO paymentApprovalResultVO) {
+        this.tid = paymentApprovalResultVO.getTid();
+        this.amount = paymentApprovalResultVO.getAmount();
+        this.buyerPhoneNumber = paymentApprovalResultVO.getBuyerPhoneNumber();
+        this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
+    }
 }

@@ -5,17 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PaymentType {
+public enum PaymentGatewayType {
     INICIS("INICIS"),
     NICEPAY("NICEPAY")
     ;
 
     private final String code;
 
-    public static PaymentType fromCode(String code) {
-        for (PaymentType paymentType : PaymentType.values()) {
-            if (paymentType.code.equals(code)) {
-                return paymentType;
+    public static PaymentGatewayType fromCode(String code) {
+        for (PaymentGatewayType PaymentGatewayType : PaymentGatewayType.values()) {
+            if (PaymentGatewayType.code.equals(code)) {
+                return PaymentGatewayType;
             }
         }
         throw new IllegalArgumentException("invalid payment_type");
