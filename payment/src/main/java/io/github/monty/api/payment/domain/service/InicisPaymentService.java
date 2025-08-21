@@ -120,7 +120,9 @@ public class InicisPaymentService implements PaymentService {
     private InicisPayment newInicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
         return InicisPayment.builder()
                 .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentGatewayType()))
-                .amount(0L)
+                .requestedAmount(inicisPaymentCreateCommand.getPrice())
+                .approvedAmount(0L)
+                .refundedAmount(0L)
                 .orderNo(inicisPaymentCreateCommand.getOrderNo())
                 .paymentGatewayType(inicisPaymentCreateCommand.getPaymentGatewayType())
                 .paymentStatus(PaymentStatus.AUTHENTICATED)

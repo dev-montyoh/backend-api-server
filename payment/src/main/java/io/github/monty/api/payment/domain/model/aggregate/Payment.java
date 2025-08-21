@@ -35,16 +35,24 @@ public class Payment {
     private String orderNo;
 
     @NotNull
-    @Column(name = "amount", nullable = false)
-    private Long amount;
-
-    @NotNull
     @Column(name = "pg_type", nullable = false, length = 50)
     private PaymentGatewayType paymentGatewayType;
 
     @NotNull
     @Column(name = "status", nullable = false, length = 20)
     private PaymentStatus paymentStatus;
+
+    @NotNull
+    @Column(name = "requested_amount", nullable = false)
+    private Long requestedAmount;
+
+    @NotNull
+    @Column(name = "approved_amount", nullable = false)
+    private Long approvedAmount;
+
+    @NotNull
+    @Column(name = "refunded_amount", nullable = false)
+    private Long refundedAmount;
 
     @Size(max = 20)
     @Column(name = "tid", length = 20)
@@ -60,7 +68,7 @@ public class Payment {
 
     public void applyApprovePaymentResult(PaymentApprovalResultVO paymentApprovalResultVO) {
         this.tid = paymentApprovalResultVO.getTid();
-        this.amount = paymentApprovalResultVO.getAmount();
+        this.approvedAmount = paymentApprovalResultVO.getAmount();
         this.buyerPhoneNumber = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
     }

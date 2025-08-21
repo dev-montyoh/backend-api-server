@@ -9,4 +9,5 @@ import lombok.experimental.SuperBuilder;
 public class PaymentCreateCommand {
     private PaymentGatewayType paymentGatewayType;
     private String orderNo;
+    private long price;
 }
