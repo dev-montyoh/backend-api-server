@@ -1,6 +1,6 @@
 package io.github.monty.api.payment.domain.service;
 
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
@@ -17,7 +17,7 @@ public interface PaymentService {
      *
      * @return 결제 타입
      */
-    PaymentGatewayType getPaymentType();
+    PaymentServiceProviderType getPaymentType();
 
     /**
      * 해당 결제의 결제 인증 정보를 반환한다.
@@ -47,12 +47,12 @@ public interface PaymentService {
     /**
      * 해당 결제 수단의 결제번호 생성 후 반환
      *
-     * @param PaymentGatewayType 결제 타입
+     * @param PaymentServiceProviderType 결제 타입
      * @return 결제 번호
      */
-    default String generatePaymentNo(PaymentGatewayType PaymentGatewayType) {
+    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
         UUID uuid = UUID.randomUUID();
         String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
-        return PAYMENT_NO_PREFIX + PaymentGatewayType.getCode() + base62;
+        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
     }
 }

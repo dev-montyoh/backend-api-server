@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.interfaces.rest.mapper;
 
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResultVO;
 import io.github.monty.api.payment.interfaces.rest.dto.InicisPaymentSignatureResponse;
@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapStructConfig.class)
 public interface InicisPaymentSignatureQueryMapper {
 
-    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PaymentGatewayType PaymentGatewayType);
+    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PaymentServiceProviderType PaymentServiceProviderType);
 
     @Mapping(target = "signature", source = "signature")
     @Mapping(target = "verification", source = "verification")

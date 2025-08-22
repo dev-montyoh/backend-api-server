@@ -22,7 +22,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentGatewayType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPGProviderType());
         return paymentService.createPayment(paymentCreateCommand);
     }
 
@@ -33,7 +33,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public void approvePayment(PaymentApproveCommand paymentApproveCommand) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentApproveCommand.getPaymentGatewayType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentApproveCommand.getPaymentServiceProviderType());
         paymentService.approvePayment(paymentApproveCommand);
     }
 }

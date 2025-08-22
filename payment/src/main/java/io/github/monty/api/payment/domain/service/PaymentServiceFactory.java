@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.ErrorCode;
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class PaymentServiceFactory {
-    private final Map<PaymentGatewayType, PaymentService> paymentServiceMap = new EnumMap<>(PaymentGatewayType.class);
+    private final Map<PaymentServiceProviderType, PaymentService> paymentServiceMap = new EnumMap<>(PaymentServiceProviderType.class);
 
     @Autowired
     public PaymentServiceFactory(List<PaymentService> paymentServiceList) {
@@ -23,10 +23,10 @@ public class PaymentServiceFactory {
         }
     }
 
-    public PaymentService getPaymentService(PaymentGatewayType PaymentGatewayType) {
-        if (!paymentServiceMap.containsKey(PaymentGatewayType)) {
+    public PaymentService getPaymentService(PaymentServiceProviderType PaymentServiceProviderType) {
+        if (!paymentServiceMap.containsKey(PaymentServiceProviderType)) {
             throw new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_SERVICE);
         }
-        return paymentServiceMap.get(PaymentGatewayType);
+        return paymentServiceMap.get(PaymentServiceProviderType);
     }
 }

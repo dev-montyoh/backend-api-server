@@ -20,7 +20,7 @@ public class PaymentQueryService {
      * @return 생성 결과
      */
     public PaymentSignatureResultVO requestPaymentSignature(PaymentSignatureQuery paymentSignatureQuery) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentSignatureQuery.getPaymentGatewayType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentSignatureQuery.getPaymentServiceProviderType());
         return paymentService.getSignature(paymentSignatureQuery);
     }
 }

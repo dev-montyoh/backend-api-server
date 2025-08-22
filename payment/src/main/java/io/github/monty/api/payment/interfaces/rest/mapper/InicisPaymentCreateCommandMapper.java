@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.interfaces.rest.mapper;
 
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentCreateResultVO;
 import io.github.monty.api.payment.interfaces.rest.dto.InicisPaymentCreateRequest;
@@ -13,7 +13,7 @@ import org.mapstruct.Mapping;
 public interface InicisPaymentCreateCommandMapper {
 
     @Mapping(target = "paymentGatewayType", source = "paymentGatewayType")
-    InicisPaymentCreateCommand mapToCommand(InicisPaymentCreateRequest inicisPaymentCreateRequest, PaymentGatewayType paymentGatewayType);
+    InicisPaymentCreateCommand mapToCommand(InicisPaymentCreateRequest inicisPaymentCreateRequest, PaymentServiceProviderType PaymentServiceProviderType);
 
     InicisPaymentCreateResponse mapToDTO(InicisPaymentCreateResultVO inicisPaymentCreateResultVO);
 }

@@ -1,6 +1,7 @@
 package io.github.monty.api.payment.domain.model.entity;
 
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
+import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,31 +16,35 @@ import java.time.LocalDateTime;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "inicis_payments")
+@Table(name = "payment_inicis")
 public class InicisPayment extends Payment {
+
+    public InicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
+        super(inicisPaymentCreateCommand);
+        this.authToken = inicisPaymentCreateCommand.getAuthToken();
+        this.idcCode = inicisPaymentCreateCommand.getIdcName();
+        this.approvalUrl = inicisPaymentCreateCommand.getAuthorizationUrl();
+        this.cancelUrl = inicisPaymentCreateCommand.getNetCancelUrl();
+    }
+
     @NotNull
     @Column(name = "auth_token", nullable = false)
     private String authToken;
 
     @Size(max = 20)
     @NotNull
-    @Column(name = "idc_name", nullable = false, length = 20)
-    private String idcName;
+    @Column(name = "idc_code", nullable = false, length = 20)
+    private String idcCode;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "auth_url", nullable = false)
-    private String authUrl;
+    @Column(name = "approval_url", nullable = false)
+    private String approvalUrl;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "net_cancel_url", nullable = false)
-    private String netCancelUrl;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payments;
+    @Column(name = "cancel_url", nullable = false)
+    private String cancelUrl;
 
     @Size(max = 20)
     @Column(name = "payment_method", length = 20)

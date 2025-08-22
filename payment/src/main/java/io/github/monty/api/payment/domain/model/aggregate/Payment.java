@@ -1,7 +1,8 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.common.constants.PaymentStatus;
+import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.PaymentApprovalResultVO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,8 +16,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "payments")
+@Table(name = "payment")
 public class Payment {
+
+    public Payment(PaymentCreateCommand paymentCreateCommand) {
+        this.requestAmount = paymentCreateCommand.getPrice();
+        this.approvalAmount = 0L;
+        this.refundAmount = 0L;
+        this.orderNo = paymentCreateCommand.getOrderNo();
+        this.paymentServiceProviderType = paymentCreateCommand.getPaymentServiceProviderType();
+        this.paymentStatus = PaymentStatus.AUTHENTICATED;
+    }
 
     @Id
     @Size(max = 100)
@@ -35,41 +45,41 @@ public class Payment {
     private String orderNo;
 
     @NotNull
-    @Column(name = "pg_type", nullable = false, length = 50)
-    private PaymentGatewayType paymentGatewayType;
+    @Column(name = "pg_provider_type", nullable = false, length = 50)
+    private PaymentServiceProviderType paymentServiceProviderType;
 
     @NotNull
-    @Column(name = "status", nullable = false, length = 20)
+    @Column(name = "payment_status", nullable = false, length = 20)
     private PaymentStatus paymentStatus;
 
     @NotNull
-    @Column(name = "requested_amount", nullable = false)
-    private Long requestedAmount;
+    @Column(name = "request_amount", nullable = false)
+    private Long requestAmount;
 
     @NotNull
-    @Column(name = "approved_amount", nullable = false)
-    private Long approvedAmount;
+    @Column(name = "approval_amount", nullable = false)
+    private Long approvalAmount;
 
     @NotNull
-    @Column(name = "refunded_amount", nullable = false)
-    private Long refundedAmount;
+    @Column(name = "refund_amount", nullable = false)
+    private Long refundAmount;
 
     @Size(max = 20)
-    @Column(name = "tid", length = 20)
-    private String tid;
+    @Column(name = "transaction_id", length = 20)
+    private String transactionId;
 
     @Size(max = 20)
-    @Column(name = "buyer_phone_number", length = 20)
-    private String buyerPhoneNumber;
+    @Column(name = "buyer_phone", length = 20)
+    private String buyerPhone;
 
     @Size(max = 50)
     @Column(name = "buyer_email", length = 50)
     private String buyerEmail;
 
     public void applyApprovePaymentResult(PaymentApprovalResultVO paymentApprovalResultVO) {
-        this.tid = paymentApprovalResultVO.getTid();
-        this.approvedAmount = paymentApprovalResultVO.getAmount();
-        this.buyerPhoneNumber = paymentApprovalResultVO.getBuyerPhoneNumber();
+        this.transactionId = paymentApprovalResultVO.getTid();
+        this.approvalAmount = paymentApprovalResultVO.getAmount();
+        this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
     }
 }

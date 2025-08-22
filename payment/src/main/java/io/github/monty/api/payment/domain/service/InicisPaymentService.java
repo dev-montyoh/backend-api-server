@@ -2,8 +2,7 @@ package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.ErrorCode;
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
-import io.github.monty.api.payment.common.constants.PaymentStatus;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
@@ -44,8 +43,8 @@ public class InicisPaymentService implements PaymentService {
     private String inicisMid;
 
     @Override
-    public PaymentGatewayType getPaymentType() {
-        return PaymentGatewayType.INICIS;
+    public PaymentServiceProviderType getPaymentType() {
+        return PaymentServiceProviderType.INICIS;
     }
 
     /**
@@ -80,7 +79,7 @@ public class InicisPaymentService implements PaymentService {
     @Override
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
-        InicisPayment inicisPayment = this.newInicisPayment(inicisPaymentCreateCommand);
+        InicisPayment inicisPayment = new InicisPayment(inicisPaymentCreateCommand);
         Payment payment = paymentRepository.save(inicisPayment);
         return InicisPaymentCreateResultVO.builder()
                 .paymentNo(payment.getPaymentNo())
@@ -105,31 +104,9 @@ public class InicisPaymentService implements PaymentService {
         String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
 
-        InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getAuthUrl());
+        InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
         InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
         inicisPayment.applyApprovePaymentResult(inicisPaymentApprovalResultVO);
         paymentRepository.save(inicisPayment);
-    }
-
-    /**
-     * 이니시스 결제 엔티티 생성
-     *
-     * @param inicisPaymentCreateCommand 결제 생성 요청 Command
-     * @return 생성된 이니시스 엔티티
-     */
-    private InicisPayment newInicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
-        return InicisPayment.builder()
-                .paymentNo(this.generatePaymentNo(inicisPaymentCreateCommand.getPaymentGatewayType()))
-                .requestedAmount(inicisPaymentCreateCommand.getPrice())
-                .approvedAmount(0L)
-                .refundedAmount(0L)
-                .orderNo(inicisPaymentCreateCommand.getOrderNo())
-                .paymentGatewayType(inicisPaymentCreateCommand.getPaymentGatewayType())
-                .paymentStatus(PaymentStatus.AUTHENTICATED)
-                .authToken(inicisPaymentCreateCommand.getAuthorizationToken())
-                .idcName(inicisPaymentCreateCommand.getIdcName())
-                .authUrl(inicisPaymentCreateCommand.getAuthorizationUrl())
-                .netCancelUrl(inicisPaymentCreateCommand.getNetCancelUrl())
-                .build();
     }
 }

@@ -2,7 +2,7 @@ package io.github.monty.api.payment.interfaces.rest.controller;
 
 import io.github.monty.api.payment.application.PaymentCommandService;
 import io.github.monty.api.payment.application.PaymentQueryService;
-import io.github.monty.api.payment.common.constants.PaymentGatewayType;
+import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
@@ -38,7 +38,7 @@ public class InicisPaymentController {
     @GetMapping(value = PaymentApiUrl.Inicis.INICIS_SIGNATURE_URL)
     public ResponseEntity<InicisPaymentSignatureResponse> requestPaymentSignature(@RequestParam String oid,
                                                                                   @RequestParam String price) {
-        InicisPaymentSignatureQuery inicisPaymentSignatureQuery = inicisPaymentSignatureQueryMapper.mapToQuery(oid, price, PaymentGatewayType.INICIS);
+        InicisPaymentSignatureQuery inicisPaymentSignatureQuery = inicisPaymentSignatureQueryMapper.mapToQuery(oid, price, PaymentServiceProviderType.INICIS);
         InicisPaymentSignatureResultVO inicisPaymentSignatureResultVO = (InicisPaymentSignatureResultVO) paymentQueryService.requestPaymentSignature(inicisPaymentSignatureQuery);
         InicisPaymentSignatureResponse inicisPaymentSignatureResponse = inicisPaymentSignatureQueryMapper.mapToDTO(inicisPaymentSignatureResultVO);
         return ResponseEntity.ok().body(inicisPaymentSignatureResponse);
@@ -47,7 +47,7 @@ public class InicisPaymentController {
     @Operation(summary = "이니시스 결제 데이터 저장 API", description = "이니시스 결제 인증 결과를 저장한다.")
     @PostMapping(value = PaymentApiUrl.Inicis.INICIS_URL)
     public ResponseEntity<InicisPaymentCreateResponse> requestCreatePayment(@RequestBody InicisPaymentCreateRequest inicisPaymentCreateRequest) {
-        InicisPaymentCreateCommand inicisPaymentCreateCommand = inicisPaymentCreateCommandMapper.mapToCommand(inicisPaymentCreateRequest, PaymentGatewayType.INICIS);
+        InicisPaymentCreateCommand inicisPaymentCreateCommand = inicisPaymentCreateCommandMapper.mapToCommand(inicisPaymentCreateRequest, PaymentServiceProviderType.INICIS);
         InicisPaymentCreateResultVO inicisPaymentCreateResultVO = (InicisPaymentCreateResultVO) paymentCommandService.createPayment(inicisPaymentCreateCommand);
         InicisPaymentCreateResponse inicisPaymentCreateResponse = inicisPaymentCreateCommandMapper.mapToDTO(inicisPaymentCreateResultVO);
         return ResponseEntity.ok().body(inicisPaymentCreateResponse);
@@ -56,7 +56,7 @@ public class InicisPaymentController {
     @Operation(summary = "이니시스 결제 승인 요청 API", description = "이니시스 결제 승인 요청을 한다.")
     @PostMapping(value = PaymentApiUrl.Inicis.INICIS_APPROVAL_URL)
     public ResponseEntity<Void> requestApprovalPayment(@PathVariable String paymentNo) {
-        InicisPaymentApproveCommand inicisPaymentApproveCommand = inicisPaymentApproveCommandMapper.mapToCommand(paymentNo,  PaymentGatewayType.INICIS);
+        InicisPaymentApproveCommand inicisPaymentApproveCommand = inicisPaymentApproveCommandMapper.mapToCommand(paymentNo,  PaymentServiceProviderType.INICIS);
         paymentCommandService.approvePayment(inicisPaymentApproveCommand);
         return ResponseEntity.ok().build();
     }

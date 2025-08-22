@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class InicisPaymentCreateCommand extends PaymentCreateCommand {
     private String mid;
-    private String authorizationToken;
+    private String authToken;
     private String idcName;
     private String authorizationUrl;
     private String netCancelUrl;
