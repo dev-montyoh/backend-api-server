@@ -19,7 +19,8 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "payment")
 public class Payment {
 
-    public Payment(PaymentCreateCommand paymentCreateCommand) {
+    public Payment(String paymentNo, PaymentCreateCommand paymentCreateCommand) {
+        this.paymentNo = paymentNo;
         this.requestAmount = paymentCreateCommand.getPrice();
         this.approvalAmount = 0L;
         this.refundAmount = 0L;
@@ -64,8 +65,8 @@ public class Payment {
     @Column(name = "refund_amount", nullable = false)
     private Long refundAmount;
 
-    @Size(max = 20)
-    @Column(name = "transaction_id", length = 20)
+    @Size(max = 100)
+    @Column(name = "transaction_id", length = 100)
     private String transactionId;
 
     @Size(max = 20)

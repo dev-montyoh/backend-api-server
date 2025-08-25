@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapStructConfig.class)
 public interface InicisPaymentSignatureQueryMapper {
 
-    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PaymentServiceProviderType PaymentServiceProviderType);
+    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PaymentServiceProviderType paymentServiceProviderType);
 
     @Mapping(target = "signature", source = "signature")
     @Mapping(target = "verification", source = "verification")

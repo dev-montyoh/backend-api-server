@@ -13,7 +13,7 @@ CREATE TABLE payment
     request_amount   bigint       NOT NULL COMMENT '요청 금액',
     approval_amount  bigint       NOT NULL COMMENT '승인 금액',
     refund_amount    bigint       NOT NULL COMMENT '환불 금액',
-    transaction_id   varchar(20)  NULL COMMENT 'PG사 거래 번호',
+    transaction_id   varchar(100) NULL COMMENT 'PG사 거래 번호',
     buyer_phone      varchar(20)  NULL COMMENT '구매자 휴대폰 번호',
     buyer_email      varchar(50)  NULL COMMENT '구매자 이메일 주소',
     PRIMARY KEY (payment_id)

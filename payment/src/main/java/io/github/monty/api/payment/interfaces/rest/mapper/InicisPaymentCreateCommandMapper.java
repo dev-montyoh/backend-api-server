@@ -12,8 +12,8 @@ import org.mapstruct.Mapping;
 @Mapper(config = MapStructConfig.class)
 public interface InicisPaymentCreateCommandMapper {
 
-    @Mapping(target = "paymentGatewayType", source = "paymentGatewayType")
-    InicisPaymentCreateCommand mapToCommand(InicisPaymentCreateRequest inicisPaymentCreateRequest, PaymentServiceProviderType PaymentServiceProviderType);
+    @Mapping(target = "paymentServiceProviderType", source = "paymentServiceProviderType")
+    InicisPaymentCreateCommand mapToCommand(InicisPaymentCreateRequest inicisPaymentCreateRequest, PaymentServiceProviderType paymentServiceProviderType);
 
     InicisPaymentCreateResponse mapToDTO(InicisPaymentCreateResultVO inicisPaymentCreateResultVO);
 }

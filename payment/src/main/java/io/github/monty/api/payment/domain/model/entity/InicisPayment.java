@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 @Table(name = "payment_inicis")
 public class InicisPayment extends Payment {
 
-    public InicisPayment(InicisPaymentCreateCommand inicisPaymentCreateCommand) {
-        super(inicisPaymentCreateCommand);
+    public InicisPayment(String paymentNo, InicisPaymentCreateCommand inicisPaymentCreateCommand) {
+        super(paymentNo, inicisPaymentCreateCommand);
         this.authToken = inicisPaymentCreateCommand.getAuthToken();
-        this.idcCode = inicisPaymentCreateCommand.getIdcName();
-        this.approvalUrl = inicisPaymentCreateCommand.getAuthorizationUrl();
-        this.cancelUrl = inicisPaymentCreateCommand.getNetCancelUrl();
+        this.idcCode = inicisPaymentCreateCommand.getIdcCode();
+        this.approvalUrl = inicisPaymentCreateCommand.getApprovalUrl();
+        this.cancelUrl = inicisPaymentCreateCommand.getCancelUrl();
     }
 
     @NotNull

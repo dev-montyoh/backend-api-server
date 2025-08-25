@@ -22,7 +22,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPGProviderType());
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentServiceProviderType());
         return paymentService.createPayment(paymentCreateCommand);
     }
 

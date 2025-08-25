@@ -79,7 +79,8 @@ public class InicisPaymentService implements PaymentService {
     @Override
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
-        InicisPayment inicisPayment = new InicisPayment(inicisPaymentCreateCommand);
+        String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPaymentServiceProviderType());
+        InicisPayment inicisPayment = new InicisPayment(paymentNo, inicisPaymentCreateCommand);
         Payment payment = paymentRepository.save(inicisPayment);
         return InicisPaymentCreateResultVO.builder()
                 .paymentNo(payment.getPaymentNo())
