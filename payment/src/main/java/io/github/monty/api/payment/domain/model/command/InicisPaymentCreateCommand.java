@@ -10,5 +10,5 @@ public class InicisPaymentCreateCommand extends PaymentCreateCommand {
     private String authToken;
     private String idcCode;
     private String approvalUrl;
-    private String cancelUrl;
+    private String networkCancelUrl;
 }

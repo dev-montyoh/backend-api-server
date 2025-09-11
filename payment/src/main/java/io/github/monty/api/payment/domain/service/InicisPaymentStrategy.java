@@ -5,27 +5,27 @@ import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
+import io.github.monty.api.payment.domain.model.aggregate.InicisPayment;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
-import io.github.monty.api.payment.domain.model.command.InicisPaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
-import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
-import io.github.monty.api.payment.domain.model.entity.InicisPayment;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.*;
 import io.github.monty.api.payment.domain.repository.InicisRepository;
 import io.github.monty.api.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class InicisPaymentService implements PaymentService {
+public class InicisPaymentStrategy implements PaymentStrategy {
 
     private final PaymentRepository paymentRepository;
     private final InicisRepository inicisRepository;
@@ -33,8 +33,12 @@ public class InicisPaymentService implements PaymentService {
     private static final String AUTHENTICATION_SIGNATURE_MESSAGE_FORMAT = "oid={0}&price={1}&timestamp={2}";
     private static final String AUTHENTICATION_VERIFICATION_MESSAGE_FORMAT = "oid={0}&price={1}&signKey={2}&timestamp={3}";
 
-    private static final String APPROVE_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
-    private static final String APPROVE_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
+    private static final String APPROVAL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
+    private static final String APPROVAL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
+
+    private static final String NETWORK_CANCEL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
+    private static final String NETWORK_CANCEL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
+
 
     @Value("${payment.type.inicis.sign.key}")
     private String inicisSignKey;
@@ -88,26 +92,72 @@ public class InicisPaymentService implements PaymentService {
     }
 
     /**
-     * 해당 결제 정보를 바탕으로 결제 승인을 요청한다.
+     * 해당 결제번호에 해당되는 결제를 승인 요청한다.
      *
-     * @param paymentApproveCommand 결제 승인 요청 Command
+     * @param paymentNo 결제 번호
      */
     @Override
-    public void approvePayment(PaymentApproveCommand paymentApproveCommand) {
-        InicisPaymentApproveCommand inicisPaymentApproveCommand = (InicisPaymentApproveCommand) paymentApproveCommand;
-        Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(inicisPaymentApproveCommand.getPaymentNo());
+    public void approvePayment(String paymentNo) {
+        Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
         InicisPayment inicisPayment = (InicisPayment) paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
+        try {
+            long timestamp = System.currentTimeMillis();
+            String plainTextSignature = MessageFormat.format(APPROVAL_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
+            String plainTextVerification = MessageFormat.format(APPROVAL_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey, String.valueOf(timestamp));
 
-        long timestamp = System.currentTimeMillis();
-        String plainTextSignature = MessageFormat.format(APPROVE_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
-        String plainTextVerification = MessageFormat.format(APPROVE_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey, String.valueOf(timestamp));
+            String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
+            String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
 
-        String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
-        String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
+            InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
+            InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
+            inicisPayment.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
+        } catch (Exception exception) {
+            //  승인 실패 처리
+            inicisPayment.applyPaymentApprovalFail();
+            log.error(exception.getMessage(), exception);
+            throw exception;
+        } finally {
+            paymentRepository.save(inicisPayment);
+        }
+    }
 
-        InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
-        InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
-        inicisPayment.applyApprovePaymentResult(inicisPaymentApprovalResultVO);
-        paymentRepository.save(inicisPayment);
+    /**
+     * 해당 결제번호에 해당되는 결제를 취소 요청한다.
+     *
+     * @param paymentNo 결제 번호
+     */
+    @Override
+    public void cancelPayment(String paymentNo) {
+
+    }
+
+    /**
+     * 해당 결제번호에 해당되는 결제를 망취소 요청한다.
+     *
+     * @param paymentNo 결제 번호
+     */
+    @Override
+    public void networkCancelPayment(String paymentNo) {
+        Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
+        InicisPayment inicisPayment = (InicisPayment) paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
+        try {
+            long timestamp = System.currentTimeMillis();
+            String plainTextSignature = MessageFormat.format(NETWORK_CANCEL_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
+            String plainTextVerification = MessageFormat.format(NETWORK_CANCEL_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey, String.valueOf(timestamp));
+
+            String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
+            String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
+
+            InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO = new InicisPaymentNetworkCancelRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getNetworkCancelUrl());
+            InicisPaymentNetworkCancelResultVO inicisPaymentNetworkCancelResultVO = inicisRepository.requestNetworkCancelPayment(inicisPaymentNetworkCancelRequestVO);
+            inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
+        } catch (Exception exception) {
+            //  망취소 실패 처리
+            inicisPayment.applyPaymentNetworkCancelFail();
+            log.error(exception.getMessage(), exception);
+            throw exception;
+        } finally {
+            paymentRepository.save(inicisPayment);
+        }
     }
 }

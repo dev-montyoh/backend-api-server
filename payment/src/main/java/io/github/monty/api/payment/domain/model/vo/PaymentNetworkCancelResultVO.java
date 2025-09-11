@@ -5,16 +5,18 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class PaymentApprovalResultVO {
-    private boolean isApproved;
+public class PaymentNetworkCancelResultVO {
+    private boolean isNetworkCanceled;
 
     private String resultMessage;
 
+    private long timestamp;
+
     private String tid;
 
-    private long amount;
+    private String mid;
 
-    private String buyerPhoneNumber;
+    private String moid;
 
-    private String buyerEmail;
+    private String selectPayMethod;
 }

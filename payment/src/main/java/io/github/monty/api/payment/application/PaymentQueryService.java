@@ -2,8 +2,8 @@ package io.github.monty.api.payment.application;
 
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
-import io.github.monty.api.payment.domain.service.PaymentService;
-import io.github.monty.api.payment.domain.service.PaymentServiceFactory;
+import io.github.monty.api.payment.domain.service.PaymentStrategy;
+import io.github.monty.api.payment.domain.service.PaymentStrategyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PaymentQueryService {
 
-    private final PaymentServiceFactory paymentServiceFactory;
+    private final PaymentStrategyFactory paymentStrategyFactory;
 
     /**
      * 결제 Signature 생성
@@ -20,7 +20,7 @@ public class PaymentQueryService {
      * @return 생성 결과
      */
     public PaymentSignatureResultVO requestPaymentSignature(PaymentSignatureQuery paymentSignatureQuery) {
-        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentSignatureQuery.getPaymentServiceProviderType());
-        return paymentService.getSignature(paymentSignatureQuery);
+        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentSignatureQuery.getPaymentServiceProviderType());
+        return paymentStrategy.getSignature(paymentSignatureQuery);
     }
 }

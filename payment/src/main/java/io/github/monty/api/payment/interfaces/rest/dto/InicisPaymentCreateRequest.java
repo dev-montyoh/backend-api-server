@@ -6,7 +6,7 @@ public record InicisPaymentCreateRequest(
         String authToken,
         String idcCode,
         String approvalUrl,
-        String cancelUrl,
+        String networkCancelUrl,
         long price
 ) {
 }

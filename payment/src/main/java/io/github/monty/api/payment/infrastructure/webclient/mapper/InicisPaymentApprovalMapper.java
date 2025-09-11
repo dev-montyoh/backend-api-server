@@ -17,14 +17,15 @@ public interface InicisPaymentApprovalMapper {
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    @Mapping(target = "amount", source = "totPrice")
-    @Mapping(target = "paymentMethod", source = "payMethod")
+    @Mapping(target = "amount", source = "inicisPaymentApprovalResponse.totPrice")
+    @Mapping(target = "paymentMethod", source = "inicisPaymentApprovalResponse.payMethod")
     @Mapping(target = "approvalDateTime", ignore = true)
-    @Mapping(target = "buyerPhoneNumber", source = "buyerTel")
-    InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse);
+    @Mapping(target = "buyerPhoneNumber", source = "inicisPaymentApprovalResponse.buyerTel")
+    @Mapping(target = "resultMessage", source = "inicisPaymentApprovalResponse.resultMsg")
+    InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse, boolean isApproved);
 
     @AfterMapping
-    default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder builder,
+    default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder<InicisPaymentApprovalResultVO, ?> builder,
                          InicisPaymentApprovalResponse inicisPaymentApprovalResponse) {
         if (StringUtils.hasText(inicisPaymentApprovalResponse.getApplDate()) && StringUtils.hasText(inicisPaymentApprovalResponse.getApplTime())) {
             LocalDateTime approvalDateTime = LocalDateTime.parse(inicisPaymentApprovalResponse.getApplDate() + inicisPaymentApprovalResponse.getApplTime(), dateTimeFormatter);

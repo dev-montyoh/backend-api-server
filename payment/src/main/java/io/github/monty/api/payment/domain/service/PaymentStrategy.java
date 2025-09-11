@@ -1,7 +1,6 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
-import io.github.monty.api.payment.domain.model.command.PaymentApproveCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
@@ -10,7 +9,7 @@ import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public interface PaymentService {
+public interface PaymentStrategy {
 
     /**
      * 해당 전략의 결제 타입을 반환한다.
@@ -36,12 +35,28 @@ public interface PaymentService {
     PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
 
     /**
-     * 해당 결제 정보를 바탕으로 결제 승인을 요청한다.
+     * 해당 결제번호에 해당되는 결제를 승인 요청한다.
      *
-     * @param paymentApproveCommand 결제 승인 요청 Command
+     * @param paymentNo 결제 번호
      */
-    void approvePayment(PaymentApproveCommand paymentApproveCommand);
+    void approvePayment(String paymentNo);
 
+    /**
+     * 해당 결제번호에 해당되는 결제를 취소 요청한다.
+     *
+     * @param paymentNo 결제 번호
+     */
+    void cancelPayment(String paymentNo);
+
+    /**
+     * 해당 결제번호에 해당되는 결제를 망취소 요청한다.
+     *
+     * @param paymentNo 결제 번호
+     */
+    void networkCancelPayment(String paymentNo);
+
+
+    //  기본 결제 번호 Prefix
     String PAYMENT_NO_PREFIX = "PAY";
 
     /**
