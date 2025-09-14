@@ -120,44 +120,4 @@ public class InicisPaymentStrategy implements PaymentStrategy {
             paymentRepository.save(inicisPayment);
         }
     }
-
-    /**
-     * 해당 결제번호에 해당되는 결제를 취소 요청한다.
-     *
-     * @param paymentNo 결제 번호
-     */
-    @Override
-    public void cancelPayment(String paymentNo) {
-
-    }
-
-    /**
-     * 해당 결제번호에 해당되는 결제를 망취소 요청한다.
-     *
-     * @param paymentNo 결제 번호
-     */
-    @Override
-    public void networkCancelPayment(String paymentNo) {
-        Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
-        InicisPayment inicisPayment = (InicisPayment) paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
-        try {
-            long timestamp = System.currentTimeMillis();
-            String plainTextSignature = MessageFormat.format(NETWORK_CANCEL_SIGNATURE_MESSAGE_FORMAT, inicisPayment.getAuthToken(), String.valueOf(timestamp));
-            String plainTextVerification = MessageFormat.format(NETWORK_CANCEL_VERIFICATION_MESSAGE_FORMAT, inicisPayment.getAuthToken(), inicisSignKey, String.valueOf(timestamp));
-
-            String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
-            String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
-
-            InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO = new InicisPaymentNetworkCancelRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getNetworkCancelUrl());
-            InicisPaymentNetworkCancelResultVO inicisPaymentNetworkCancelResultVO = inicisRepository.requestNetworkCancelPayment(inicisPaymentNetworkCancelRequestVO);
-            inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
-        } catch (Exception exception) {
-            //  망취소 실패 처리
-            inicisPayment.applyPaymentNetworkCancelFail();
-            log.error(exception.getMessage(), exception);
-            throw exception;
-        } finally {
-            paymentRepository.save(inicisPayment);
-        }
-    }
 }

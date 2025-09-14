@@ -8,4 +8,6 @@ import lombok.Getter;
 public class PaymentCancelCommand {
 
     private String paymentNo;
+
+    private String cancelReason;
 }

@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
-public class InicisPaymentApprovalResultVO extends PaymentApprovalResultVO {
-    private String paymentMethod;
+public class PaymentCancelResultVO {
+    private boolean isCancelled;
+
+    private String resultMessage;
+
+    private LocalDateTime cancelDateTIme;
 }

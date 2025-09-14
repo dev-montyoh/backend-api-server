@@ -1,9 +1,6 @@
 package io.github.monty.api.payment.domain.repository;
 
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalRequestVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelRequestVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelResultVO;
+import io.github.monty.api.payment.domain.model.vo.*;
 
 public interface InicisRepository {
 
@@ -17,6 +14,17 @@ public interface InicisRepository {
      * @return 승인 요청 결과 VO
      */
     InicisPaymentApprovalResultVO requestApprovePayment(InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO);
+
+    /**
+     * 이니시스로 결제 취소 요청을 한다.
+     * Content-type: application/json
+     * HTTP Method : POST
+     * 통신방식 : http-Client 통신
+     *
+     * @param inicisPaymentCancelRequestVO 결제 취소 요청 VO
+     * @return 취소 요청 결과 VO
+     */
+    InicisPaymentCancelResultVO requestCancelPayment(InicisPaymentCancelRequestVO inicisPaymentCancelRequestVO);
 
     /**
      * 이니시스로 결제 망취소 요청을 한다.

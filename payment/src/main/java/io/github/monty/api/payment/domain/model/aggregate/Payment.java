@@ -7,6 +7,7 @@ import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.entity.BaseEntity;
 import io.github.monty.api.payment.domain.model.entity.PaymentLog;
 import io.github.monty.api.payment.domain.model.vo.PaymentApprovalResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentCancelResultVO;
 import io.github.monty.api.payment.domain.model.vo.PaymentNetworkCancelResultVO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +33,14 @@ public class Payment extends BaseEntity {
         this.paymentNo = paymentNo;
         this.requestAmount = paymentCreateCommand.getPrice();
         this.approvalAmount = 0L;
-        this.refundAmount = 0L;
+        this.cancelAmount = 0L;
         this.orderNo = paymentCreateCommand.getOrderNo();
         this.paymentServiceProviderType = paymentCreateCommand.getPaymentServiceProviderType();
         this.paymentStatus = PaymentStatus.AUTHENTICATED;
+        this.paymentLogList = new ArrayList<>();
+
+        PaymentLog paymentLog = new PaymentLog(this, paymentStatus, StaticValues.DEFAULT_MESSAGE_AUTHENTICATED);
+        this.paymentLogList.add(paymentLog);
     }
 
     @Id
@@ -68,9 +75,12 @@ public class Payment extends BaseEntity {
     @Column(name = "approval_amount", nullable = false)
     private Long approvalAmount;
 
+    @Column(name = "approval_date_time")
+    private LocalDateTime approvalDateTime;
+
     @NotNull
-    @Column(name = "refund_amount", nullable = false)
-    private Long refundAmount;
+    @Column(name = "cancel_amount", nullable = false)
+    private Long cancelAmount;
 
     @Size(max = 100)
     @Column(name = "transaction_id", length = 100)
@@ -85,7 +95,7 @@ public class Payment extends BaseEntity {
     private String buyerEmail;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PaymentLog> paymentLogList = new ArrayList<>();
+    private List<PaymentLog> paymentLogList;
 
     /**
      * 결제 승인 결과를 반영한다.
@@ -95,10 +105,22 @@ public class Payment extends BaseEntity {
     public void applyPaymentApprovalResult(PaymentApprovalResultVO paymentApprovalResultVO) {
         this.transactionId = paymentApprovalResultVO.getTid();
         this.approvalAmount = paymentApprovalResultVO.isApproved() ? paymentApprovalResultVO.getAmount() : 0;
+        this.approvalDateTime = paymentApprovalResultVO.isApproved() ? paymentApprovalResultVO.getApprovalDateTime() : null;
         this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
         PaymentStatus paymentStatus = paymentApprovalResultVO.isApproved() ? PaymentStatus.APPROVED : PaymentStatus.DECLINED;
         this.changePaymentStatus(paymentStatus, paymentApprovalResultVO.getResultMessage());
+    }
+
+    /**
+     * 결제 취소 결과를 반영한다.
+     *
+     * @param paymentCancelResultVO 결제 취소 요청 결과 VO
+     */
+    public void applyPaymentCancelResult(PaymentCancelResultVO paymentCancelResultVO) {
+        this.cancelAmount = paymentCancelResultVO.isCancelled() ? this.approvalAmount : 0L;
+        PaymentStatus paymentStatus = paymentCancelResultVO.isCancelled() ? PaymentStatus.CANCELED : PaymentStatus.CANCELED_FAIL;
+        this.changePaymentStatus(paymentStatus, paymentCancelResultVO.getResultMessage());
     }
 
     /**

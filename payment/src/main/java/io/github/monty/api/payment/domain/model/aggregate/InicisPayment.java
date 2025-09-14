@@ -4,6 +4,7 @@ import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.constants.StaticValues;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResultVO;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelResultVO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,6 +68,22 @@ public class InicisPayment extends Payment {
      */
     public void applyPaymentApprovalFail() {
         super.changePaymentStatus(PaymentStatus.DECLINED, StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR);
+    }
+
+    /**
+     * 결제 취소 결과를 반영한다.
+     *
+     * @param inicisPaymentCancelResultVO 이니시스 결제 취소 요청 결과 VO
+     */
+    public void applyPaymentCancelResult(InicisPaymentCancelResultVO inicisPaymentCancelResultVO) {
+        super.applyPaymentCancelResult(inicisPaymentCancelResultVO);
+    }
+
+    /**
+     * 현재 결제를 취소 실패 처리한다.
+     */
+    public void applyPaymentCancelFail() {
+        super.changePaymentStatus(PaymentStatus.CANCELED_FAIL, StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR);
     }
 
     /**

@@ -25,7 +25,7 @@ public interface InicisPaymentApprovalMapper {
     InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse, boolean isApproved);
 
     @AfterMapping
-    default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder<InicisPaymentApprovalResultVO, ?> builder,
+    default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder builder,
                          InicisPaymentApprovalResponse inicisPaymentApprovalResponse) {
         if (StringUtils.hasText(inicisPaymentApprovalResponse.getApplDate()) && StringUtils.hasText(inicisPaymentApprovalResponse.getApplTime())) {
             LocalDateTime approvalDateTime = LocalDateTime.parse(inicisPaymentApprovalResponse.getApplDate() + inicisPaymentApprovalResponse.getApplTime(), dateTimeFormatter);

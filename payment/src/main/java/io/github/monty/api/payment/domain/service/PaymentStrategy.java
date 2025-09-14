@@ -11,6 +11,21 @@ import java.util.UUID;
 
 public interface PaymentStrategy {
 
+    //  기본 결제 번호 Prefix
+    String PAYMENT_NO_PREFIX = "PAY";
+
+    /**
+     * 해당 결제 수단의 결제번호 생성 후 반환
+     *
+     * @param PaymentServiceProviderType 결제 타입
+     * @return 결제 번호
+     */
+    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
+        UUID uuid = UUID.randomUUID();
+        String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
+        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
+    }
+
     /**
      * 해당 전략의 결제 타입을 반환한다.
      *
@@ -40,34 +55,4 @@ public interface PaymentStrategy {
      * @param paymentNo 결제 번호
      */
     void approvePayment(String paymentNo);
-
-    /**
-     * 해당 결제번호에 해당되는 결제를 취소 요청한다.
-     *
-     * @param paymentNo 결제 번호
-     */
-    void cancelPayment(String paymentNo);
-
-    /**
-     * 해당 결제번호에 해당되는 결제를 망취소 요청한다.
-     *
-     * @param paymentNo 결제 번호
-     */
-    void networkCancelPayment(String paymentNo);
-
-
-    //  기본 결제 번호 Prefix
-    String PAYMENT_NO_PREFIX = "PAY";
-
-    /**
-     * 해당 결제 수단의 결제번호 생성 후 반환
-     *
-     * @param PaymentServiceProviderType 결제 타입
-     * @return 결제 번호
-     */
-    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
-        UUID uuid = UUID.randomUUID();
-        String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
-        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
-    }
 }

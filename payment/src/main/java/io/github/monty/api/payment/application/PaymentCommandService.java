@@ -6,6 +6,8 @@ import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
+import io.github.monty.api.payment.domain.service.PaymentCancelStrategy;
+import io.github.monty.api.payment.domain.service.PaymentCancelStrategyFactory;
 import io.github.monty.api.payment.domain.service.PaymentStrategy;
 import io.github.monty.api.payment.domain.service.PaymentStrategyFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentCommandService {
 
     private final PaymentStrategyFactory paymentStrategyFactory;
+    private final PaymentCancelStrategyFactory paymentCancelStrategyFactory;
 
     /**
      * 결제 정보 생성
@@ -42,7 +45,7 @@ public class PaymentCommandService {
         try {
             paymentStrategy.approvePayment(paymentNo);
         } catch (Exception e) {
-            paymentStrategy.networkCancelPayment(paymentNo);
+//            paymentStrategy.networkCancelPayment(paymentNo);
             throw e;
         }
     }
@@ -55,8 +58,8 @@ public class PaymentCommandService {
     @Transactional(noRollbackFor = ApplicationException.class)
     public void cancelPayment(PaymentCancelCommand paymentCancelCommand) {
         String paymentNo = paymentCancelCommand.getPaymentNo();
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentNo);
-        paymentStrategy.cancelPayment(paymentNo);
+        PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
+        paymentCancelStrategy.cancelPayment(paymentCancelCommand);
     }
 
     /**
@@ -66,7 +69,7 @@ public class PaymentCommandService {
      */
     public void networkCancelPayment(PaymentNetworkCancelCommand paymentNetworkCancelCommand) {
         String paymentNo = paymentNetworkCancelCommand.getPaymentNo();
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentNo);
-        paymentStrategy.networkCancelPayment(paymentNo);
+        PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
+        paymentCancelStrategy.networkCancelPayment(paymentNo);
     }
 }

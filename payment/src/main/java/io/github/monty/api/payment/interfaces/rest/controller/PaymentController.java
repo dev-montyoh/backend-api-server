@@ -5,6 +5,7 @@ import io.github.monty.api.payment.domain.model.command.PaymentApprovalCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentCancelRequest;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentApprovalCommandMapper;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentCancelCommandMapper;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentNetworkCancelCommandMapper;
@@ -12,10 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +37,8 @@ public class PaymentController {
 
     @Operation(summary = "결제 취소 요청 API", description = "해당 결제 번호의 취소 요청을 한다.")
     @PostMapping(value = PaymentApiUrl.Payment.PAYMENT_CANCEL_URL)
-    public ResponseEntity<Void> requestCancelPayment(@PathVariable String paymentNo) {
-        PaymentCancelCommand paymentCancelCommand = paymentCancelCommandMapper.mapToCommand(paymentNo);
+    public ResponseEntity<Void> requestCancelPayment(@PathVariable String paymentNo, @RequestBody PaymentCancelRequest paymentCancelRequest) {
+        PaymentCancelCommand paymentCancelCommand = paymentCancelCommandMapper.mapToCommand(paymentCancelRequest, paymentNo);
         paymentCommandService.cancelPayment(paymentCancelCommand);
         return ResponseEntity.ok().build();
     }
