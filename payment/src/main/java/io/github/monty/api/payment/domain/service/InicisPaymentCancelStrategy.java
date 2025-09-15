@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
+import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.ConvertUtils;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
@@ -79,7 +80,7 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
             inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
         } catch (Exception exception) {
             //  망취소 실패 처리
-            inicisPayment.applyPaymentNetworkCancelFail();
+            inicisPayment.applyPaymentFail(PaymentStatus.NETWORK_CANCELED_FAIL);
             log.error(exception.getMessage(), exception);
             throw exception;
         } finally {
@@ -108,7 +109,7 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
             inicisPayment.applyPaymentCancelResult(inicisPaymentCancelResultVO);
         } catch (Exception exception) {
             //  결제 취소 실패 처리
-            inicisPayment.applyPaymentCancelFail();
+            inicisPayment.applyPaymentFail(PaymentStatus.CANCELED_FAIL);
             log.error(exception.getMessage(), exception);
             throw exception;
         }

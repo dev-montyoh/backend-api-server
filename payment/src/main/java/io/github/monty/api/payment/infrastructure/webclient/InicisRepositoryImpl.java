@@ -21,7 +21,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
@@ -95,7 +94,7 @@ public class InicisRepositoryImpl implements InicisRepository {
         }
 
         boolean isCancelled = inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS_V2);
-        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, isCancelled);
+        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, isCancelled, inicisPaymentCancelRequestVO.getData().getMsg());
     }
 
     /**

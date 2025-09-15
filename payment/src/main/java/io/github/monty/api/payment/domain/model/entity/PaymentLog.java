@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Entity
@@ -35,7 +32,7 @@ public class PaymentLog extends BaseEntity {
     private Payment payment;
 
     @NotNull
-    @Column(name = "payment_status", nullable = false, length = 20)
+    @Column(name = "payment_status", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
 
     @Column(name = "message")

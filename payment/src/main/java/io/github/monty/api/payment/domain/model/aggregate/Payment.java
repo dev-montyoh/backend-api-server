@@ -1,5 +1,6 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
+import io.github.monty.api.payment.common.constants.PaymentCancelType;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.constants.StaticValues;
@@ -15,8 +16,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +30,24 @@ import java.util.List;
 @Table(name = "payment")
 public class Payment extends BaseEntity {
 
+    /**
+     * 인증 후 결제 데이터 생성
+     */
     public Payment(String paymentNo, PaymentCreateCommand paymentCreateCommand) {
+        this.transactionId = null;
         this.paymentNo = paymentNo;
-        this.requestAmount = paymentCreateCommand.getPrice();
-        this.approvalAmount = 0L;
-        this.cancelAmount = 0L;
+        this.amount = paymentCreateCommand.getPrice();
         this.orderNo = paymentCreateCommand.getOrderNo();
         this.paymentServiceProviderType = paymentCreateCommand.getPaymentServiceProviderType();
-        this.paymentStatus = PaymentStatus.AUTHENTICATED;
+        this.approvalDateTime = null;
+        this.buyerPhone = null;
+        this.buyerEmail = null;
         this.paymentLogList = new ArrayList<>();
+        this.paymentCancelList = new ArrayList<>();
 
-        PaymentLog paymentLog = new PaymentLog(this, paymentStatus, StaticValues.DEFAULT_MESSAGE_AUTHENTICATED);
-        this.paymentLogList.add(paymentLog);
+        //  인증 상태
+        this.paymentStatus = PaymentStatus.AUTHENTICATED;
+        this.addPaymentLog(PaymentStatus.AUTHENTICATED, StaticValues.DEFAULT_MESSAGE_AUTHENTICATED);
     }
 
     @Id
@@ -50,9 +57,17 @@ public class Payment extends BaseEntity {
     private String paymentId;
 
     @Size(max = 100)
+    @Column(name = "transaction_id", length = 100)
+    private String transactionId;
+
+    @Size(max = 100)
     @NotNull
     @Column(name = "payment_no", nullable = false, length = 100)
     private String paymentNo;
+
+    @NotNull
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
     @Size(max = 100)
     @NotNull
@@ -64,27 +79,11 @@ public class Payment extends BaseEntity {
     private PaymentServiceProviderType paymentServiceProviderType;
 
     @NotNull
-    @Column(name = "payment_status", nullable = false, length = 20)
+    @Column(name = "payment_status", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
-
-    @NotNull
-    @Column(name = "request_amount", nullable = false)
-    private Long requestAmount;
-
-    @NotNull
-    @Column(name = "approval_amount", nullable = false)
-    private Long approvalAmount;
 
     @Column(name = "approval_date_time")
     private LocalDateTime approvalDateTime;
-
-    @NotNull
-    @Column(name = "cancel_amount", nullable = false)
-    private Long cancelAmount;
-
-    @Size(max = 100)
-    @Column(name = "transaction_id", length = 100)
-    private String transactionId;
 
     @Size(max = 20)
     @Column(name = "buyer_phone", length = 20)
@@ -97,6 +96,9 @@ public class Payment extends BaseEntity {
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PaymentLog> paymentLogList;
 
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PaymentCancel> paymentCancelList;
+
     /**
      * 결제 승인 결과를 반영한다.
      *
@@ -104,12 +106,16 @@ public class Payment extends BaseEntity {
      */
     public void applyPaymentApprovalResult(PaymentApprovalResultVO paymentApprovalResultVO) {
         this.transactionId = paymentApprovalResultVO.getTid();
-        this.approvalAmount = paymentApprovalResultVO.isApproved() ? paymentApprovalResultVO.getAmount() : 0;
-        this.approvalDateTime = paymentApprovalResultVO.isApproved() ? paymentApprovalResultVO.getApprovalDateTime() : null;
         this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
-        PaymentStatus paymentStatus = paymentApprovalResultVO.isApproved() ? PaymentStatus.APPROVED : PaymentStatus.DECLINED;
-        this.changePaymentStatus(paymentStatus, paymentApprovalResultVO.getResultMessage());
+        if (paymentApprovalResultVO.isApproved()) {
+            this.approvalDateTime = paymentApprovalResultVO.getApprovalDateTime();
+            this.paymentStatus = PaymentStatus.APPROVED;
+            this.addPaymentLog(PaymentStatus.APPROVED, paymentApprovalResultVO.getResultMessage());
+        } else {
+            this.paymentStatus = PaymentStatus.DECLINED;
+            this.addPaymentLog(PaymentStatus.DECLINED, paymentApprovalResultVO.getResultMessage());
+        }
     }
 
     /**
@@ -118,9 +124,14 @@ public class Payment extends BaseEntity {
      * @param paymentCancelResultVO 결제 취소 요청 결과 VO
      */
     public void applyPaymentCancelResult(PaymentCancelResultVO paymentCancelResultVO) {
-        this.cancelAmount = paymentCancelResultVO.isCancelled() ? this.approvalAmount : 0L;
-        PaymentStatus paymentStatus = paymentCancelResultVO.isCancelled() ? PaymentStatus.CANCELED : PaymentStatus.CANCELED_FAIL;
-        this.changePaymentStatus(paymentStatus, paymentCancelResultVO.getResultMessage());
+        if (paymentCancelResultVO.isCancelled()) {
+            this.addPaymentCancel(PaymentCancelType.CANCEL, this.amount, paymentCancelResultVO.getReason());
+            this.paymentStatus = PaymentStatus.CANCELED;
+            this.addPaymentLog(PaymentStatus.CANCELED, paymentCancelResultVO.getResultMessage());
+        } else {
+            this.paymentStatus = PaymentStatus.CANCELED_FAIL;
+            this.addPaymentLog(PaymentStatus.CANCELED_FAIL, paymentCancelResultVO.getResultMessage());
+        }
     }
 
     /**
@@ -129,19 +140,53 @@ public class Payment extends BaseEntity {
      * @param paymentNetworkCancelResultVO 결제 망취소 요청 결과 VO
      */
     public void applyPaymentNetworkCancelResult(PaymentNetworkCancelResultVO paymentNetworkCancelResultVO) {
-        PaymentStatus paymentStatus = paymentNetworkCancelResultVO.isNetworkCanceled() ? PaymentStatus.NETWORK_CANCELED : PaymentStatus.NETWORK_CANCELED_FAIL;
-        this.changePaymentStatus(paymentStatus, paymentNetworkCancelResultVO.getResultMessage());
+        if (paymentNetworkCancelResultVO.isNetworkCanceled()) {
+            this.addPaymentCancel(PaymentCancelType.NETWORK_CANCEL, this.amount, StaticValues.DEFAULT_REASON_PAYMENT_NETWORK_CANCEL);
+            this.paymentStatus = PaymentStatus.NETWORK_CANCELED;
+            this.addPaymentLog(PaymentStatus.NETWORK_CANCELED, paymentNetworkCancelResultVO.getResultMessage());
+        } else {
+            this.paymentStatus = PaymentStatus.NETWORK_CANCELED_FAIL;
+            this.addPaymentLog(PaymentStatus.NETWORK_CANCELED_FAIL, paymentNetworkCancelResultVO.getResultMessage());
+        }
     }
 
     /**
-     * 해당 결제의 상태를 변경한다.
+     * 해당 결제의 실패 처리를 한다.
+     *
+     * @param paymentStatus 결제 실패 상태
+     */
+    public void applyPaymentFail(PaymentStatus paymentStatus) {
+        String message = StringUtils.EMPTY;
+        message = switch (paymentStatus) {
+            case DECLINED -> StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR;
+            case CANCELED_FAIL -> StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR;
+            case NETWORK_CANCELED_FAIL -> StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR;
+            default -> message;
+        };
+        this.paymentStatus = paymentStatus;
+        this.addPaymentLog(paymentStatus, message);
+    }
+
+    /**
+     * 해당 결제의 변경 이력을 추가한다.
      *
      * @param paymentStatus 결제 상태
      * @param message       메시지
      */
-    public void changePaymentStatus(PaymentStatus paymentStatus, String message) {
-        this.paymentStatus = paymentStatus;
+    private void addPaymentLog(PaymentStatus paymentStatus, String message) {
         PaymentLog paymentLog = new PaymentLog(this, paymentStatus, message);
         this.paymentLogList.add(paymentLog);
+    }
+
+    /**
+     * 해당 결제의 취소 내역을 추가한다.
+     *
+     * @param paymentCancelType 결제 취소 타입
+     * @param amount            취소 금액
+     * @param reason            취소 사유
+     */
+    private void addPaymentCancel(PaymentCancelType paymentCancelType, long amount, String reason) {
+        PaymentCancel paymentCancel = new PaymentCancel(this, amount, reason, paymentCancelType);
+        this.paymentCancelList.add(paymentCancel);
     }
 }

@@ -16,4 +16,6 @@ public class StaticValues {
     public static final String DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR = "[ERROR] 결제 취소에 실패했습니다.";
 
     public static final String DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR = "[ERROR] 결제 취소에 실패했습니다.";
+
+    public static final String DEFAULT_REASON_PAYMENT_NETWORK_CANCEL = "결제 망 취소";
 }

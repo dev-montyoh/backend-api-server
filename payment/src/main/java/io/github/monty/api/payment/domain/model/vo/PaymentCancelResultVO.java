@@ -12,5 +12,7 @@ public class PaymentCancelResultVO {
 
     private String resultMessage;
 
-    private LocalDateTime cancelDateTIme;
+    private LocalDateTime cancelDateTime;
+
+    private String reason;
 }

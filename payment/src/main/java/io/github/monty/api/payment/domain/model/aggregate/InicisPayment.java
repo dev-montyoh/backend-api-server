@@ -1,11 +1,7 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
-import io.github.monty.api.payment.common.constants.PaymentStatus;
-import io.github.monty.api.payment.common.constants.StaticValues;
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResultVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelResultVO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -22,12 +18,16 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "payment_inicis")
 public class InicisPayment extends Payment {
 
+    /**
+     * 인증 후 결제 데이터 생성
+     */
     public InicisPayment(String paymentNo, InicisPaymentCreateCommand inicisPaymentCreateCommand) {
         super(paymentNo, inicisPaymentCreateCommand);
         this.authToken = inicisPaymentCreateCommand.getAuthToken();
         this.idcCode = inicisPaymentCreateCommand.getIdcCode();
         this.approvalUrl = inicisPaymentCreateCommand.getApprovalUrl();
         this.networkCancelUrl = inicisPaymentCreateCommand.getNetworkCancelUrl();
+        this.paymentMethod = null;
     }
 
     @NotNull
@@ -61,44 +61,5 @@ public class InicisPayment extends Payment {
     public void applyPaymentApprovalResult(InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO) {
         this.paymentMethod = inicisPaymentApprovalResultVO.getPaymentMethod();
         super.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
-    }
-
-    /**
-     * 해당 결제를 승인 실패 처리한다.
-     */
-    public void applyPaymentApprovalFail() {
-        super.changePaymentStatus(PaymentStatus.DECLINED, StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR);
-    }
-
-    /**
-     * 결제 취소 결과를 반영한다.
-     *
-     * @param inicisPaymentCancelResultVO 이니시스 결제 취소 요청 결과 VO
-     */
-    public void applyPaymentCancelResult(InicisPaymentCancelResultVO inicisPaymentCancelResultVO) {
-        super.applyPaymentCancelResult(inicisPaymentCancelResultVO);
-    }
-
-    /**
-     * 현재 결제를 취소 실패 처리한다.
-     */
-    public void applyPaymentCancelFail() {
-        super.changePaymentStatus(PaymentStatus.CANCELED_FAIL, StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR);
-    }
-
-    /**
-     * 결제 망취소 결과를 반영한다.
-     *
-     * @param inicisPaymentNetworkCancelResultVO 이니시스 결제 망취소 요청 결과 VO
-     */
-    public void applyPaymentNetworkCancelResult(InicisPaymentNetworkCancelResultVO inicisPaymentNetworkCancelResultVO) {
-        super.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
-    }
-
-    /**
-     * 해당 결제를 망취소 실패 처리한다.
-     */
-    public void applyPaymentNetworkCancelFail() {
-        super.changePaymentStatus(PaymentStatus.NETWORK_CANCELED_FAIL, StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 @Converter(autoApply = true)
-public class PaymentStatusConverter  implements AttributeConverter<PaymentStatus, String> {
+public class PaymentStatusConverter implements AttributeConverter<PaymentStatus, String> {
     @Override
     public String convertToDatabaseColumn(PaymentStatus attribute) {
         return !ObjectUtils.isEmpty(attribute) ? attribute.getCode() : null;

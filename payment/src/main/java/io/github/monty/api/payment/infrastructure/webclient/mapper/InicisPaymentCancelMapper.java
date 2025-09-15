@@ -15,9 +15,9 @@ import java.time.format.DateTimeFormatter;
 public interface InicisPaymentCancelMapper {
 
     @Mapping(target = "resultMessage", source = "inicisPaymentCancelResponse.resultMsg")
-    @Mapping(target = "cancelDateTIme", ignore = true)
+    @Mapping(target = "cancelDateTime", ignore = true)
     @Mapping(target = "cashReceiptCancelNo", source = "inicisPaymentCancelResponse.cshrCancelNum")
-    InicisPaymentCancelResultVO mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, boolean isCancelled);
+    InicisPaymentCancelResultVO mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, boolean isCancelled, String reason);
 
     @AfterMapping
     default void afterMapping(@MappingTarget InicisPaymentCancelResultVO.InicisPaymentCancelResultVOBuilder<InicisPaymentCancelResultVO, ?> builder,
@@ -25,6 +25,6 @@ public interface InicisPaymentCancelMapper {
         String dateTimeString = inicisPaymentCancelResponse.getCancelDate() + inicisPaymentCancelResponse.getCancelTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
-        builder.cancelDateTIme(dateTime);
+        builder.cancelDateTime(dateTime);
     }
 }

@@ -45,7 +45,8 @@ public class PaymentCommandService {
         try {
             paymentStrategy.approvePayment(paymentNo);
         } catch (Exception e) {
-//            paymentStrategy.networkCancelPayment(paymentNo);
+            PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
+            paymentCancelStrategy.networkCancelPayment(paymentNo);
             throw e;
         }
     }

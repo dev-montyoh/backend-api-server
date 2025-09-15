@@ -3,6 +3,7 @@ package io.github.monty.api.payment.domain.service;
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
+import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.aggregate.InicisPayment;
@@ -113,7 +114,7 @@ public class InicisPaymentStrategy implements PaymentStrategy {
             inicisPayment.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
         } catch (Exception exception) {
             //  승인 실패 처리
-            inicisPayment.applyPaymentApprovalFail();
+            inicisPayment.applyPaymentFail(PaymentStatus.DECLINED);
             log.error(exception.getMessage(), exception);
             throw exception;
         } finally {
