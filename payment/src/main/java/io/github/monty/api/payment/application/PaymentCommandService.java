@@ -6,10 +6,10 @@ import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
 import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.service.PaymentCancelStrategy;
-import io.github.monty.api.payment.domain.service.PaymentCancelStrategyFactory;
-import io.github.monty.api.payment.domain.service.PaymentStrategy;
-import io.github.monty.api.payment.domain.service.PaymentStrategyFactory;
+import io.github.monty.api.payment.domain.service.PaymentCancelService;
+import io.github.monty.api.payment.domain.service.PaymentCancelServiceFactory;
+import io.github.monty.api.payment.domain.service.PaymentService;
+import io.github.monty.api.payment.domain.service.PaymentServiceFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentCommandService {
 
-    private final PaymentStrategyFactory paymentStrategyFactory;
-    private final PaymentCancelStrategyFactory paymentCancelStrategyFactory;
+    private final PaymentServiceFactory paymentServiceFactory;
+    private final PaymentCancelServiceFactory paymentCancelServiceFactory;
 
     /**
      * 결제 정보 생성
@@ -28,8 +28,8 @@ public class PaymentCommandService {
      */
     @Transactional
     public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentCreateCommand.getPaymentServiceProviderType());
-        return paymentStrategy.createPayment(paymentCreateCommand);
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentCreateCommand.getPaymentServiceProviderType());
+        return paymentService.createPayment(paymentCreateCommand);
     }
 
     /**
@@ -41,12 +41,12 @@ public class PaymentCommandService {
     @Transactional(noRollbackFor = ApplicationException.class)
     public void approvePayment(PaymentApprovalCommand paymentApprovalCommand) {
         String paymentNo = paymentApprovalCommand.getPaymentNo();
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentNo);
+        PaymentService paymentService = paymentServiceFactory.getPaymentService(paymentNo);
         try {
-            paymentStrategy.approvePayment(paymentNo);
+            paymentService.approvePayment(paymentNo);
         } catch (Exception e) {
-            PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
-            paymentCancelStrategy.networkCancelPayment(paymentNo);
+            PaymentCancelService paymentCancelService = paymentCancelServiceFactory.getPaymentCancelService(paymentNo);
+            paymentCancelService.networkCancelPayment(paymentNo);
             throw e;
         }
     }
@@ -59,8 +59,8 @@ public class PaymentCommandService {
     @Transactional(noRollbackFor = ApplicationException.class)
     public void cancelPayment(PaymentCancelCommand paymentCancelCommand) {
         String paymentNo = paymentCancelCommand.getPaymentNo();
-        PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
-        paymentCancelStrategy.cancelPayment(paymentCancelCommand);
+        PaymentCancelService paymentCancelService = paymentCancelServiceFactory.getPaymentCancelService(paymentNo);
+        paymentCancelService.cancelPayment(paymentCancelCommand);
     }
 
     /**
@@ -70,7 +70,7 @@ public class PaymentCommandService {
      */
     public void networkCancelPayment(PaymentNetworkCancelCommand paymentNetworkCancelCommand) {
         String paymentNo = paymentNetworkCancelCommand.getPaymentNo();
-        PaymentCancelStrategy paymentCancelStrategy = paymentCancelStrategyFactory.getPaymentCancelStrategy(paymentNo);
-        paymentCancelStrategy.networkCancelPayment(paymentNo);
+        PaymentCancelService paymentCancelService = paymentCancelServiceFactory.getPaymentCancelService(paymentNo);
+        paymentCancelService.networkCancelPayment(paymentNo);
     }
 }

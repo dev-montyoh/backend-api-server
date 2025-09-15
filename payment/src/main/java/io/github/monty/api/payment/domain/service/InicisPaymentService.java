@@ -26,7 +26,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InicisPaymentStrategy implements PaymentStrategy {
+public class InicisPaymentService implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final InicisRepository inicisRepository;
@@ -36,10 +36,6 @@ public class InicisPaymentStrategy implements PaymentStrategy {
 
     private static final String APPROVAL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
     private static final String APPROVAL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
-
-    private static final String NETWORK_CANCEL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
-    private static final String NETWORK_CANCEL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
-
 
     @Value("${payment.type.inicis.sign.key}")
     private String inicisSignKey;

@@ -1,10 +1,9 @@
 package io.github.monty.api.payment.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 
-public interface PaymentCancelStrategy {
+public interface PaymentCancelService {
     /**
      * 해당 전략의 결제 타입을 반환한다.
      *

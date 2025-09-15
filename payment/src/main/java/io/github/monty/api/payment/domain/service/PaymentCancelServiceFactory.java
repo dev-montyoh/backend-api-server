@@ -16,14 +16,14 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentStrategyFactory {
+public class PaymentCancelServiceFactory {
     private final PaymentRepository paymentRepository;
-    private final Map<PaymentServiceProviderType, PaymentStrategy> paymentServiceMap = new EnumMap<>(PaymentServiceProviderType.class);
+    private final Map<PaymentServiceProviderType, PaymentCancelService> paymentCancelServiceMap = new EnumMap<>(PaymentServiceProviderType.class);
 
     @Autowired
-    public PaymentStrategyFactory(List<PaymentStrategy> paymentStrategyList, PaymentRepository paymentRepository) {
-        for (PaymentStrategy paymentStrategy : paymentStrategyList) {
-            paymentServiceMap.put(paymentStrategy.getPaymentType(), paymentStrategy);
+    public PaymentCancelServiceFactory(List<PaymentCancelService> paymentCancelServiceList, PaymentRepository paymentRepository) {
+        for (PaymentCancelService paymentCancelService : paymentCancelServiceList) {
+            paymentCancelServiceMap.put(paymentCancelService.getPaymentType(), paymentCancelService);
         }
         this.paymentRepository = paymentRepository;
     }
@@ -34,11 +34,11 @@ public class PaymentStrategyFactory {
      * @param PaymentServiceProviderType 결제 서비스 제공자 타입
      * @return 결제 전략
      */
-    public PaymentStrategy getPaymentStrategy(PaymentServiceProviderType PaymentServiceProviderType) {
-        if (!paymentServiceMap.containsKey(PaymentServiceProviderType)) {
+    public PaymentCancelService getPaymentCancelService(PaymentServiceProviderType PaymentServiceProviderType) {
+        if (!paymentCancelServiceMap.containsKey(PaymentServiceProviderType)) {
             throw new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_SERVICE);
         }
-        return paymentServiceMap.get(PaymentServiceProviderType);
+        return paymentCancelServiceMap.get(PaymentServiceProviderType);
     }
 
     /**
@@ -47,9 +47,9 @@ public class PaymentStrategyFactory {
      * @param paymentNo 결제 번호
      * @return 결제 전략
      */
-    public PaymentStrategy getPaymentStrategy(String paymentNo) {
+    public PaymentCancelService getPaymentCancelService(String paymentNo) {
         Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
         Payment payment = paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
-        return this.getPaymentStrategy(payment.getPaymentServiceProviderType());
+        return this.getPaymentCancelService(payment.getPaymentServiceProviderType());
     }
 }

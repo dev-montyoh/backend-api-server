@@ -9,7 +9,7 @@ import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public interface PaymentStrategy {
+public interface PaymentService {
 
     //  기본 결제 번호 Prefix
     String PAYMENT_NO_PREFIX = "PAY";
