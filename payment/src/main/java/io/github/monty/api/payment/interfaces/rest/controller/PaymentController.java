@@ -60,7 +60,7 @@ public class PaymentController {
 
     @Operation(summary = "결제 내역 조회 요청 API", description = "결제 내역 목록을 조회한다.")
     @GetMapping(value = PaymentApiUrl.Payment.PAYMENT_LIST_URL)
-    public ResponseEntity<PaymentListResponse> requestPaymentList(@RequestParam(required = false, defaultValue = "1") long page,
+    public ResponseEntity<PaymentListResponse> requestPaymentList(@RequestParam(required = false, defaultValue = "0") long page,
                                                                   @RequestParam(required = false, defaultValue = "50") long pageSize) {
         PaymentListQuery paymentListQuery = paymentListQueryMapper.mapToQuery(page, pageSize);
         PaymentListResultVO paymentListResultVO = paymentQueryService.requestPaymentList(paymentListQuery);
