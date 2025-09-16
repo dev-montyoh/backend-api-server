@@ -1,4 +1,4 @@
-package io.github.monty.api.payment.domain.service;
+package io.github.monty.api.payment.domain.strategy;
 
 import io.github.monty.api.payment.common.constants.ErrorCode;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
@@ -16,14 +16,14 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentCancelServiceFactory {
+public class PaymentCancelStrategyFactory {
     private final PaymentRepository paymentRepository;
-    private final Map<PaymentServiceProviderType, PaymentCancelService> paymentCancelServiceMap = new EnumMap<>(PaymentServiceProviderType.class);
+    private final Map<PaymentServiceProviderType, PaymentCancelStrategy> paymentCancelStrategyMap = new EnumMap<>(PaymentServiceProviderType.class);
 
     @Autowired
-    public PaymentCancelServiceFactory(List<PaymentCancelService> paymentCancelServiceList, PaymentRepository paymentRepository) {
-        for (PaymentCancelService paymentCancelService : paymentCancelServiceList) {
-            paymentCancelServiceMap.put(paymentCancelService.getPaymentType(), paymentCancelService);
+    public PaymentCancelStrategyFactory(List<PaymentCancelStrategy> paymentCancelStrategyList, PaymentRepository paymentRepository) {
+        for (PaymentCancelStrategy paymentCancelStrategy : paymentCancelStrategyList) {
+            paymentCancelStrategyMap.put(paymentCancelStrategy.getPaymentType(), paymentCancelStrategy);
         }
         this.paymentRepository = paymentRepository;
     }
@@ -34,11 +34,11 @@ public class PaymentCancelServiceFactory {
      * @param PaymentServiceProviderType 결제 서비스 제공자 타입
      * @return 결제 전략
      */
-    public PaymentCancelService getPaymentCancelService(PaymentServiceProviderType PaymentServiceProviderType) {
-        if (!paymentCancelServiceMap.containsKey(PaymentServiceProviderType)) {
+    public PaymentCancelStrategy getPaymentCancelStrategy(PaymentServiceProviderType PaymentServiceProviderType) {
+        if (!paymentCancelStrategyMap.containsKey(PaymentServiceProviderType)) {
             throw new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_SERVICE);
         }
-        return paymentCancelServiceMap.get(PaymentServiceProviderType);
+        return paymentCancelStrategyMap.get(PaymentServiceProviderType);
     }
 
     /**
@@ -47,9 +47,9 @@ public class PaymentCancelServiceFactory {
      * @param paymentNo 결제 번호
      * @return 결제 전략
      */
-    public PaymentCancelService getPaymentCancelService(String paymentNo) {
+    public PaymentCancelStrategy getPaymentCancelStrategy(String paymentNo) {
         Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
         Payment payment = paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
-        return this.getPaymentCancelService(payment.getPaymentServiceProviderType());
+        return this.getPaymentCancelStrategy(payment.getPaymentServiceProviderType());
     }
 }

@@ -1,4 +1,4 @@
-package io.github.monty.api.payment.domain.service;
+package io.github.monty.api.payment.domain.strategy;
 
 import io.github.monty.api.payment.common.constants.EncryptType;
 import io.github.monty.api.payment.common.constants.ErrorCode;
@@ -31,7 +31,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InicisPaymentCancelService implements PaymentCancelService {
+public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
 
     private final PaymentRepository paymentRepository;
     private final InicisRepository inicisRepository;

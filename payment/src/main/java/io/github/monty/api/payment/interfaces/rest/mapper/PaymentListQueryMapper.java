@@ -1,0 +1,26 @@
+package io.github.monty.api.payment.interfaces.rest.mapper;
+
+import io.github.monty.api.payment.common.configuration.MapStructConfig;
+import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResponse;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.PageRequest;
+
+@Mapper(config = MapStructConfig.class)
+public interface PaymentListQueryMapper {
+
+    @Mapping(target = "pageable", ignore = true)
+    PaymentListQuery mapToQuery(Long page, Long pageSize);
+
+    @AfterMapping
+    default void mapToQuery(@MappingTarget PaymentListQuery.PaymentListQueryBuilder builder, Long page, Long pageSize) {
+        PageRequest pageRequest = PageRequest.of(page.intValue(), pageSize.intValue());
+        builder.pageable(pageRequest);
+    }
+
+    PaymentListResponse mapToDto(PaymentListResultVO paymentListResultVO);
+}

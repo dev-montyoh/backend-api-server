@@ -21,4 +21,6 @@ public class PaymentApprovalResultVO {
     private String buyerPhoneNumber;
 
     private String buyerEmail;
+
+    private String paymentMethod;
 }

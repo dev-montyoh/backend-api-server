@@ -1,13 +1,18 @@
 package io.github.monty.api.payment.interfaces.rest.controller;
 
 import io.github.monty.api.payment.application.PaymentCommandService;
+import io.github.monty.api.payment.application.PaymentQueryService;
 import io.github.monty.api.payment.domain.model.command.PaymentApprovalCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
+import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
 import io.github.monty.api.payment.interfaces.rest.dto.PaymentCancelRequest;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResponse;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentApprovalCommandMapper;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentCancelCommandMapper;
+import io.github.monty.api.payment.interfaces.rest.mapper.PaymentListQueryMapper;
 import io.github.monty.api.payment.interfaces.rest.mapper.PaymentNetworkCancelCommandMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,10 +26,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Payment API", description = "결제 API")
 public class PaymentController {
 
+    private final PaymentListQueryMapper paymentListQueryMapper;
     private final PaymentApprovalCommandMapper paymentApprovalCommandMapper;
     private final PaymentCancelCommandMapper paymentCancelCommandMapper;
     private final PaymentNetworkCancelCommandMapper paymentNetworkCancelCommandMapper;
 
+    private final PaymentQueryService paymentQueryService;
     private final PaymentCommandService paymentCommandService;
 
     @Operation(summary = "결제 승인 요청 API", description = "해당 결제 번호의 승인 요청을 한다.")
@@ -49,5 +56,15 @@ public class PaymentController {
         PaymentNetworkCancelCommand paymentNetworkCancelCommand = paymentNetworkCancelCommandMapper.mapToCommand(paymentNo);
         paymentCommandService.networkCancelPayment(paymentNetworkCancelCommand);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "결제 내역 조회 요청 API", description = "결제 내역 목록을 조회한다.")
+    @GetMapping(value = PaymentApiUrl.Payment.PAYMENT_LIST_URL)
+    public ResponseEntity<PaymentListResponse> requestPaymentList(@RequestParam(required = false, defaultValue = "1") long page,
+                                                                  @RequestParam(required = false, defaultValue = "50") long pageSize) {
+        PaymentListQuery paymentListQuery = paymentListQueryMapper.mapToQuery(page, pageSize);
+        PaymentListResultVO paymentListResultVO = paymentQueryService.requestPaymentList(paymentListQuery);
+        PaymentListResponse paymentListResponse = paymentListQueryMapper.mapToDto(paymentListResultVO);
+        return ResponseEntity.ok().body(paymentListResponse);
     }
 }

@@ -1,58 +1,32 @@
 package io.github.monty.api.payment.domain.service;
 
-import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
-import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
-import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
+import io.github.monty.api.payment.domain.model.aggregate.Payment;
+import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
+import io.github.monty.api.payment.domain.repository.PaymentRepository;
+import io.github.monty.api.payment.infrastructure.jpa.mapper.PaymentListMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
-import java.util.UUID;
+import java.util.List;
 
-public interface PaymentService {
+@Service
+@RequiredArgsConstructor
+public class PaymentService {
+    private final PaymentRepository paymentRepository;
 
-    //  기본 결제 번호 Prefix
-    String PAYMENT_NO_PREFIX = "PAY";
+    private final PaymentListMapper paymentListMapper;
 
     /**
-     * 해당 결제 수단의 결제번호 생성 후 반환
+     * 결제 데이터 목록 조회
      *
-     * @param PaymentServiceProviderType 결제 타입
-     * @return 결제 번호
+     * @param paymentListQuery 결제 목록 조회 요청 쿼리
+     * @return 조회 결과
      */
-    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
-        UUID uuid = UUID.randomUUID();
-        String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
-        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
+    public PaymentListResultVO requestPaymentList(PaymentListQuery paymentListQuery) {
+        Page<Payment> paymentPage = paymentRepository.findAll(paymentListQuery.pageable());
+        List<Payment> paymentList = paymentPage.get().toList();
+        return paymentListMapper.mapToVo(paymentList, (long) paymentPage.getTotalPages(), paymentPage.getTotalElements());
     }
-
-    /**
-     * 해당 전략의 결제 타입을 반환한다.
-     *
-     * @return 결제 타입
-     */
-    PaymentServiceProviderType getPaymentType();
-
-    /**
-     * 해당 결제의 결제 인증 정보를 반환한다.
-     *
-     * @param paymentSignatureQuery 결제 인증 정보 조회 요청 쿼리
-     * @return 결제 인증 정보 생성 결과
-     */
-    PaymentSignatureResultVO getSignature(PaymentSignatureQuery paymentSignatureQuery);
-
-    /**
-     * 해당 결제 정보를 바탕으로 결제 데이터를 저장한다.
-     *
-     * @param paymentCreateCommand 결제 인증 정보 저장 요청 Command
-     * @return 저장 결과
-     */
-    PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
-
-    /**
-     * 해당 결제번호에 해당되는 결제를 승인 요청한다.
-     *
-     * @param paymentNo 결제 번호
-     */
-    void approvePayment(String paymentNo);
 }

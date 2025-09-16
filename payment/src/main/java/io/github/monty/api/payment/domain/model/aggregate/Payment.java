@@ -82,6 +82,10 @@ public class Payment extends BaseEntity {
     @Column(name = "payment_status", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
 
+    @Size(max = 20)
+    @Column(name = "payment_method", length = 20)
+    private String paymentMethod;
+
     @Column(name = "approval_date_time")
     private LocalDateTime approvalDateTime;
 
@@ -108,6 +112,7 @@ public class Payment extends BaseEntity {
         this.transactionId = paymentApprovalResultVO.getTid();
         this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
+        this.paymentMethod = paymentApprovalResultVO.getPaymentMethod();
         if (paymentApprovalResultVO.isApproved()) {
             this.approvalDateTime = paymentApprovalResultVO.getApprovalDateTime();
             this.paymentStatus = PaymentStatus.APPROVED;

@@ -27,7 +27,6 @@ public class InicisPayment extends Payment {
         this.idcCode = inicisPaymentCreateCommand.getIdcCode();
         this.approvalUrl = inicisPaymentCreateCommand.getApprovalUrl();
         this.networkCancelUrl = inicisPaymentCreateCommand.getNetworkCancelUrl();
-        this.paymentMethod = null;
     }
 
     @NotNull
@@ -49,17 +48,12 @@ public class InicisPayment extends Payment {
     @Column(name = "network_cancel_url", nullable = false)
     private String networkCancelUrl;
 
-    @Size(max = 20)
-    @Column(name = "payment_method", length = 20)
-    private String paymentMethod;
-
     /**
      * 결제 승인 결과를 반영한다.
      *
      * @param inicisPaymentApprovalResultVO 이니시스 승인 요청 결과 VO
      */
     public void applyPaymentApprovalResult(InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO) {
-        this.paymentMethod = inicisPaymentApprovalResultVO.getPaymentMethod();
         super.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
     }
 }

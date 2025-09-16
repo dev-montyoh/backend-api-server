@@ -1,9 +1,9 @@
-package io.github.monty.api.payment.domain.service;
+package io.github.monty.api.payment.domain.strategy;
 
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 
-public interface PaymentCancelService {
+public interface PaymentCancelStrategy {
     /**
      * 해당 전략의 결제 타입을 반환한다.
      *
