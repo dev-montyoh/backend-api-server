@@ -17,7 +17,7 @@ public interface InicisPaymentCancelMapper {
     @Mapping(target = "resultMessage", source = "inicisPaymentCancelResponse.resultMsg")
     @Mapping(target = "cancelDateTime", ignore = true)
     @Mapping(target = "cashReceiptCancelNo", source = "inicisPaymentCancelResponse.cshrCancelNum")
-    InicisPaymentCancelResultVO mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, boolean isCancelled, String reason);
+    InicisPaymentCancelResultVO mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, boolean isCancelled, boolean isAlreadyCancelled, String reason);
 
     @AfterMapping
     default void afterMapping(@MappingTarget InicisPaymentCancelResultVO.InicisPaymentCancelResultVOBuilder<InicisPaymentCancelResultVO, ?> builder,

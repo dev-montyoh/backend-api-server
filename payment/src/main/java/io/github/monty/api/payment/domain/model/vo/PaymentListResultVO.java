@@ -7,7 +7,7 @@ import java.util.List;
 @Builder
 public record PaymentListResultVO(List<Payment> paymentList, long totalPages, long totalCount) {
     @Builder
-    public record Payment(String orderNo, long amount, String paymentStatus, String approvalDateTime,
-                          String paymentServiceProviderType) {
+    public record Payment(String paymentNo, String orderNo, long amount, long cancelAmount, String paymentStatus, String approvalDateTime,
+                          String paymentServiceProviderType, String createdAt) {
     }
 }

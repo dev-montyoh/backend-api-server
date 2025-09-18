@@ -14,11 +14,11 @@ import org.springframework.data.domain.PageRequest;
 public interface PaymentListQueryMapper {
 
     @Mapping(target = "pageable", ignore = true)
-    PaymentListQuery mapToQuery(Long page, Long pageSize);
+    PaymentListQuery mapToQuery(Long page, Long size);
 
     @AfterMapping
-    default void mapToQuery(@MappingTarget PaymentListQuery.PaymentListQueryBuilder builder, Long page, Long pageSize) {
-        PageRequest pageRequest = PageRequest.of(page.intValue(), pageSize.intValue());
+    default void mapToQuery(@MappingTarget PaymentListQuery.PaymentListQueryBuilder builder, Long page, Long size) {
+        PageRequest pageRequest = PageRequest.of(page.intValue() - 1, size.intValue());
         builder.pageable(pageRequest);
     }
 

@@ -37,6 +37,8 @@ public class InicisRepositoryImpl implements InicisRepository {
 
     private static final String INICIS_RESPONSE_DATA_FORMAT = "JSON";
     private static final String INICIS_RESPONSE_RESULT_CODE_SUCCESS = "0000";
+    private static final String INICIS_RESPONSE_RESULT_CODE_ALREADY_CANCELLED = "500626";
+
     private static final String INICIS_RESPONSE_RESULT_CODE_SUCCESS_V2 = "00";
 
     /**
@@ -94,7 +96,8 @@ public class InicisRepositoryImpl implements InicisRepository {
         }
 
         boolean isCancelled = inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS_V2);
-        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, isCancelled, inicisPaymentCancelRequestVO.getData().getMsg());
+        boolean isAlreadyCancelled = inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_ALREADY_CANCELLED);
+        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, isCancelled, isAlreadyCancelled, inicisPaymentCancelRequestVO.getData().getMsg());
     }
 
     /**

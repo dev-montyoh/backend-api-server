@@ -11,7 +11,7 @@ public enum PaymentStatus {
     APPROVED("APPROVED", "승인 성공"),
     DECLINED("DECLINED", "승인 실패"),
     CANCELED("CANCELED", "결제 취소"),
-    CANCELED_FAIL("CANCELED_FAIL", "결제 취소"),
+    CANCELED_FAIL("CANCELED_FAIL", "결제 취소 실패"),
     NETWORK_CANCELED("NETWORK_CANCELED", "결제 망취소"),
     NETWORK_CANCELED_FAIL("NETWORK_CANCELED_FAIL", "결제 망취소 실패"),
     ;
