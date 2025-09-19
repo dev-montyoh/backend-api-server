@@ -8,10 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 public class PaymentCancelResultVO {
-    private boolean isCancelled;
-
-    private boolean isAlreadyCancelled;
-
     private String resultMessage;
 
     private LocalDateTime cancelDateTime;

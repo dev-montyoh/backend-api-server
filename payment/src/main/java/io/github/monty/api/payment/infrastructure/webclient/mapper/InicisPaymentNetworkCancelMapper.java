@@ -15,5 +15,5 @@ public interface InicisPaymentNetworkCancelMapper {
     @Mapping(target = "mid", source = "inicisPaymentNetworkCancelResponse.mid")
     @Mapping(target = "moid", source = "inicisPaymentNetworkCancelResponse.moid")
     @Mapping(target = "selectPayMethod", source = "inicisPaymentNetworkCancelResponse.selectPayMethod")
-    InicisPaymentNetworkCancelResultVO mapToVo(InicisPaymentNetworkCancelResponse inicisPaymentNetworkCancelResponse, boolean isNetworkCanceled);
+    InicisPaymentNetworkCancelResultVO mapToVo(InicisPaymentNetworkCancelResponse inicisPaymentNetworkCancelResponse);
 }

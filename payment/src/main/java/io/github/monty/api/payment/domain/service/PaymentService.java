@@ -1,7 +1,6 @@
 package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.common.constants.ErrorCode;
-import io.github.monty.api.payment.common.constants.PaymentStatus;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
 import io.github.monty.api.payment.domain.model.aggregate.PaymentCancel;

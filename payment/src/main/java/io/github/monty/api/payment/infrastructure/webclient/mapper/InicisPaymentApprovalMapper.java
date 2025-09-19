@@ -22,7 +22,7 @@ public interface InicisPaymentApprovalMapper {
     @Mapping(target = "approvalDateTime", ignore = true)
     @Mapping(target = "buyerPhoneNumber", source = "inicisPaymentApprovalResponse.buyerTel")
     @Mapping(target = "resultMessage", source = "inicisPaymentApprovalResponse.resultMsg")
-    InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse, boolean isApproved);
+    InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse);
 
     @AfterMapping
     default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder builder,

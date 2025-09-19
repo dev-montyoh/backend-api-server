@@ -68,8 +68,11 @@ public class InicisRepositoryImpl implements InicisRepository {
             throw new ApplicationException(ErrorCode.ERROR_PAYMENT_APPROVAL);
         }
 
-        boolean isApproved = inicisPaymentApprovalResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS);
-        return inicisPaymentApprovalMapper.mapToVo(inicisPaymentApprovalResponse, isApproved);
+        if (!inicisPaymentApprovalResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS)) {
+            throw new ApplicationException(ErrorCode.ERROR_PAYMENT_APPROVAL, inicisPaymentApprovalResponse.getResultMsg());
+        }
+
+        return inicisPaymentApprovalMapper.mapToVo(inicisPaymentApprovalResponse);
     }
 
     /**
@@ -95,9 +98,15 @@ public class InicisRepositoryImpl implements InicisRepository {
             throw new ApplicationException(ErrorCode.ERROR_PAYMENT_APPROVAL);
         }
 
-        boolean isCancelled = inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS_V2);
-        boolean isAlreadyCancelled = inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_ALREADY_CANCELLED);
-        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, isCancelled, isAlreadyCancelled, inicisPaymentCancelRequestVO.getData().getMsg());
+        if (inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_ALREADY_CANCELLED)) {
+            throw new ApplicationException(ErrorCode.ERROR_ALREADY_CANCELLED, inicisPaymentCancelResponse.getResultMsg());
+        }
+
+        if (!inicisPaymentCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS_V2)) {
+            throw new ApplicationException(ErrorCode.ERROR_PAYMENT_CANCEL, inicisPaymentCancelResponse.getResultMsg());
+        }
+
+        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, inicisPaymentCancelRequestVO.getData().getMsg());
     }
 
     /**
@@ -127,7 +136,10 @@ public class InicisRepositoryImpl implements InicisRepository {
             throw new ApplicationException(ErrorCode.ERROR_PAYMENT_APPROVAL);
         }
 
-        boolean isNetworkCanceled = inicisPaymentNetworkCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS);
-        return inicisPaymentNetworkCancelMapper.mapToVo(inicisPaymentNetworkCancelResponse, isNetworkCanceled);
+        if (!inicisPaymentNetworkCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS)) {
+            throw new ApplicationException(ErrorCode.ERROR_PAYMENT_CANCEL, inicisPaymentNetworkCancelResponse.getResultMsg());
+        }
+
+        return inicisPaymentNetworkCancelMapper.mapToVo(inicisPaymentNetworkCancelResponse);
     }
 }

@@ -1,9 +1,6 @@
 package io.github.monty.api.payment.domain.strategy;
 
-import io.github.monty.api.payment.common.constants.EncryptType;
-import io.github.monty.api.payment.common.constants.ErrorCode;
-import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
-import io.github.monty.api.payment.common.constants.PaymentStatus;
+import io.github.monty.api.payment.common.constants.*;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.ConvertUtils;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
@@ -20,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -76,9 +74,14 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
             InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO = new InicisPaymentNetworkCancelRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getNetworkCancelUrl());
             InicisPaymentNetworkCancelResultVO inicisPaymentNetworkCancelResultVO = inicisRepository.requestNetworkCancelPayment(inicisPaymentNetworkCancelRequestVO);
             inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
+        } catch (ApplicationException applicationException) {
+            String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR;
+            inicisPayment.applyPaymentFail(PaymentStatus.NETWORK_CANCELED_FAIL, errorMessage);
+            log.error(applicationException.getMessage(), applicationException);
+            throw applicationException;
         } catch (Exception exception) {
             //  망취소 실패 처리
-            inicisPayment.applyPaymentFail(PaymentStatus.NETWORK_CANCELED_FAIL);
+            inicisPayment.applyPaymentFail(PaymentStatus.NETWORK_CANCELED_FAIL, StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR);
             log.error(exception.getMessage(), exception);
             throw exception;
         } finally {
@@ -105,11 +108,18 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
             InicisPaymentCancelRequestVO inicisPaymentCancelRequestVO = new InicisPaymentCancelRequestVO(inicisMid, CANCEL_TYPE, timestamp, "127.0.0.1", hashData, data);
             InicisPaymentCancelResultVO inicisPaymentCancelResultVO = inicisRepository.requestCancelPayment(inicisPaymentCancelRequestVO);
             inicisPayment.applyPaymentCancelResult(inicisPaymentCancelResultVO);
+        } catch (ApplicationException applicationException) {
+            String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR;
+            inicisPayment.applyPaymentFail(PaymentStatus.CANCELED_FAIL, errorMessage);
+            log.error(applicationException.getMessage(), applicationException);
+            throw applicationException;
         } catch (Exception exception) {
             //  결제 취소 실패 처리
-            inicisPayment.applyPaymentFail(PaymentStatus.CANCELED_FAIL);
+            inicisPayment.applyPaymentFail(PaymentStatus.CANCELED_FAIL, StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR);
             log.error(exception.getMessage(), exception);
             throw exception;
+        } finally {
+            paymentRepository.save(inicisPayment);
         }
     }
 

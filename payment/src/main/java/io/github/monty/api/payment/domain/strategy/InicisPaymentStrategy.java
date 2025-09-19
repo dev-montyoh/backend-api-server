@@ -1,9 +1,6 @@
 package io.github.monty.api.payment.domain.strategy;
 
-import io.github.monty.api.payment.common.constants.EncryptType;
-import io.github.monty.api.payment.common.constants.ErrorCode;
-import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
-import io.github.monty.api.payment.common.constants.PaymentStatus;
+import io.github.monty.api.payment.common.constants.*;
 import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.aggregate.InicisPayment;
@@ -19,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -36,10 +34,6 @@ public class InicisPaymentStrategy implements PaymentStrategy {
 
     private static final String APPROVAL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
     private static final String APPROVAL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
-
-    private static final String NETWORK_CANCEL_SIGNATURE_MESSAGE_FORMAT = "authToken={0}&timestamp={1}";
-    private static final String NETWORK_CANCEL_VERIFICATION_MESSAGE_FORMAT = "authToken={0}&signKey={1}&timestamp={2}";
-
 
     @Value("${payment.type.inicis.sign.key}")
     private String inicisSignKey;
@@ -112,9 +106,14 @@ public class InicisPaymentStrategy implements PaymentStrategy {
             InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
             InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
             inicisPayment.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
+        } catch (ApplicationException applicationException) {
+            String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR;
+            inicisPayment.applyPaymentFail(PaymentStatus.DECLINED, errorMessage);
+            log.error(applicationException.getMessage(), applicationException);
+            throw applicationException;
         } catch (Exception exception) {
             //  승인 실패 처리
-            inicisPayment.applyPaymentFail(PaymentStatus.DECLINED);
+            inicisPayment.applyPaymentFail(PaymentStatus.DECLINED, StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR);
             log.error(exception.getMessage(), exception);
             throw exception;
         } finally {

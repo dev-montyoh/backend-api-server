@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 public class PaymentApprovalResultVO {
-    private boolean isApproved;
-
     private String resultMessage;
 
     private String tid;

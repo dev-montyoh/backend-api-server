@@ -6,8 +6,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class PaymentNetworkCancelResultVO {
-    private boolean isNetworkCanceled;
-
     private String resultMessage;
 
     private long timestamp;

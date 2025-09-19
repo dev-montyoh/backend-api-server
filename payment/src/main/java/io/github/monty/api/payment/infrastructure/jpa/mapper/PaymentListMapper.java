@@ -5,14 +5,14 @@ import io.github.monty.api.payment.domain.model.aggregate.Payment;
 import io.github.monty.api.payment.domain.model.aggregate.PaymentCancel;
 import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
 import org.mapstruct.*;
+import org.springframework.util.ObjectUtils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Mapper(config = MapStructConfig.class)
 public interface PaymentListMapper {
-
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Mapping(target = "paymentList", source = "paymentList", qualifiedByName = "PaymentListResultVO.Payment")
     PaymentListResultVO mapToVo(List<Payment> paymentList, Long totalPages, Long totalCount);
@@ -28,7 +28,9 @@ public interface PaymentListMapper {
     @AfterMapping
     default void mapToVoPayment(@MappingTarget PaymentListResultVO.Payment.PaymentBuilder builder, Payment payment) {
         builder.paymentStatus(payment.getPaymentStatus().getDescription());
-        builder.approvalDateTime(payment.getApprovalDateTime().format(dateTimeFormatter));
+        if (!ObjectUtils.isEmpty(payment.getApprovalDateTime())) {
+            builder.approvalDateTime(payment.getApprovalDateTime().format(dateTimeFormatter));
+        }
         builder.paymentServiceProviderType(payment.getPaymentServiceProviderType().getCode());
         builder.createdAt(payment.getCreatedAt().format(dateTimeFormatter));
         //  총 취소 금액

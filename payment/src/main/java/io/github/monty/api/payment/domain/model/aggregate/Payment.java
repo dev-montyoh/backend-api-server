@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -113,14 +112,9 @@ public class Payment extends BaseEntity {
         this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
         this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
         this.paymentMethod = paymentApprovalResultVO.getPaymentMethod();
-        if (paymentApprovalResultVO.isApproved()) {
-            this.approvalDateTime = paymentApprovalResultVO.getApprovalDateTime();
-            this.paymentStatus = PaymentStatus.APPROVED;
-            this.addPaymentLog(PaymentStatus.APPROVED, paymentApprovalResultVO.getResultMessage());
-        } else {
-            this.paymentStatus = PaymentStatus.DECLINED;
-            this.addPaymentLog(PaymentStatus.DECLINED, paymentApprovalResultVO.getResultMessage());
-        }
+        this.approvalDateTime = paymentApprovalResultVO.getApprovalDateTime();
+        this.paymentStatus = PaymentStatus.APPROVED;
+        this.addPaymentLog(PaymentStatus.APPROVED, paymentApprovalResultVO.getResultMessage());
     }
 
     /**
@@ -129,14 +123,9 @@ public class Payment extends BaseEntity {
      * @param paymentCancelResultVO 결제 취소 요청 결과 VO
      */
     public void applyPaymentCancelResult(PaymentCancelResultVO paymentCancelResultVO) {
-        if (paymentCancelResultVO.isCancelled()) {
-            this.addPaymentCancel(PaymentCancelType.CANCEL, this.amount, paymentCancelResultVO.getReason());
-            this.paymentStatus = PaymentStatus.CANCELED;
-            this.addPaymentLog(PaymentStatus.CANCELED, paymentCancelResultVO.getResultMessage());
-        } else {
-            this.paymentStatus = PaymentStatus.CANCELED_FAIL;
-            this.addPaymentLog(PaymentStatus.CANCELED_FAIL, paymentCancelResultVO.getResultMessage());
-        }
+        this.addPaymentCancel(PaymentCancelType.CANCEL, this.amount, paymentCancelResultVO.getReason());
+        this.paymentStatus = PaymentStatus.CANCELED;
+        this.addPaymentLog(PaymentStatus.CANCELED, paymentCancelResultVO.getResultMessage());
     }
 
     /**
@@ -145,14 +134,9 @@ public class Payment extends BaseEntity {
      * @param paymentNetworkCancelResultVO 결제 망취소 요청 결과 VO
      */
     public void applyPaymentNetworkCancelResult(PaymentNetworkCancelResultVO paymentNetworkCancelResultVO) {
-        if (paymentNetworkCancelResultVO.isNetworkCanceled()) {
-            this.addPaymentCancel(PaymentCancelType.NETWORK_CANCEL, this.amount, StaticValues.DEFAULT_REASON_PAYMENT_NETWORK_CANCEL);
-            this.paymentStatus = PaymentStatus.NETWORK_CANCELED;
-            this.addPaymentLog(PaymentStatus.NETWORK_CANCELED, paymentNetworkCancelResultVO.getResultMessage());
-        } else {
-            this.paymentStatus = PaymentStatus.NETWORK_CANCELED_FAIL;
-            this.addPaymentLog(PaymentStatus.NETWORK_CANCELED_FAIL, paymentNetworkCancelResultVO.getResultMessage());
-        }
+        this.addPaymentCancel(PaymentCancelType.NETWORK_CANCEL, this.amount, StaticValues.DEFAULT_REASON_PAYMENT_NETWORK_CANCEL);
+        this.paymentStatus = PaymentStatus.NETWORK_CANCELED;
+        this.addPaymentLog(PaymentStatus.NETWORK_CANCELED, paymentNetworkCancelResultVO.getResultMessage());
     }
 
     /**
@@ -160,16 +144,9 @@ public class Payment extends BaseEntity {
      *
      * @param paymentStatus 결제 실패 상태
      */
-    public void applyPaymentFail(PaymentStatus paymentStatus) {
-        String message = StringUtils.EMPTY;
-        message = switch (paymentStatus) {
-            case DECLINED -> StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR;
-            case CANCELED_FAIL -> StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR;
-            case NETWORK_CANCELED_FAIL -> StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR;
-            default -> message;
-        };
+    public void applyPaymentFail(PaymentStatus paymentStatus, String errorMessage) {
         this.paymentStatus = paymentStatus;
-        this.addPaymentLog(paymentStatus, message);
+        this.addPaymentLog(paymentStatus, errorMessage);
     }
 
     /**

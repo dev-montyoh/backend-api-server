@@ -22,6 +22,7 @@ public enum ErrorCode {
     NOT_EXIST_PAYMENT_DATA("0102", "결제 데이터가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     ERROR_PAYMENT_APPROVAL("0103", "결제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     ERROR_ALREADY_CANCELLED("0104", "결제가 이미 취소되었습니다.", HttpStatus.NOT_ACCEPTABLE),
+    ERROR_PAYMENT_CANCEL("0105", "결제 취소에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     //  암호화 오류
     NOT_EXIST_ENCRYPT_ALGORITHM("0004", "서버 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR)
