@@ -4,12 +4,13 @@
 SERVICE_NAME=$1
 PROFILE=$2
 VERSION=$3
+REGISTRY_OWNER=$4
 
 ##  Docker 이미지 빌드
 echo "Building Docker image..."
 docker build -f Dockerfile  \
--t monty082/backend-api-server-"$SERVICE_NAME":"$VERSION" \
--t monty082/backend-api-server-"$SERVICE_NAME":latest  \
+-t ghcr.io/"$REGISTRY_OWNER"/backend-api-server-"$SERVICE_NAME":"$VERSION" \
+-t ghcr.io/"$REGISTRY_OWNER"/backend-api-server-"$SERVICE_NAME":latest  \
 --build-arg SERVICE_NAME="$SERVICE_NAME"  \
 --build-arg PROFILE="$PROFILE"  \
 --build-arg VERSION="$VERSION"  \

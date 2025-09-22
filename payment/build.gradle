@@ -1,0 +1,133 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'io.github.monty.api'
+version = '0.0.1'
+
+java {
+    sourceCompatibility = '19'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+
+    //  lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    //	DB
+    implementation 'com.mysql:mysql-connector-j'
+    implementation 'com.h2database:h2'
+
+    //	JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //	flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    //  mapstruct
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+
+    //  Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //  feign
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    //  Spring Doc
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0"
+
+    //  Encrypt
+    implementation "commons-codec:commons-codec:1.19.0"
+
+    //  WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+}
+
+ext {
+    set('springCloudVersion', "2023.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+//  TEST SETUP
+//test {
+//    outputs.upToDateWhen {false}
+//    useJUnitPlatform()
+//    systemProperty('spring.profiles.active', 'test')
+//    finalizedBy('jacocoTestReport')
+//}
+//
+//jacoco {
+//    toolVersion = '0.8.11'
+//}
+//
+//jacocoTestReport {
+//    dependsOn 'test'
+//    finalizedBy 'jacocoTestCoverageVerification'
+//
+//    afterEvaluate {
+//        classDirectories.setFrom(files(classDirectories.files.collect {
+//            fileTree(dir: it, exclude: [
+//                    "**/PaymentApplication.class"
+//            ])
+//        }))
+//    }
+//}
+//
+//jacocoTestCoverageVerification {
+//    dependsOn 'jacocoTestReport'
+//
+//    violationRules {
+//        rule {
+//            limit {
+//                counter = 'LINE'
+//                minimum = 0.8
+//            }
+//        }
+//    }
+//
+//    afterEvaluate {
+//        classDirectories.setFrom(files(classDirectories.files.collect {
+//            fileTree(dir: it, exclude: [
+//                    "**/UserApplication.class",
+//            ])
+//        }))
+//    }
+//}
+//  TEST SETUP END
+
+tasks.register('LOCAL_DATABASE_SETUP', Exec) {
+    description 'build local develop setup on docker'
+    commandLine 'docker-compose', '-f', "${projectDir}/src/main/resources/db/docker-compose.yaml", '-p', 'backend-api-server-local', 'up', '-d'
+    group 'build setup'
+}
+
+//  배포 파일명 변경
+bootJar {
+    archiveFileName = "${project.name}.jar"
+}

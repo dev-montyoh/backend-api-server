@@ -5,3 +5,6 @@ whitelist:
     - "/user/monitor/healthcheck"
     - "/content/v1/public/**"
     - "/auth/v1/token"
+
+    # 결제 테스트로 인한 임시 처리
+    - "/payment/**"

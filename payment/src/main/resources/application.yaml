@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: local # default profile
+    group:
+      local:
+        - common
+      test:
+        - common
+      develop:
+        - common
+
+---
+# ??
+spring:
+  config:
+    activate:
+      on-profile: common
+  flyway:
+    enabled: false
+server:
+  port: 8084
+
+springdoc:
+  swagger-ui:
+    path: /docs

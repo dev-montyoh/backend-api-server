@@ -1,0 +1,20 @@
+services:
+  content_local_database:
+    platform: linux/x86_64
+    image: mysql:8.0
+    hostname: payment_local_database
+    container_name: payment_local_database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: welcome
+    ports:
+      - "43306:3306"
+    volumes:
+      - ./database/schema_initialisation.sql:/docker-entrypoint-initdb.d/schema_initialisation.sql
+    command:
+      - --default-time-zone=Asia/Seoul
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --character-set-client-handshake=0
+      - --slow-query-log=ON
+      - --long-query-time=2
