@@ -13,5 +13,5 @@ public interface PaymentRepository {
     Payment save(Payment payment);
 
     @EntityGraph(attributePaths = {"paymentCancelList"})
-    Page<Payment> findAll(Pageable pageable);
+    Page<Payment> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

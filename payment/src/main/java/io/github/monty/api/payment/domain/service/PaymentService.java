@@ -31,7 +31,7 @@ public class PaymentService {
      * @return 조회 결과
      */
     public PaymentListResultVO requestPaymentList(PaymentListQuery paymentListQuery) {
-        Page<Payment> paymentPage = paymentRepository.findAll(paymentListQuery.pageable());
+        Page<Payment> paymentPage = paymentRepository.findAllByOrderByCreatedAtDesc(paymentListQuery.pageable());
         List<Payment> paymentList = paymentPage.get().toList();
         return paymentListMapper.mapToVo(paymentList, (long) paymentPage.getTotalPages(), paymentPage.getTotalElements());
     }
