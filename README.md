@@ -9,9 +9,9 @@
 
 ---
 ## Getting Started
-깃허브 URL: https://github.com/Monty-Oh/backend-api-server  
-HTTPS clone URL: https://github.com/Monty-Oh/backend-api-server.git  
-깃허브 프로젝트 URL: https://github.com/users/Monty-Oh/projects/4
+깃허브 URL: https://github.com/dev-montyoh/backend-api-server  
+HTTPS clone URL: https://github.com/dev-montyoh/backend-api-server.git  
+깃허브 프로젝트 URL: https://github.com/users/dev-montyoh/projects/4
 
 ---
 ## Local 개발 환경 구성
