@@ -1,5 +1,3 @@
-version: '0.1'
-
 services:
   content_local_database:
     platform: linux/x86_64

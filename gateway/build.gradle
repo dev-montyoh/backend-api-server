@@ -5,8 +5,8 @@ plugins {
     id 'jacoco'
 }
 
-group = 'com.inmemory'
-version = '0.0.1-SNAPSHOT'
+group = 'io.github.monty.api'
+version = '0.0.1'
 
 java {
     sourceCompatibility = '17'
@@ -96,5 +96,5 @@ jacocoTestCoverageVerification {
 
 //  배포 파일명 변경
 bootJar {
-    archiveFileName = "${rootProject.name}.jar"
+    archiveFileName = "${project.name}.jar"
 }

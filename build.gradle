@@ -1,4 +1,4 @@
-tasks.register('ROOT_PROJECT_INFO') {
+tasks.register('rootProjectInfo') {
     doLast {
         println("This is the root project. Use this to manage submodules.")
     }
