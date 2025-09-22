@@ -24,6 +24,7 @@ jobs:
       - name: Log in to Github Registry
         uses: docker/login-action@v3
         with:
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
