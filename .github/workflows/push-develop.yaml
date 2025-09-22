@@ -24,8 +24,9 @@ jobs:
       - name: Log in to Github Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # JDK 설정
       - name: Setup JDK 19
