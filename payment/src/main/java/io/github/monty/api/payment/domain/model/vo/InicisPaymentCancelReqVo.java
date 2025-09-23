@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class InicisPaymentCancelRequestVO {
+public class InicisPaymentCancelReqVo {
 
     private String mid;
 

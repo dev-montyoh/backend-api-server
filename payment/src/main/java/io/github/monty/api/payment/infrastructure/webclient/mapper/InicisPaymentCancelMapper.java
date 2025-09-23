@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.infrastructure.webclient.mapper;
 
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResultVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResVo;
 import io.github.monty.api.payment.infrastructure.webclient.dto.InicisPaymentCancelResponse;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -17,10 +17,10 @@ public interface InicisPaymentCancelMapper {
     @Mapping(target = "resultMessage", source = "inicisPaymentCancelResponse.resultMsg")
     @Mapping(target = "cancelDateTime", ignore = true)
     @Mapping(target = "cashReceiptCancelNo", source = "inicisPaymentCancelResponse.cshrCancelNum")
-    InicisPaymentCancelResultVO mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, String reason);
+    InicisPaymentCancelResVo mapToVo(InicisPaymentCancelResponse inicisPaymentCancelResponse, String reason);
 
     @AfterMapping
-    default void afterMapping(@MappingTarget InicisPaymentCancelResultVO.InicisPaymentCancelResultVOBuilder builder,
+    default void afterMapping(@MappingTarget InicisPaymentCancelResVo.InicisPaymentCancelResVoBuilder builder,
                               InicisPaymentCancelResponse inicisPaymentCancelResponse) {
         String dateTimeString = inicisPaymentCancelResponse.getCancelDate() + inicisPaymentCancelResponse.getCancelTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");

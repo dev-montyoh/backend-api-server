@@ -1,7 +1,6 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "payment_inicis")
+@Table(name = "PAYMENT_INICIS")
 public class InicisPayment extends Payment {
 
     /**
@@ -30,30 +29,21 @@ public class InicisPayment extends Payment {
     }
 
     @NotNull
-    @Column(name = "auth_token", nullable = false)
+    @Column(name = "AUTH_TOKEN", nullable = false)
     private String authToken;
 
     @Size(max = 20)
     @NotNull
-    @Column(name = "idc_code", nullable = false, length = 20)
+    @Column(name = "IDC_CODE", nullable = false, length = 20)
     private String idcCode;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "approval_url", nullable = false)
+    @Column(name = "APPROVAL_URL", nullable = false)
     private String approvalUrl;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "network_cancel_url", nullable = false)
+    @Column(name = "NETWORK_CANCEL_URL", nullable = false)
     private String networkCancelUrl;
-
-    /**
-     * 결제 승인 결과를 반영한다.
-     *
-     * @param inicisPaymentApprovalResultVO 이니시스 승인 요청 결과 VO
-     */
-    public void applyPaymentApprovalResult(InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO) {
-        super.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
-    }
 }

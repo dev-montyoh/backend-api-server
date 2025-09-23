@@ -7,9 +7,9 @@ import io.github.monty.api.payment.common.constants.StaticValues;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.entity.BaseEntity;
 import io.github.monty.api.payment.domain.model.entity.PaymentLog;
-import io.github.monty.api.payment.domain.model.vo.PaymentApprovalResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentCancelResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentNetworkCancelResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentApprovalResVo;
+import io.github.monty.api.payment.domain.model.vo.PaymentCancelResVo;
+import io.github.monty.api.payment.domain.model.vo.PaymentNetworkCancelResVo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,7 +26,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "payment")
+@Table(name = "PAYMENT")
 public class Payment extends BaseEntity {
 
     /**
@@ -51,49 +51,49 @@ public class Payment extends BaseEntity {
 
     @Id
     @Size(max = 100)
-    @Column(name = "payment_id", nullable = false, length = 100)
+    @Column(name = "PAYMENT_ID", nullable = false, length = 100)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String paymentId;
 
     @Size(max = 100)
-    @Column(name = "transaction_id", length = 100)
+    @Column(name = "TRANSACTION_ID", length = 100)
     private String transactionId;
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "payment_no", nullable = false, length = 100)
+    @Column(name = "PAYMENT_NO", nullable = false, length = 100)
     private String paymentNo;
 
     @NotNull
-    @Column(name = "amount", nullable = false)
+    @Column(name = "AMOUNT", nullable = false)
     private Long amount;
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "order_no", nullable = false, length = 100)
+    @Column(name = "ORDER_NO", nullable = false, length = 100)
     private String orderNo;
 
     @NotNull
-    @Column(name = "pg_provider_type", nullable = false, length = 50)
+    @Column(name = "PG_PROVIDER_TYPE", nullable = false, length = 50)
     private PaymentServiceProviderType paymentServiceProviderType;
 
     @NotNull
-    @Column(name = "payment_status", nullable = false, length = 50)
+    @Column(name = "PAYMENT_STATUS", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
 
     @Size(max = 20)
-    @Column(name = "payment_method", length = 20)
+    @Column(name = "PAYMENT_METHOD", length = 20)
     private String paymentMethod;
 
-    @Column(name = "approval_date_time")
+    @Column(name = "APPROVAL_DATE_TIME")
     private LocalDateTime approvalDateTime;
 
     @Size(max = 20)
-    @Column(name = "buyer_phone", length = 20)
+    @Column(name = "BUYER_PHONE", length = 20)
     private String buyerPhone;
 
     @Size(max = 50)
-    @Column(name = "buyer_email", length = 50)
+    @Column(name = "BUYER_EMAIL", length = 50)
     private String buyerEmail;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -105,38 +105,38 @@ public class Payment extends BaseEntity {
     /**
      * 결제 승인 결과를 반영한다.
      *
-     * @param paymentApprovalResultVO 승인 요청 결과 VO
+     * @param paymentApprovalResVo 승인 요청 결과 VO
      */
-    public void applyPaymentApprovalResult(PaymentApprovalResultVO paymentApprovalResultVO) {
-        this.transactionId = paymentApprovalResultVO.getTid();
-        this.buyerPhone = paymentApprovalResultVO.getBuyerPhoneNumber();
-        this.buyerEmail = paymentApprovalResultVO.getBuyerEmail();
-        this.paymentMethod = paymentApprovalResultVO.getPaymentMethod();
-        this.approvalDateTime = paymentApprovalResultVO.getApprovalDateTime();
+    public void applyPaymentApprovalResult(PaymentApprovalResVo paymentApprovalResVo) {
+        this.transactionId = paymentApprovalResVo.getTid();
+        this.buyerPhone = paymentApprovalResVo.getBuyerPhoneNumber();
+        this.buyerEmail = paymentApprovalResVo.getBuyerEmail();
+        this.paymentMethod = paymentApprovalResVo.getPaymentMethod();
+        this.approvalDateTime = paymentApprovalResVo.getApprovalDateTime();
         this.paymentStatus = PaymentStatus.APPROVED;
-        this.addPaymentLog(PaymentStatus.APPROVED, paymentApprovalResultVO.getResultMessage());
+        this.addPaymentLog(PaymentStatus.APPROVED, paymentApprovalResVo.getResultMessage());
     }
 
     /**
      * 결제 취소 결과를 반영한다.
      *
-     * @param paymentCancelResultVO 결제 취소 요청 결과 VO
+     * @param paymentCancelResVo 결제 취소 요청 결과 VO
      */
-    public void applyPaymentCancelResult(PaymentCancelResultVO paymentCancelResultVO) {
-        this.addPaymentCancel(PaymentCancelType.CANCEL, this.amount, paymentCancelResultVO.getReason());
+    public void applyPaymentCancelResult(PaymentCancelResVo paymentCancelResVo) {
+        this.addPaymentCancel(PaymentCancelType.CANCEL, this.amount, paymentCancelResVo.getReason());
         this.paymentStatus = PaymentStatus.CANCELED;
-        this.addPaymentLog(PaymentStatus.CANCELED, paymentCancelResultVO.getResultMessage());
+        this.addPaymentLog(PaymentStatus.CANCELED, paymentCancelResVo.getResultMessage());
     }
 
     /**
      * 결제 망취소 결과를 반영한다.
      *
-     * @param paymentNetworkCancelResultVO 결제 망취소 요청 결과 VO
+     * @param paymentNetworkCancelResVo 결제 망취소 요청 결과 VO
      */
-    public void applyPaymentNetworkCancelResult(PaymentNetworkCancelResultVO paymentNetworkCancelResultVO) {
+    public void applyPaymentNetworkCancelResult(PaymentNetworkCancelResVo paymentNetworkCancelResVo) {
         this.addPaymentCancel(PaymentCancelType.NETWORK_CANCEL, this.amount, StaticValues.DEFAULT_REASON_PAYMENT_NETWORK_CANCEL);
         this.paymentStatus = PaymentStatus.NETWORK_CANCELED;
-        this.addPaymentLog(PaymentStatus.NETWORK_CANCELED, paymentNetworkCancelResultVO.getResultMessage());
+        this.addPaymentLog(PaymentStatus.NETWORK_CANCELED, paymentNetworkCancelResVo.getResultMessage());
     }
 
     /**

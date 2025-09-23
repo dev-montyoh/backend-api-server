@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class PaymentNetworkCancelResultVO {
+public class PaymentNetworkCancelResVo {
     private String resultMessage;
 
     private long timestamp;

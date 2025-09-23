@@ -10,13 +10,17 @@ spring:
         - common
 
 ---
-# ??
+# 공통
 spring:
   config:
     activate:
       on-profile: common
   flyway:
     enabled: false
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 server:
   port: 8084
 

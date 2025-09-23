@@ -10,10 +10,10 @@ public interface InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentApprovalRequestVO 결제 승인 요청 VO
+     * @param inicisPaymentApprovalReqVo 결제 승인 요청 VO
      * @return 승인 요청 결과 VO
      */
-    InicisPaymentApprovalResultVO requestApprovePayment(InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO);
+    InicisPaymentApprovalResVo requestApprovePayment(InicisPaymentApprovalReqVo inicisPaymentApprovalReqVo);
 
     /**
      * 이니시스로 결제 취소 요청을 한다.
@@ -21,10 +21,10 @@ public interface InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentCancelRequestVO 결제 취소 요청 VO
+     * @param inicisPaymentCancelReqVo 결제 취소 요청 VO
      * @return 취소 요청 결과 VO
      */
-    InicisPaymentCancelResultVO requestCancelPayment(InicisPaymentCancelRequestVO inicisPaymentCancelRequestVO);
+    InicisPaymentCancelResVo requestCancelPayment(InicisPaymentCancelReqVo inicisPaymentCancelReqVo);
 
     /**
      * 이니시스로 결제 망취소 요청을 한다.
@@ -32,8 +32,8 @@ public interface InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentNetworkCancelRequestVO 결제 망취소 요청 VO
+     * @param inicisPaymentNetworkCancelReqVo 결제 망취소 요청 VO
      * @return 망취소 요청 결과 VO
      */
-    InicisPaymentNetworkCancelResultVO requestNetworkCancelPayment(InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO);
+    InicisPaymentNetworkCancelResVo requestNetworkCancelPayment(InicisPaymentNetworkCancelReqVo inicisPaymentNetworkCancelReqVo);
 }

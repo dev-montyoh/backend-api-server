@@ -7,10 +7,10 @@ import io.github.monty.api.payment.common.utils.EncryptUtils;
 import io.github.monty.api.payment.domain.model.aggregate.InicisPayment;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelRequestVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResultVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelRequestVO;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelResultVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelReqVo;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentCancelResVo;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelReqVo;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentNetworkCancelResVo;
 import io.github.monty.api.payment.domain.repository.InicisRepository;
 import io.github.monty.api.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -71,9 +71,9 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
             String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
             String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
 
-            InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO = new InicisPaymentNetworkCancelRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getNetworkCancelUrl());
-            InicisPaymentNetworkCancelResultVO inicisPaymentNetworkCancelResultVO = inicisRepository.requestNetworkCancelPayment(inicisPaymentNetworkCancelRequestVO);
-            inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResultVO);
+            InicisPaymentNetworkCancelReqVo inicisPaymentNetworkCancelReqVo = new InicisPaymentNetworkCancelReqVo(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getNetworkCancelUrl());
+            InicisPaymentNetworkCancelResVo inicisPaymentNetworkCancelResVo = inicisRepository.requestNetworkCancelPayment(inicisPaymentNetworkCancelReqVo);
+            inicisPayment.applyPaymentNetworkCancelResult(inicisPaymentNetworkCancelResVo);
         } catch (ApplicationException applicationException) {
             String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_NETWORK_CANCEL_ERROR;
             inicisPayment.applyPaymentFail(PaymentStatus.NETWORK_CANCELED_FAIL, errorMessage);
@@ -100,14 +100,14 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
         try {
             LocalDateTime localDateTime = LocalDateTime.now();
             String timestamp = localDateTime.format(DateTimeFormatter.ofPattern(CANCEL_TIMESTAMP_PATTERN));
-            InicisPaymentCancelRequestVO.Data data = new InicisPaymentCancelRequestVO.Data(inicisPayment.getTransactionId(), paymentCancelCommand.getCancelReason());
+            InicisPaymentCancelReqVo.Data data = new InicisPaymentCancelReqVo.Data(inicisPayment.getTransactionId(), paymentCancelCommand.getCancelReason());
             String plainTextHashData = String.format(CANCEL_HASH_DATA_FORMAT, iniApiKey, inicisMid, CANCEL_TYPE, timestamp, ConvertUtils.convertToString(data));
 
             String hashData = EncryptUtils.encrypt(plainTextHashData, EncryptType.SHA512);
 
-            InicisPaymentCancelRequestVO inicisPaymentCancelRequestVO = new InicisPaymentCancelRequestVO(inicisMid, CANCEL_TYPE, timestamp, "127.0.0.1", hashData, data);
-            InicisPaymentCancelResultVO inicisPaymentCancelResultVO = inicisRepository.requestCancelPayment(inicisPaymentCancelRequestVO);
-            inicisPayment.applyPaymentCancelResult(inicisPaymentCancelResultVO);
+            InicisPaymentCancelReqVo inicisPaymentCancelReqVo = new InicisPaymentCancelReqVo(inicisMid, CANCEL_TYPE, timestamp, "127.0.0.1", hashData, data);
+            InicisPaymentCancelResVo inicisPaymentCancelResVo = inicisRepository.requestCancelPayment(inicisPaymentCancelReqVo);
+            inicisPayment.applyPaymentCancelResult(inicisPaymentCancelResVo);
         } catch (ApplicationException applicationException) {
             String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_CANCEL_ERROR;
             inicisPayment.applyPaymentFail(PaymentStatus.CANCELED_FAIL, errorMessage);

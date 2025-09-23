@@ -5,6 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class PaymentCreateResultVO {
-    private String paymentNo;
+public class InicisPaymentCancelResVo extends PaymentCancelResVo {
+    private String cashReceiptCancelNo;
 }

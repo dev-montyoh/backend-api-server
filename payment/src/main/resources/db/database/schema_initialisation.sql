@@ -1,4 +1,4 @@
-create database `payment`;
-create user `payment` identified by 'welcome';
-grant all privileges on `payment`.* to `payment`;
-grant super on *.* to `payment`;
+CREATE DATABASE `PAYMENT`;
+CREATE USER `payment` IDENTIFIED BY 'welcome';
+GRANT ALL PRIVILEGES ON `PAYMENT`.* TO `payment`;
+GRANT SUPER ON *.* TO `payment`;

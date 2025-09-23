@@ -2,7 +2,7 @@ package io.github.monty.api.payment.domain.service;
 
 import io.github.monty.api.payment.domain.model.entity.PaymentLog;
 import io.github.monty.api.payment.domain.model.query.PaymentLogListQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentLogListResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentLogListResVo;
 import io.github.monty.api.payment.domain.repository.PaymentLogCustomRepository;
 import io.github.monty.api.payment.infrastructure.jpa.mapper.PaymentLogListMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class PaymentLogService {
 
     private final PaymentLogListMapper paymentLogListMapper;
 
-    public PaymentLogListResultVO requestPaymentLogList(PaymentLogListQuery paymentLogListQuery) {
+    public PaymentLogListResVo requestPaymentLogList(PaymentLogListQuery paymentLogListQuery) {
         Page<PaymentLog> paymentLogPage = paymentLogCustomRepository.findAll(paymentLogListQuery.paymentNo(), paymentLogListQuery.pageable());
         List<PaymentLog> paymentLogList = paymentLogPage.get().toList();
         return paymentLogListMapper.mapToVo(paymentLogList, (long) paymentLogPage.getTotalPages(), paymentLogPage.getTotalElements());

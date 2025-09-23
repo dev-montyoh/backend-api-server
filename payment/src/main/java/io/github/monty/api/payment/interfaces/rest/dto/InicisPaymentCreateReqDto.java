@@ -1,6 +1,6 @@
 package io.github.monty.api.payment.interfaces.rest.dto;
 
-public record InicisPaymentCreateRequest(
+public record InicisPaymentCreateReqDto(
         String mid,
         String orderNo,
         String authToken,

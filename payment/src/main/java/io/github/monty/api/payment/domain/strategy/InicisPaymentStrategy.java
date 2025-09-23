@@ -54,7 +54,7 @@ public class InicisPaymentStrategy implements PaymentStrategy {
      * @return 결제 인증 정보 생성 결과
      */
     @Override
-    public PaymentSignatureResultVO getSignature(PaymentSignatureQuery paymentSignatureQuery) {
+    public PaymentSignatureResVo getSignature(PaymentSignatureQuery paymentSignatureQuery) {
         InicisPaymentSignatureQuery inicisPaymentSignatureQuery = (InicisPaymentSignatureQuery) paymentSignatureQuery;
         long timestamp = System.currentTimeMillis();
 
@@ -65,7 +65,7 @@ public class InicisPaymentStrategy implements PaymentStrategy {
         String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
         String mKey = EncryptUtils.encrypt(inicisSignKey, EncryptType.SHA256);
 
-        return new InicisPaymentSignatureResultVO(signature, verification, mKey, inicisMid, timestamp);
+        return new InicisPaymentSignatureResVo(signature, verification, mKey, inicisMid, timestamp);
     }
 
     /**
@@ -76,12 +76,12 @@ public class InicisPaymentStrategy implements PaymentStrategy {
      * @return 저장 결과
      */
     @Override
-    public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
+    public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
         String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPaymentServiceProviderType());
         InicisPayment inicisPayment = new InicisPayment(paymentNo, inicisPaymentCreateCommand);
         Payment payment = paymentRepository.save(inicisPayment);
-        return InicisPaymentCreateResultVO.builder()
+        return InicisPaymentCreateResVo.builder()
                 .paymentNo(payment.getPaymentNo())
                 .build();
     }
@@ -103,9 +103,9 @@ public class InicisPaymentStrategy implements PaymentStrategy {
             String signature = EncryptUtils.encrypt(plainTextSignature, EncryptType.SHA256);
             String verification = EncryptUtils.encrypt(plainTextVerification, EncryptType.SHA256);
 
-            InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO = new InicisPaymentApprovalRequestVO(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
-            InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO = inicisRepository.requestApprovePayment(inicisPaymentApprovalRequestVO);
-            inicisPayment.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
+            InicisPaymentApprovalReqVo inicisPaymentApprovalReqVo = new InicisPaymentApprovalReqVo(inicisMid, inicisPayment.getAuthToken(), timestamp, signature, verification, inicisPayment.getApprovalUrl());
+            InicisPaymentApprovalResVo inicisPaymentApprovalResVo = inicisRepository.requestApprovePayment(inicisPaymentApprovalReqVo);
+            inicisPayment.applyPaymentApprovalResult(inicisPaymentApprovalResVo);
         } catch (ApplicationException applicationException) {
             String errorMessage = StringUtils.hasText(applicationException.getErrorMessage()) ? applicationException.getErrorMessage() : StaticValues.DEFAULT_MESSAGE_PAYMENT_APPROVAL_ERROR;
             inicisPayment.applyPaymentFail(PaymentStatus.DECLINED, errorMessage);

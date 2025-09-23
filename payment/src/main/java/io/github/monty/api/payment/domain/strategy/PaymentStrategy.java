@@ -3,8 +3,8 @@ package io.github.monty.api.payment.domain.strategy;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentCreateResVo;
+import io.github.monty.api.payment.domain.model.vo.PaymentSignatureResVo;
 
 import java.math.BigInteger;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public interface PaymentStrategy {
      * @param paymentSignatureQuery 결제 인증 정보 조회 요청 쿼리
      * @return 결제 인증 정보 생성 결과
      */
-    PaymentSignatureResultVO getSignature(PaymentSignatureQuery paymentSignatureQuery);
+    PaymentSignatureResVo getSignature(PaymentSignatureQuery paymentSignatureQuery);
 
     /**
      * 해당 결제 정보를 바탕으로 결제 데이터를 저장한다.
@@ -47,7 +47,7 @@ public interface PaymentStrategy {
      * @param paymentCreateCommand 결제 인증 정보 저장 요청 Command
      * @return 저장 결과
      */
-    PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand);
+    PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand);
 
     /**
      * 해당 결제번호에 해당되는 결제를 승인 요청한다.

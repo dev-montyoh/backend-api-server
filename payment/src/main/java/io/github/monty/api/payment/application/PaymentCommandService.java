@@ -5,7 +5,7 @@ import io.github.monty.api.payment.domain.model.command.PaymentApprovalCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentCreateCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
-import io.github.monty.api.payment.domain.model.vo.PaymentCreateResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentCreateResVo;
 import io.github.monty.api.payment.domain.service.PaymentService;
 import io.github.monty.api.payment.domain.strategy.PaymentCancelStrategy;
 import io.github.monty.api.payment.domain.strategy.PaymentCancelStrategyFactory;
@@ -30,7 +30,7 @@ public class PaymentCommandService {
      * @param paymentCreateCommand 결제 정보 생성 요청 Command
      */
     @Transactional
-    public PaymentCreateResultVO createPayment(PaymentCreateCommand paymentCreateCommand) {
+    public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
         PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentCreateCommand.getPaymentServiceProviderType());
         return paymentStrategy.createPayment(paymentCreateCommand);
     }

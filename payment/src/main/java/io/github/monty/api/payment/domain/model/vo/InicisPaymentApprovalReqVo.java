@@ -1,11 +1,13 @@
 package io.github.monty.api.payment.domain.model.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
-public class InicisPaymentNetworkCancelRequestVO {
+public class InicisPaymentApprovalReqVo {
 
     private String mid;
 
@@ -17,5 +19,5 @@ public class InicisPaymentNetworkCancelRequestVO {
 
     private String verification;
 
-    private String networkCancelUrl;
+    private String authUrl;
 }
