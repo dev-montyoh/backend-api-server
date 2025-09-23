@@ -47,17 +47,17 @@ public class InicisRepositoryImpl implements InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentApprovalRequestVO 결제 승인 요청 VO
+     * @param inicisPaymentApprovalReqVo 결제 승인 요청 VO
      * @return 승인 요청 결과 VO
      */
     @Override
-    public InicisPaymentApprovalResultVO requestApprovePayment(InicisPaymentApprovalRequestVO inicisPaymentApprovalRequestVO) {
-        MultiValueMap<String, String> formData = ConvertUtils.convertToMultiValueMap(inicisPaymentApprovalRequestVO);
+    public InicisPaymentApprovalResVo requestApprovePayment(InicisPaymentApprovalReqVo inicisPaymentApprovalReqVo) {
+        MultiValueMap<String, String> formData = ConvertUtils.convertToMultiValueMap(inicisPaymentApprovalReqVo);
         formData.add("charset", StandardCharsets.UTF_8.name());
         formData.add("format", INICIS_RESPONSE_DATA_FORMAT);
 
         InicisPaymentApprovalResponse inicisPaymentApprovalResponse = webClient.post()
-                .uri(inicisPaymentApprovalRequestVO.getAuthUrl())
+                .uri(inicisPaymentApprovalReqVo.getAuthUrl())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
@@ -81,15 +81,15 @@ public class InicisRepositoryImpl implements InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentCancelRequestVO 결제 취소 요청 VO
+     * @param inicisPaymentCancelReqVo 결제 취소 요청 VO
      * @return 취소 요청 결과 VO
      */
     @Override
-    public InicisPaymentCancelResultVO requestCancelPayment(InicisPaymentCancelRequestVO inicisPaymentCancelRequestVO) {
+    public InicisPaymentCancelResVo requestCancelPayment(InicisPaymentCancelReqVo inicisPaymentCancelReqVo) {
         InicisPaymentCancelResponse inicisPaymentCancelResponse = webClient.post()
                 .uri(InicisApiUrl.INICIS_PAYMENT_CANCEL_URL)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(inicisPaymentCancelRequestVO)
+                .bodyValue(inicisPaymentCancelReqVo)
                 .retrieve()
                 .bodyToMono(InicisPaymentCancelResponse.class)
                 .block();
@@ -106,7 +106,7 @@ public class InicisRepositoryImpl implements InicisRepository {
             throw new ApplicationException(ErrorCode.ERROR_PAYMENT_CANCEL, inicisPaymentCancelResponse.getResultMsg());
         }
 
-        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, inicisPaymentCancelRequestVO.getData().getMsg());
+        return inicisPaymentCancelMapper.mapToVo(inicisPaymentCancelResponse, inicisPaymentCancelReqVo.getData().getMsg());
     }
 
     /**
@@ -115,17 +115,17 @@ public class InicisRepositoryImpl implements InicisRepository {
      * HTTP Method : POST
      * 통신방식 : http-Client 통신
      *
-     * @param inicisPaymentNetworkCancelRequestVO 결제 망취소 요청 VO
+     * @param inicisPaymentNetworkCancelReqVo 결제 망취소 요청 VO
      * @return 망취소 요청 결과 VO
      */
     @Override
-    public InicisPaymentNetworkCancelResultVO requestNetworkCancelPayment(InicisPaymentNetworkCancelRequestVO inicisPaymentNetworkCancelRequestVO) {
-        MultiValueMap<String, String> formData = ConvertUtils.convertToMultiValueMap(inicisPaymentNetworkCancelRequestVO);
+    public InicisPaymentNetworkCancelResVo requestNetworkCancelPayment(InicisPaymentNetworkCancelReqVo inicisPaymentNetworkCancelReqVo) {
+        MultiValueMap<String, String> formData = ConvertUtils.convertToMultiValueMap(inicisPaymentNetworkCancelReqVo);
         formData.add("charset", StandardCharsets.UTF_8.name());
         formData.add("format", INICIS_RESPONSE_DATA_FORMAT);
 
         InicisPaymentNetworkCancelResponse inicisPaymentNetworkCancelResponse = webClient.post()
-                .uri(inicisPaymentNetworkCancelRequestVO.getNetworkCancelUrl())
+                .uri(inicisPaymentNetworkCancelReqVo.getNetworkCancelUrl())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()

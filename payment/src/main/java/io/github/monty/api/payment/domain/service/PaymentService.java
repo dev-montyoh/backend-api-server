@@ -5,7 +5,7 @@ import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.domain.model.aggregate.Payment;
 import io.github.monty.api.payment.domain.model.aggregate.PaymentCancel;
 import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResVo;
 import io.github.monty.api.payment.domain.repository.PaymentCustomRepository;
 import io.github.monty.api.payment.domain.repository.PaymentRepository;
 import io.github.monty.api.payment.infrastructure.jpa.mapper.PaymentListMapper;
@@ -30,7 +30,7 @@ public class PaymentService {
      * @param paymentListQuery 결제 목록 조회 요청 쿼리
      * @return 조회 결과
      */
-    public PaymentListResultVO requestPaymentList(PaymentListQuery paymentListQuery) {
+    public PaymentListResVo requestPaymentList(PaymentListQuery paymentListQuery) {
         Page<Payment> paymentPage = paymentRepository.findAllByOrderByCreatedAtDesc(paymentListQuery.pageable());
         List<Payment> paymentList = paymentPage.get().toList();
         return paymentListMapper.mapToVo(paymentList, (long) paymentPage.getTotalPages(), paymentPage.getTotalElements());

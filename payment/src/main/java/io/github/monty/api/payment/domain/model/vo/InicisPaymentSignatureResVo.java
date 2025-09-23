@@ -7,17 +7,10 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class InicisPaymentApprovalRequestVO {
-
-    private String mid;
-
-    private String authToken;
-
-    private long timestamp;
-
+public class InicisPaymentSignatureResVo extends PaymentSignatureResVo {
     private String signature;
-
     private String verification;
-
-    private String authUrl;
+    private String mKey;
+    private String mid;
+    private long timestamp;
 }

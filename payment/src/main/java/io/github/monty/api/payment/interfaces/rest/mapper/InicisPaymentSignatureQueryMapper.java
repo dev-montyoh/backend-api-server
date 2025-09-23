@@ -3,8 +3,8 @@ package io.github.monty.api.payment.interfaces.rest.mapper;
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
 import io.github.monty.api.payment.common.constants.PaymentServiceProviderType;
 import io.github.monty.api.payment.domain.model.query.InicisPaymentSignatureQuery;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResultVO;
-import io.github.monty.api.payment.interfaces.rest.dto.InicisPaymentSignatureResponse;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentSignatureResVo;
+import io.github.monty.api.payment.interfaces.rest.dto.InicisPaymentSignatureResDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,10 +19,10 @@ public interface InicisPaymentSignatureQueryMapper {
     @Mapping(target = "verification", source = "verification")
     @Mapping(target = "mKey", ignore = true)
     @Mapping(target = "mid", source = "mid")
-    InicisPaymentSignatureResponse mapToDTO(InicisPaymentSignatureResultVO inicisPaymentSignatureResultVO);
+    InicisPaymentSignatureResDto mapToDTO(InicisPaymentSignatureResVo inicisPaymentSignatureResVo);
 
     @AfterMapping
-    default void mapToDTO(@MappingTarget InicisPaymentSignatureResponse.InicisPaymentSignatureResponseBuilder builder, InicisPaymentSignatureResultVO inicisPaymentSignatureResultVO) {
-        builder.mKey(inicisPaymentSignatureResultVO.getMKey());
+    default void mapToDTO(@MappingTarget InicisPaymentSignatureResDto.InicisPaymentSignatureResDtoBuilder builder, InicisPaymentSignatureResVo inicisPaymentSignatureResVo) {
+        builder.mKey(inicisPaymentSignatureResVo.getMKey());
     }
 }

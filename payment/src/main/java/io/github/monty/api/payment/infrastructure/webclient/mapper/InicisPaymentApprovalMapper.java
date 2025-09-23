@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.infrastructure.webclient.mapper;
 
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResVo;
 import io.github.monty.api.payment.infrastructure.webclient.dto.InicisPaymentApprovalResponse;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -22,10 +22,10 @@ public interface InicisPaymentApprovalMapper {
     @Mapping(target = "approvalDateTime", ignore = true)
     @Mapping(target = "buyerPhoneNumber", source = "inicisPaymentApprovalResponse.buyerTel")
     @Mapping(target = "resultMessage", source = "inicisPaymentApprovalResponse.resultMsg")
-    InicisPaymentApprovalResultVO mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse);
+    InicisPaymentApprovalResVo mapToVo(InicisPaymentApprovalResponse inicisPaymentApprovalResponse);
 
     @AfterMapping
-    default void mapToVo(@MappingTarget InicisPaymentApprovalResultVO.InicisPaymentApprovalResultVOBuilder builder,
+    default void mapToVo(@MappingTarget InicisPaymentApprovalResVo.InicisPaymentApprovalResVoBuilder builder,
                          InicisPaymentApprovalResponse inicisPaymentApprovalResponse) {
         if (StringUtils.hasText(inicisPaymentApprovalResponse.getApplDate()) && StringUtils.hasText(inicisPaymentApprovalResponse.getApplTime())) {
             LocalDateTime approvalDateTime = LocalDateTime.parse(inicisPaymentApprovalResponse.getApplDate() + inicisPaymentApprovalResponse.getApplTime(), dateTimeFormatter);

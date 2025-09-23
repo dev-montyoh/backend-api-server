@@ -1,7 +1,7 @@
 package io.github.monty.api.payment.domain.model.aggregate;
 
 import io.github.monty.api.payment.domain.model.command.InicisPaymentCreateCommand;
-import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResultVO;
+import io.github.monty.api.payment.domain.model.vo.InicisPaymentApprovalResVo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -51,9 +51,9 @@ public class InicisPayment extends Payment {
     /**
      * 결제 승인 결과를 반영한다.
      *
-     * @param inicisPaymentApprovalResultVO 이니시스 승인 요청 결과 VO
+     * @param inicisPaymentApprovalResVo 이니시스 승인 요청 결과 VO
      */
-    public void applyPaymentApprovalResult(InicisPaymentApprovalResultVO inicisPaymentApprovalResultVO) {
-        super.applyPaymentApprovalResult(inicisPaymentApprovalResultVO);
+    public void applyPaymentApprovalResult(InicisPaymentApprovalResVo inicisPaymentApprovalResVo) {
+        super.applyPaymentApprovalResult(inicisPaymentApprovalResVo);
     }
 }

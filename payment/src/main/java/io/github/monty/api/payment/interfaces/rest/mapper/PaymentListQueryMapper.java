@@ -2,8 +2,8 @@ package io.github.monty.api.payment.interfaces.rest.mapper;
 
 import io.github.monty.api.payment.common.configuration.MapStructConfig;
 import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
-import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResponse;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResVo;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,5 +22,5 @@ public interface PaymentListQueryMapper {
         builder.pageable(pageRequest);
     }
 
-    PaymentListResponse mapToDto(PaymentListResultVO paymentListResultVO);
+    PaymentListResDto mapToDto(PaymentListResVo paymentListResVo);
 }

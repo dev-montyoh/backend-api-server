@@ -5,5 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class InicisPaymentCreateResultVO extends PaymentCreateResultVO {
+public class InicisPaymentNetworkCancelResVo extends PaymentNetworkCancelResVo {
+
 }

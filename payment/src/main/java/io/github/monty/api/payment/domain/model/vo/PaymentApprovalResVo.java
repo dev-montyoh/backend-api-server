@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
-public class PaymentApprovalResultVO {
+public class PaymentApprovalResVo {
     private String resultMessage;
 
     private String tid;

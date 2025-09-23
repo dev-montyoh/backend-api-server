@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
-public class PaymentCancelResultVO {
+public class PaymentCancelResVo {
     private String resultMessage;
 
     private LocalDateTime cancelDateTime;

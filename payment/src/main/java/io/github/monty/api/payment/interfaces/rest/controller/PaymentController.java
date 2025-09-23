@@ -8,12 +8,12 @@ import io.github.monty.api.payment.domain.model.command.PaymentCancelCommand;
 import io.github.monty.api.payment.domain.model.command.PaymentNetworkCancelCommand;
 import io.github.monty.api.payment.domain.model.query.PaymentListQuery;
 import io.github.monty.api.payment.domain.model.query.PaymentLogListQuery;
-import io.github.monty.api.payment.domain.model.vo.PaymentListResultVO;
-import io.github.monty.api.payment.domain.model.vo.PaymentLogListResultVO;
+import io.github.monty.api.payment.domain.model.vo.PaymentListResVo;
+import io.github.monty.api.payment.domain.model.vo.PaymentLogListResVo;
 import io.github.monty.api.payment.interfaces.rest.constants.PaymentApiUrl;
-import io.github.monty.api.payment.interfaces.rest.dto.PaymentCancelRequest;
-import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResponse;
-import io.github.monty.api.payment.interfaces.rest.dto.PaymentLogListResponse;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentCancelReqDto;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentListResDto;
+import io.github.monty.api.payment.interfaces.rest.dto.PaymentLogListResDto;
 import io.github.monty.api.payment.interfaces.rest.mapper.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,8 +47,8 @@ public class PaymentController {
 
     @Operation(summary = "결제 취소 요청 API", description = "해당 결제 번호의 취소 요청을 한다.")
     @PostMapping(value = PaymentApiUrl.Payment.PAYMENT_CANCEL_URL)
-    public ResponseEntity<Void> requestCancelPayment(@PathVariable String paymentNo, @RequestBody PaymentCancelRequest paymentCancelRequest) {
-        PaymentCancelCommand paymentCancelCommand = paymentCancelCommandMapper.mapToCommand(paymentCancelRequest, paymentNo);
+    public ResponseEntity<Void> requestCancelPayment(@PathVariable String paymentNo, @RequestBody PaymentCancelReqDto paymentCancelReqDto) {
+        PaymentCancelCommand paymentCancelCommand = paymentCancelCommandMapper.mapToCommand(paymentCancelReqDto, paymentNo);
         paymentCommandService.cancelPayment(paymentCancelCommand);
         return ResponseEntity.ok().build();
     }
@@ -63,22 +63,22 @@ public class PaymentController {
 
     @Operation(summary = "결제 목록 조회 요청 API", description = "결제 목록을 조회한다.")
     @GetMapping(value = PaymentApiUrl.Payment.PAYMENT_LIST_URL)
-    public ResponseEntity<PaymentListResponse> requestPaymentList(@RequestParam(required = false, defaultValue = "1") long page,
-                                                                  @RequestParam(required = false, defaultValue = "50") long size) {
+    public ResponseEntity<PaymentListResDto> requestPaymentList(@RequestParam(required = false, defaultValue = "1") long page,
+                                                                @RequestParam(required = false, defaultValue = "50") long size) {
         PaymentListQuery paymentListQuery = paymentListQueryMapper.mapToQuery(page, size);
-        PaymentListResultVO paymentListResultVO = paymentQueryService.requestPaymentList(paymentListQuery);
-        PaymentListResponse paymentListResponse = paymentListQueryMapper.mapToDto(paymentListResultVO);
-        return ResponseEntity.ok().body(paymentListResponse);
+        PaymentListResVo paymentListResVo = paymentQueryService.requestPaymentList(paymentListQuery);
+        PaymentListResDto paymentListResDto = paymentListQueryMapper.mapToDto(paymentListResVo);
+        return ResponseEntity.ok().body(paymentListResDto);
     }
 
     @Operation(summary = "결제 로그 조회 요청 API", description = "결제 로그를 조회한다.")
     @GetMapping(value = PaymentApiUrl.Payment.PAYMENT_LOG_LIST_URL)
-    public ResponseEntity<PaymentLogListResponse> requestPaymentLogList(@PathVariable String paymentNo,
-                                                                        @RequestParam(required = false, defaultValue = "1") long page,
-                                                                        @RequestParam(required = false, defaultValue = "50") long size) {
+    public ResponseEntity<PaymentLogListResDto> requestPaymentLogList(@PathVariable String paymentNo,
+                                                                      @RequestParam(required = false, defaultValue = "1") long page,
+                                                                      @RequestParam(required = false, defaultValue = "50") long size) {
         PaymentLogListQuery paymentLogListQuery = paymentLogListQueryMapper.mapToQuery(paymentNo, page, size);
-        PaymentLogListResultVO paymentLogListResultVO = paymentLogQueryService.requestPaymentLogList(paymentLogListQuery);
-        PaymentLogListResponse paymentLogListResponse = paymentLogListQueryMapper.mapToDto(paymentLogListResultVO);
-        return ResponseEntity.ok().body(paymentLogListResponse);
+        PaymentLogListResVo paymentLogListResVo = paymentLogQueryService.requestPaymentLogList(paymentLogListQuery);
+        PaymentLogListResDto paymentLogListResDto = paymentLogListQueryMapper.mapToDto(paymentLogListResVo);
+        return ResponseEntity.ok().body(paymentLogListResDto);
     }
 }
