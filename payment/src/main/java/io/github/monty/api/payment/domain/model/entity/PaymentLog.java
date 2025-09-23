@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "payment_log")
+@Table(name = "PAYMENT_LOG")
 public class PaymentLog extends BaseEntity {
 
     public PaymentLog(Payment payment, PaymentStatus paymentStatus, String message) {
@@ -23,18 +23,18 @@ public class PaymentLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_log_id", nullable = false)
+    @Column(name = "PAYMENT_LOG_ID", nullable = false)
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "payment_id", nullable = false)
+    @JoinColumn(name = "PAYMENT_ID", nullable = false)
     private Payment payment;
 
     @NotNull
-    @Column(name = "payment_status", nullable = false, length = 50)
+    @Column(name = "PAYMENT_STATUS", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
 
-    @Column(name = "message")
+    @Column(name = "MESSAGE")
     private String message;
 }

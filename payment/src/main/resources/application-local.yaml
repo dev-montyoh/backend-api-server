@@ -5,7 +5,7 @@ spring:
       on-profile: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:43306/payment
+    url: jdbc:mysql://localhost:43306/PAYMENT
     username: payment
     password: welcome
   jpa:
