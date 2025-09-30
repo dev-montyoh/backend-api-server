@@ -20,20 +20,43 @@ jobs:
           java-version: '19'
           distribution: 'temurin'
 
+      # 각 서비스 변경사항 체크
+      - name: Detect changes
+        id: changes
+        run: |
+          echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "payment=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^payment/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "user=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^user/' && echo true || echo false)" >> $GITHUB_OUTPUT
+
       # 각 모듈 빌드
       - name: Service auth build
+        if: steps.changes.outputs.auth == 'true'
         uses: ./.github/actions/build
         with:
           target: auth
+
       - name: Service content build
+        if: steps.changes.outputs.content == 'true'
         uses: ./.github/actions/build
         with:
           target: content
-      - name: Service user build
-        uses: ./.github/actions/build
-        with:
-          target: user
+
       - name: Service gateway build
+        if: steps.changes.outputs.gateway == 'true'
         uses: ./.github/actions/build
         with:
           target: gateway
+
+      - name: Service payment build
+        if: steps.changes.outputs.payment == 'true'
+        uses: ./.github/actions/build
+        with:
+          target: payment
+
+      - name: Service user build
+        if: steps.changes.outputs.user == 'true'
+        uses: ./.github/actions/build
+        with:
+          target: user
