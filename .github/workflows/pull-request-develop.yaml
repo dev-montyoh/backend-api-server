@@ -32,14 +32,14 @@ jobs:
             "${{matrix.module}}/**"
 
       # 파일 변경사항 추적 추가
-      - name: Check if module changed
-        id: check
-        run: |
-          if echo "${{ steps.changed.outputs.all_changed_files }}" | grep -q "^${{ matrix.module }}/"; then
-            echo "changed=true" >> $GITHUB_ENV
-          else
-            echo "changed=false" >> $GITHUB_ENV
-          fi
+#      - name: Check if module changed
+#        id: check
+#        run: |
+#          if echo "${{ steps.changed.outputs.all_changed_files }}" | grep -q "^${{ matrix.module }}/"; then
+#            echo "changed=true" >> $GITHUB_ENV
+#          else
+#            echo "changed=false" >> $GITHUB_ENV
+#          fi
 
 #      - name: Get changed files auth service
 #        id: auth
