@@ -6,11 +6,11 @@ on:
       - develop
 
 jobs:
-  pull_request_develop_build_services:
+  PR_develop_build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        services: [auth, content, gateway, payment, user]
+        service: [ auth, content, gateway, payment, user ]
 
     steps:
       # 코드 체크아웃
@@ -24,84 +24,16 @@ jobs:
           java-version: '19'
           distribution: 'temurin'
 
+      # 각 서비스 변경사항 추적
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v44
         with:
-          files: '${{matrix.services}}/**'
+          files: '${{matrix.service}}/**'
 
-      # 파일 변경사항 추적 추가
-#      - name: Check if module changed
-#        id: check
-#        run: |
-#          if echo "${{ steps.changed.outputs.all_changed_files }}" | grep -q "^${{ matrix.module }}/"; then
-#            echo "changed=true" >> $GITHUB_ENV
-#          else
-#            echo "changed=false" >> $GITHUB_ENV
-#          fi
-
-#      - name: Get changed files auth service
-#        id: auth
-#        uses: tj-actions/changed-files@v44
-#        with:
-#          files: |
-#            auth/**
-#
-#      - name: Get changed files content service
-#        id: content
-#        uses: tj-actions/changed-files@v44
-#        with:
-#          files: |
-#            content/**
-#
-#      - name: Get changed files gateway service
-#        id: gateway
-#        uses: tj-actions/changed-files@v44
-#        with:
-#          files: |
-#            gateway/**
-#
-#      - name: Get changed files payment service
-#        id: payment
-#        uses: tj-actions/changed-files@v44
-#        with:
-#          files: |
-#            payment/**
-
-      # 각 서비스 변경사항 체크
-      - name: Detect changes
-        run: |
-          echo "${{matrix.services}}"
-          echo "${{steps.changed.outputs.any_changed}}"
-
-      # 각 모듈 빌드
-
-#      - name: Service auth build
-#        if: steps.changes.outputs.auth == 'true'
-#        uses: ./.github/actions/build
-#        with:
-#          target: auth
-#
-#      - name: Service content build
-#        if: steps.changes.outputs.content == 'true'
-#        uses: ./.github/actions/build
-#        with:
-#          target: content
-#
-#      - name: Service gateway build
-#        if: steps.changes.outputs.gateway == 'true'
-#        uses: ./.github/actions/build
-#        with:
-#          target: gateway
-#
-#      - name: Service payment build
-#        if: steps.changes.outputs.payment == 'true'
-#        uses: ./.github/actions/build
-#        with:
-#          target: payment
-#
-#      - name: Service user build
-#        if: steps.changes.outputs.user == 'true'
-#        uses: ./.github/actions/build
-#        with:
-#          target: user
+      # 변경사항 존재 시 빌드
+      - name: Service ${{matrix.service}} build
+        if: steps.changed.outputs.any_changed == 'true'
+        uses: ./.github/actions/build
+        with:
+          target: ${{matrix.service}}
