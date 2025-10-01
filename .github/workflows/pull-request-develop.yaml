@@ -20,10 +20,18 @@ jobs:
           java-version: '19'
           distribution: 'temurin'
 
+      # 각 서비스 변경사항
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          since_last_remote_commit: 'false'
+
       # 각 서비스 변경사항 체크
       - name: Detect changes
         id: changes
         run: |
+          echo "${{steps.changed-files.outputs.all_changed_files}}"
           echo "${{github.event.before}}"
           echo "${{github.sha}}"
           echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
