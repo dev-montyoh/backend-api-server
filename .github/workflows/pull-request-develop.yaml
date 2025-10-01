@@ -78,7 +78,7 @@ jobs:
       # 각 서비스 변경사항 체크
       - name: Detect changes
         run: |
-          eche "${{matrix.module}}"
+          echo "${{matrix.module}}"
           echo "${{env.changed}}"
 
       # 각 모듈 빌드
