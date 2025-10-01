@@ -25,15 +25,13 @@ jobs:
         id: auth
         uses: tj-actions/changed-files@v44
         with:
-          files: |
-            auth/**
+          files: 'auth/**'
 
       - name: Get Changed Files payment
         id: auth
         uses: tj-actions/changed-files@v44
         with:
-          files: |
-            payment/**      
+          files: 'payment/**'
 
       # 각 서비스 변경사항 체크
       - name: Detect changes
