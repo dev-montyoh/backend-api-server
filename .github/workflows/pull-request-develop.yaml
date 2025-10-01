@@ -8,6 +8,10 @@ on:
 jobs:
   pull_request_develop_build_services:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        services: [auth, content, gateway, payment, user]
+
     steps:
       # 코드 체크아웃
       - name: Check out repository
@@ -20,60 +24,93 @@ jobs:
           java-version: '19'
           distribution: 'temurin'
 
-      # 각 서비스 변경사항
-      - name: Get Changed Files auth
-        id: auth
+      - name: Get changed files
+        id: changed
         uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            auth/**
 
-      - name: Get Changed Files payment
-        id: payment
-        uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            payment/**      
+      # 파일 변경사항 추적 추가
+      - name: Check if module changed
+        id: check
+        run: |
+          if echo "${{ steps.changed.outputs.all_changed_files }}" | grep -q "^${{ matrix.module }}/"; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
+
+#      - name: Get changed files auth service
+#        id: auth
+#        uses: tj-actions/changed-files@v44
+#        with:
+#          files: |
+#            auth/**
+#
+#      - name: Get changed files content service
+#        id: content
+#        uses: tj-actions/changed-files@v44
+#        with:
+#          files: |
+#            content/**
+#
+#      - name: Get changed files gateway service
+#        id: gateway
+#        uses: tj-actions/changed-files@v44
+#        with:
+#          files: |
+#            gateway/**
+#
+#      - name: Get changed files payment service
+#        id: payment
+#        uses: tj-actions/changed-files@v44
+#        with:
+#          files: |
+#            payment/**
 
       # 각 서비스 변경사항 체크
-      - name: Detect changes
-        id: changes
-        run: |
-          echo "${{steps.auth.outputs.any_changed}}"
-          echo "${{steps.payment.outputs.any_changed}}"
-          echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "payment=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^payment/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "user=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^user/' && echo true || echo false)" >> $GITHUB_OUTPUT
+#      - name: Detect changes
+#        id: changes
+#        run: |
+#          echo "${{steps.auth.outputs.any_changed}}"
+#          echo "${{steps.payment.outputs.any_changed}}"
+#          echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
+#          echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
+#          echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
+#          echo "payment=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^payment/' && echo true || echo false)" >> $GITHUB_OUTPUT
+#          echo "user=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^user/' && echo true || echo false)" >> $GITHUB_OUTPUT
 
       # 각 모듈 빌드
-      - name: Service auth build
-        if: steps.changes.outputs.auth == 'true'
+      - name: Build module
+        if: env.changed == 'true'
         uses: ./.github/actions/build
         with:
-          target: auth
+          target: :${{ matrix.module }}
 
-      - name: Service content build
-        if: steps.changes.outputs.content == 'true'
-        uses: ./.github/actions/build
-        with:
-          target: content
-
-      - name: Service gateway build
-        if: steps.changes.outputs.gateway == 'true'
-        uses: ./.github/actions/build
-        with:
-          target: gateway
-
-      - name: Service payment build
-        if: steps.changes.outputs.payment == 'true'
-        uses: ./.github/actions/build
-        with:
-          target: payment
-
-      - name: Service user build
-        if: steps.changes.outputs.user == 'true'
-        uses: ./.github/actions/build
-        with:
-          target: user
+#      - name: Service auth build
+#        if: steps.changes.outputs.auth == 'true'
+#        uses: ./.github/actions/build
+#        with:
+#          target: auth
+#
+#      - name: Service content build
+#        if: steps.changes.outputs.content == 'true'
+#        uses: ./.github/actions/build
+#        with:
+#          target: content
+#
+#      - name: Service gateway build
+#        if: steps.changes.outputs.gateway == 'true'
+#        uses: ./.github/actions/build
+#        with:
+#          target: gateway
+#
+#      - name: Service payment build
+#        if: steps.changes.outputs.payment == 'true'
+#        uses: ./.github/actions/build
+#        with:
+#          target: payment
+#
+#      - name: Service user build
+#        if: steps.changes.outputs.user == 'true'
+#        uses: ./.github/actions/build
+#        with:
+#          target: user
