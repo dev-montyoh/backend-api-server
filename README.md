@@ -19,7 +19,7 @@ HTTPS clone URL: https://github.com/dev-montyoh/backend-api-server.git
 ```
 1. IDE는 IntelliJ 를 사용함.
 
-2. Git Clone -> Root 의 build.gradle 우클릭 -> Link Gradle Project 클릭 -> gradle build 확인 후 진행
+2. Git Clone -> 각 서비스의 build.gradle 우클릭 -> Link Gradle Project 클릭 -> gradle build 확인 후 진행
 ```
 
 ### Docker 사용 시
