@@ -21,19 +21,25 @@ jobs:
           distribution: 'temurin'
 
       # 각 서비스 변경사항
-      - name: Get Changed Files
-        id: changed-files
+      - name: Get Changed Files auth
+        id: auth
         uses: tj-actions/changed-files@v44
         with:
-          since_last_remote_commit: 'false'
+          files: |
+            auth/**
+
+      - name: Get Changed Files payment
+        id: auth
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            payment/**      
 
       # 각 서비스 변경사항 체크
       - name: Detect changes
         id: changes
         run: |
-          echo "${{steps.changed-files.outputs.all_changed_files}}"
-          echo "${{github.event.before}}"
-          echo "${{github.sha}}"
+          echo "${{steps.auth.outputs.any_changed}}"
           echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
