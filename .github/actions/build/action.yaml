@@ -9,13 +9,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Change Permission
-      run: |
-        chmod +x ./gradlew
-      shell: bash
-
     - name: Gradle Build (${{ inputs.target }})
       run: |
         cd ${{ inputs.target }}
+        chmod +x ./gradlew
         ./gradlew build
       shell: bash
