@@ -25,19 +25,22 @@ jobs:
         id: auth
         uses: tj-actions/changed-files@v44
         with:
-          files: 'auth/**'
+          files: |
+            auth/**
 
       - name: Get Changed Files payment
-        id: auth
+        id: payment
         uses: tj-actions/changed-files@v44
         with:
-          files: 'payment/**'
+          files: |
+            payment/**      
 
       # 각 서비스 변경사항 체크
       - name: Detect changes
         id: changes
         run: |
           echo "${{steps.auth.outputs.any_changed}}"
+          echo "${{steps.payment.outputs.any_changed}}"
           echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
