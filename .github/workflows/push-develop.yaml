@@ -6,8 +6,12 @@ on:
       - develop
 
 jobs:
-  push_develop_package_services:
+  push_develop_pacakging:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ auth, content, gateway, user ]
+
     steps:
       # 코드 체크아웃
       - name: Check out repository

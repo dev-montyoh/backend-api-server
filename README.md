@@ -50,8 +50,7 @@ HTTPS clone URL: https://github.com/dev-montyoh/backend-api-server.git
 4. Application 실행
 ```
 
-## Git Flow
-### branch 구조
+## branch 전략
 ```
 origin
     ㄴ master
@@ -62,10 +61,10 @@ origin
 ```
 ```
 1. develop 기준으로 features/branch1... 와 같이 브랜치 생성
-
-2. 개발 완료 후 develop 으로 Pull Request 생성, Merge
-
-(추후 변경 예정)
+2. 개발 완료 후 develop 으로 Pull Request 생성
+3. Github Actions 에서 각 모듈 Build 성공 확인
+4. develop 을 master 로 Pull Request 생성, 및 Merge
+5. Github Actions 에서 각 모듈 BUild 성공 및 Docker Image 생성 확인
 ```
 
 ---
