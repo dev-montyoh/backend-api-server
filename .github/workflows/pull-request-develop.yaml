@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ auth, content, gateway, user ]
+        service: [ auth, content, gateway, payment, user ]
 
     steps:
       # 코드 체크아웃
