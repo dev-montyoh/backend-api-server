@@ -27,9 +27,15 @@ jobs:
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v44
-        with:
-          files: |
-            "${{matrix.module}}/**"
+
+      - name: Detect changes
+        id: detect
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^${{ matrix.module }}/"; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
 
       # 파일 변경사항 추적 추가
 #      - name: Check if module changed
@@ -71,9 +77,9 @@ jobs:
 
       # 각 서비스 변경사항 체크
       - name: Detect changes
-        id: changes
         run: |
-          echo "${{steps.changed.outputs.any_changed}}"
+          eche "${{matrix.module}}
+          echo "${{env.changed}}"
 
       # 각 모듈 빌드
 
