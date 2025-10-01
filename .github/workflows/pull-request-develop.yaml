@@ -27,6 +27,9 @@ jobs:
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            "${{matrix.module}}/**"
 
       # 파일 변경사항 추적 추가
       - name: Check if module changed
@@ -67,23 +70,12 @@ jobs:
 #            payment/**
 
       # 각 서비스 변경사항 체크
-#      - name: Detect changes
-#        id: changes
-#        run: |
-#          echo "${{steps.auth.outputs.any_changed}}"
-#          echo "${{steps.payment.outputs.any_changed}}"
-#          echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
-#          echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
-#          echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
-#          echo "payment=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^payment/' && echo true || echo false)" >> $GITHUB_OUTPUT
-#          echo "user=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^user/' && echo true || echo false)" >> $GITHUB_OUTPUT
+      - name: Detect changes
+        id: changes
+        run: |
+          echo "${{steps.changed.outputs.any_changed}}"
 
       # 각 모듈 빌드
-      - name: Build module
-        if: env.changed == 'true'
-        uses: ./.github/actions/build
-        with:
-          target: :${{ matrix.module }}
 
 #      - name: Service auth build
 #        if: steps.changes.outputs.auth == 'true'
