@@ -24,7 +24,8 @@ jobs:
       - name: Detect changes
         id: changes
         run: |
-          echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)"
+          echo "${{github.event.before}}"
+          echo "${{github.sha}}"
           echo "auth=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^auth/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "content=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^content/' && echo true || echo false)" >> $GITHUB_OUTPUT
           echo "gateway=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^gateway/' && echo true || echo false)" >> $GITHUB_OUTPUT
