@@ -1,0 +1,34 @@
+name: Push Workflow (master)
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ auth, content, gateway, payment, user ]
+
+    steps:
+      # 코드 체크아웃
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Github Registry 로그인
+      - name: Log in to Github Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
+
+      # 서비스 배포
+      - name: Deploy ${{matrix.service}} service
+        uses: ./.github/actions/deploy
+        with:
+          target: ${{matrix.service}}
+
+# TODO: EC2 접근 후 각 서비스 업데이트
