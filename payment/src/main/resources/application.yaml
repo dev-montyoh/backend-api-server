@@ -22,7 +22,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 server:
-  port: 8084
+  port: 3003
 
 springdoc:
   swagger-ui:
