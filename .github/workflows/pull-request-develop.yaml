@@ -15,12 +15,12 @@ jobs:
     steps:
       # 코드 체크아웃
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # 각 서비스 변경사항 추적
       - name: Get changed files
         id: changed
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v47
         with:
           files: '${{matrix.service}}/**'
 
