@@ -18,4 +18,4 @@ spring:
     enabled: true
     validate-migration-naming: true
 server:
-  port: 8082
+  port: 3002

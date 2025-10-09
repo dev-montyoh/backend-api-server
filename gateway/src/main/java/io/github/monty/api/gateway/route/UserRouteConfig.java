@@ -1,8 +1,8 @@
 package io.github.monty.api.gateway.route;
 
-import io.github.monty.api.gateway.common.constant.ApiUrl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class UserRouteConfig {
 
+    @Value("${mapping.url.user}")
+    private String userUrl;
+
     /**
      * user 서비스 대응 라우터
      */
@@ -22,7 +25,7 @@ public class UserRouteConfig {
                 .route(
                         route -> route
                                 .path("/user/**")
-                                .uri(ApiUrl.MAPPING_USER_URL)
+                                .uri(userUrl)
                 )
                 .build()
                 ;
