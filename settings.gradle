@@ -1,7 +1,0 @@
-rootProject.name = 'backend-api-server'
-
-include('auth')
-include('content')
-include('gateway')
-include('user')
-include('payment')
