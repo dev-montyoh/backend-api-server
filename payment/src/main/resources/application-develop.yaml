@@ -4,9 +4,11 @@ spring:
     activate:
       on-profile: develop
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres
-    username: postgresql
-    password: Dhgkswls707!
+    # TODO: develop 환경
+    username:
+    password:
   jpa:
     hibernate:
       ddl-auto: update

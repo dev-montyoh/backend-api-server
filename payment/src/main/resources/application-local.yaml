@@ -4,7 +4,6 @@ spring:
     activate:
       on-profile: local
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:43306/payment
     username: payment
