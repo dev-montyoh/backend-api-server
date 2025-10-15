@@ -1,7 +1,7 @@
 package io.github.monty.api.user.integration;
 
 import io.github.monty.api.user.common.utils.EncryptUtil;
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,11 +32,11 @@ public class WireMockServerTest {
      */
     protected void insertUserData(String userNo, String loginId, String password) {
         String encryptedPassword = EncryptUtil.encode(password);
-        User user = User.builder()
+        Member member = Member.builder()
                 .userNo(userNo)
                 .loginId(loginId)
                 .password(encryptedPassword)
                 .build();
-        userRepository.save(user);
+        userRepository.save(member);
     }
 }

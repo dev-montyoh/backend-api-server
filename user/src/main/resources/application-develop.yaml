@@ -3,4 +3,19 @@ spring:
   config:
     activate:
       on-profile: develop
-## 홈서버 환경에 맞게 작성할 것
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+    #    TODO: Secret Values
+    username:
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    validate-migration-naming: true
+    schemas: member
+    default-schema: member
+server:
+  port: 3004

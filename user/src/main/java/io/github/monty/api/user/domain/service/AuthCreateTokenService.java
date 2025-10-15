@@ -2,7 +2,7 @@ package io.github.monty.api.user.domain.service;
 
 import io.github.monty.api.user.common.constants.ErrorCode;
 import io.github.monty.api.user.common.exception.ApplicationException;
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.model.vo.AuthCreateTokenVo;
 import io.github.monty.api.user.domain.repository.AuthRepository;
 import io.github.monty.api.user.domain.repository.UserRepository;
@@ -27,9 +27,9 @@ public class AuthCreateTokenService {
      * @return 토큰 생성 결과
      */
     public AuthCreateTokenVo getTokens(String loginId) {
-        User user = userRepository.findByLoginId(loginId)
+        Member member = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_USER_INFO));
 
-        return authRepository.createAccessTokenAndRefreshToken(user.getUserNo());
+        return authRepository.createAccessTokenAndRefreshToken(member.getUserNo());
     }
 }

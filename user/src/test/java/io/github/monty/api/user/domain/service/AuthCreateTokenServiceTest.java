@@ -2,7 +2,7 @@ package io.github.monty.api.user.domain.service;
 
 import io.github.monty.api.user.common.constants.ErrorCode;
 import io.github.monty.api.user.common.exception.ApplicationException;
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.model.vo.AuthCreateTokenVo;
 import io.github.monty.api.user.domain.repository.AuthRepository;
 import io.github.monty.api.user.domain.repository.UserRepository;
@@ -36,10 +36,10 @@ class AuthCreateTokenServiceTest {
     @DisplayName("토큰 정보 생성 요청에 성공했다.")
     void getUserNoAndCreateToken_success() {
         //  given
-        User user = User.builder()
+        Member member = Member.builder()
                 .userNo("testUserNo")
                 .build();
-        given(userRepository.findByLoginId(anyString())).willReturn(Optional.of(user));
+        given(userRepository.findByLoginId(anyString())).willReturn(Optional.of(member));
         AuthCreateTokenVo authCreateTokenVo = AuthCreateTokenVo.builder()
                 .accessToken("testAccessToken")
                 .refreshToken("testRefreshToken")

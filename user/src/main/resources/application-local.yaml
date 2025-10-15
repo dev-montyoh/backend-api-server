@@ -4,9 +4,9 @@ spring:
     activate:
       on-profile: local
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:33306/user
-    username: user
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:45432/member
+    username: member
     password: welcome
   jpa:
     hibernate:
@@ -15,8 +15,7 @@ spring:
   flyway:
     enabled: true
     validate-migration-naming: true
+    schemas: member
+    default-schema: member
 server:
   port: 3004
-feign:
-  api:
-    auth-url: http://localhost:8081

@@ -10,18 +10,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "member", schema = "member")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Member {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "member_id")
     private int userId;
 
-    @Column(name = "no")
+    @Column(name = "member_no")
     private String userNo;
 
     private String loginId;

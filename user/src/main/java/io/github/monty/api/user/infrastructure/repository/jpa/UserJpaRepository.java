@@ -1,12 +1,12 @@
 package io.github.monty.api.user.infrastructure.repository.jpa;
 
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserJpaRepository extends JpaRepository<User, String> {
-    Optional<User> findByUserNo(String userNo);
+public interface UserJpaRepository extends JpaRepository<Member, String> {
+    Optional<Member> findByUserNo(String userNo);
 
-    Optional<User> findByLoginId(String loginId);
+    Optional<Member> findByLoginId(String loginId);
 }

@@ -1,6 +1,6 @@
 package io.github.monty.api.user.domain.repository;
 
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +26,21 @@ class UserRepositoryTest {
     @DisplayName("user 조회에 성공한다.")
     void user_get_success() {
         //  given
-        User user = User.builder()
+        Member member = Member.builder()
                 .userId(1)
                 .userNo("testUserNo")
                 .loginId("testLoginId")
                 .build();
-        userRepository.save(user);
+        userRepository.save(member);
 
         //  when
-        Optional<User> result = userRepository.findByUserNo(user.getUserNo());
+        Optional<Member> result = userRepository.findByUserNo(member.getUserNo());
 
         //  then
         assertTrue(result.isPresent());
-        User actual = result.get();
-        assertThat(actual.getUserNo()).isEqualTo(user.getUserNo());
-        assertThat(actual.getUserId()).isEqualTo(user.getUserId());
-        assertThat(actual.getLoginId()).isEqualTo(user.getLoginId());
+        Member actual = result.get();
+        assertThat(actual.getUserNo()).isEqualTo(member.getUserNo());
+        assertThat(actual.getUserId()).isEqualTo(member.getUserId());
+        assertThat(actual.getLoginId()).isEqualTo(member.getLoginId());
     }
 }

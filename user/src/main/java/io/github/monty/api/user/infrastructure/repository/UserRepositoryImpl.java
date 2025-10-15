@@ -1,6 +1,6 @@
 package io.github.monty.api.user.infrastructure.repository;
 
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.repository.UserRepository;
 import io.github.monty.api.user.infrastructure.repository.jpa.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +14,17 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<User> findByUserNo(String userNo) {
+    public Optional<Member> findByUserNo(String userNo) {
         return userJpaRepository.findByUserNo(userNo);
     }
 
     @Override
-    public Optional<User> findByLoginId(String loginId) {
+    public Optional<Member> findByLoginId(String loginId) {
         return userJpaRepository.findByLoginId(loginId);
     }
 
     @Override
-    public User save(User user) {
-        return userJpaRepository.save(user);
+    public Member save(Member member) {
+        return userJpaRepository.save(member);
     }
 }

@@ -1,14 +1,14 @@
 package io.github.monty.api.user.domain.repository;
 
-import io.github.monty.api.user.domain.model.aggregate.User;
+import io.github.monty.api.user.domain.model.aggregate.Member;
 
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> findByUserNo(String userNo);
+    Optional<Member> findByUserNo(String userNo);
 
-    Optional<User> findByLoginId(String loginId);
+    Optional<Member> findByLoginId(String loginId);
 
-    User save(User user);
+    Member save(Member member);
 
 }
