@@ -15,7 +15,7 @@ spring:
   flyway:
     enabled: true
     validate-migration-naming: true
-    schemas: member
-    default-schema: member
+    schemas: user
+    default-schema: user
 server:
   port: 3004

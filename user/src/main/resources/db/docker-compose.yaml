@@ -1,9 +1,9 @@
 services:
-  member_local_database:
+  user_local_database:
     platform: linux/x86_64
     image: postgres:13
-    hostname: member_local_database
-    container_name: member_local_database
+    hostname: user_local_database
+    container_name: user_local_database
     restart: always
     environment:
       POSTGRES_PASSWORD: welcome

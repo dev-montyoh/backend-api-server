@@ -6,8 +6,8 @@ spring:
   mvc:
     static-path-pattern: /content/v1/public/**
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:23306/content
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:25432/content
     username: content
     password: welcome
   jpa:
@@ -17,5 +17,7 @@ spring:
   flyway:
     enabled: true
     validate-migration-naming: true
+    schemas: content
+    default-schema: content
 server:
   port: 3002

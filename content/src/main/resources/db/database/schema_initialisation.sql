@@ -1,4 +1,4 @@
-create database `content`;
-create member `content` identified by 'welcome';
-grant all privileges on `content`.* to `content`;
-grant super on *.* to `content`;
+CREATE DATABASE "content";
+CREATE USER "content" WITH PASSWORD 'welcome';
+GRANT ALL PRIVILEGES ON DATABASE "content" TO "content";
+ALTER USER "content" WITH SUPERUSER;

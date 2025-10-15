@@ -5,8 +5,8 @@ spring:
       on-profile: local
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:45432/member
-    username: member
+    url: jdbc:postgresql://localhost:45432/user
+    username: user
     password: welcome
   jpa:
     hibernate:
@@ -15,7 +15,7 @@ spring:
   flyway:
     enabled: true
     validate-migration-naming: true
-    schemas: member
-    default-schema: member
+    schemas: user
+    default-schema: user
 server:
   port: 3004
