@@ -51,49 +51,49 @@ public class Payment extends BaseEntity {
 
     @Id
     @Size(max = 100)
-    @Column(name = "PAYMENT_ID", nullable = false, length = 100)
+    @Column(name = "payment_id", nullable = false, length = 100)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String paymentId;
 
     @Size(max = 100)
-    @Column(name = "TRANSACTION_ID", length = 100)
+    @Column(name = "transaction_id", length = 100)
     private String transactionId;
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "PAYMENT_NO", nullable = false, length = 100)
+    @Column(name = "payment_no", nullable = false, length = 100)
     private String paymentNo;
 
     @NotNull
-    @Column(name = "AMOUNT", nullable = false)
+    @Column(name = "amount", nullable = false)
     private Long amount;
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "ORDER_NO", nullable = false, length = 100)
+    @Column(name = "order_no", nullable = false, length = 100)
     private String orderNo;
 
     @NotNull
-    @Column(name = "PG_PROVIDER_TYPE", nullable = false, length = 50)
+    @Column(name = "pg_provider_type", nullable = false, length = 50)
     private PaymentServiceProviderType paymentServiceProviderType;
 
     @NotNull
-    @Column(name = "PAYMENT_STATUS", nullable = false, length = 50)
+    @Column(name = "payment_status", nullable = false, length = 50)
     private PaymentStatus paymentStatus;
 
     @Size(max = 20)
-    @Column(name = "PAYMENT_METHOD", length = 20)
+    @Column(name = "payment_method", length = 20)
     private String paymentMethod;
 
-    @Column(name = "APPROVAL_DATE_TIME")
+    @Column(name = "approval_date_time")
     private LocalDateTime approvalDateTime;
 
     @Size(max = 20)
-    @Column(name = "BUYER_PHONE", length = 20)
+    @Column(name = "buyer_phone", length = 20)
     private String buyerPhone;
 
     @Size(max = 50)
-    @Column(name = "BUYER_EMAIL", length = 50)
+    @Column(name = "buyer_email", length = 50)
     private String buyerEmail;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

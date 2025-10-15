@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "PAYMENT_CANCEL", schema = "payment")
+@Table(name = "payment_cancel", schema = "payment")
 public class PaymentCancel extends BaseEntity {
 
     public PaymentCancel(Payment payment, long cancelAmount, String reason, PaymentCancelType paymentCancelType) {
@@ -26,26 +26,26 @@ public class PaymentCancel extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PAYMENT_CANCEL_ID", nullable = false)
+    @Column(name = "payment_cancel_id", nullable = false)
     private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "PAYMENT_ID", nullable = false)
+    @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
     @Size(max = 100)
-    @Column(name = "CANCEL_TRANSACTION_ID", length = 100)
+    @Column(name = "cancel_transaction_id", length = 100)
     private String cancelTransactionId;
 
     @NotNull
-    @Column(name = "PAYMENT_CANCEL_TYPE", nullable = false, length = 50)
+    @Column(name = "payment_cancel_type", nullable = false, length = 50)
     private PaymentCancelType paymentCancelType;
 
     @NotNull
-    @Column(name = "CANCEL_AMOUNT", nullable = false)
+    @Column(name = "cancel_amount", nullable = false)
     private Long cancelAmount;
 
-    @Column(name = "REASON")
+    @Column(name = "reason")
     private String reason;
 }

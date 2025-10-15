@@ -29,21 +29,21 @@ public class InicisPayment extends Payment {
     }
 
     @NotNull
-    @Column(name = "AUTH_TOKEN", nullable = false)
+    @Column(name = "auth_token", nullable = false)
     private String authToken;
 
     @Size(max = 20)
     @NotNull
-    @Column(name = "IDC_CODE", nullable = false, length = 20)
+    @Column(name = "idc_code", nullable = false, length = 20)
     private String idcCode;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "APPROVAL_URL", nullable = false)
+    @Column(name = "approval_url", nullable = false)
     private String approvalUrl;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "NETWORK_CANCEL_URL", nullable = false)
+    @Column(name = "network_cancel_url", nullable = false)
     private String networkCancelUrl;
 }
