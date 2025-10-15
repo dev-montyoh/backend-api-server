@@ -5,15 +5,16 @@ spring:
       on-profile: develop
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres
-    # TODO: develop 환경
-    username:
-    password:
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+    username: postgres.jyixxhqgpspoclgdzxww
+    password: Dhgkswls707!
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   flyway:
     enabled: true
     validate-migration-naming: true
+    schemas: payment
+    default-schema: payment
 server:
   port: 3003

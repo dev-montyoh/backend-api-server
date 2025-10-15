@@ -15,5 +15,7 @@ spring:
   flyway:
     enabled: true
     validate-migration-naming: true
+    schemas: payment
+    default-schema: payment
 server:
   port: 3003

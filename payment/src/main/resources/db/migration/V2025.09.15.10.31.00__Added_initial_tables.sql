@@ -1,3 +1,6 @@
+-- 결제 스키마 사용
+SET search_path TO payment;
+
 -- 결제 테이블
 CREATE TABLE payment (
                          payment_id         VARCHAR(100)  NOT NULL,

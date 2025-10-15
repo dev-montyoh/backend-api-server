@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "PAYMENT_LOG")
+@Table(name = "PAYMENT_LOG", schema = "payment")
 public class PaymentLog extends BaseEntity {
 
     public PaymentLog(Payment payment, PaymentStatus paymentStatus, String message) {
