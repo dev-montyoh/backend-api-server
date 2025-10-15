@@ -1,60 +1,104 @@
+-- 결제 스키마 사용
+SET search_path TO payment;
+
 -- 결제 테이블
-CREATE TABLE PAYMENT
-(
-    PAYMENT_ID         VARCHAR(100)                        NOT NULL COMMENT '결제 ID',
-    TRANSACTION_ID     VARCHAR(100) NULL COMMENT 'PG사 거래 번호',
-    PAYMENT_NO         VARCHAR(100)                        NOT NULL COMMENT '결제 번호',
-    AMOUNT             BIGINT                              NOT NULL COMMENT '금액',
-    ORDER_NO           VARCHAR(100)                        NOT NULL COMMENT '주문 번호',
-    PG_PROVIDER_TYPE   VARCHAR(50)                         NOT NULL COMMENT '결제 대행사 타입',
-    PAYMENT_STATUS     VARCHAR(50)                         NOT NULL COMMENT '결제 상태',
-    PAYMENT_METHOD     VARCHAR(20) NULL COMMENT '결제 수단',
-    APPROVAL_DATE_TIME TIMESTAMP NULL COMMENT '결제 승인 일시',
-    BUYER_PHONE        VARCHAR(20) NULL COMMENT '구매자 휴대폰 번호',
-    BUYER_EMAIL        VARCHAR(50) NULL COMMENT '구매자 이메일 주소',
-    CREATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 생성 시각',
-    UPDATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 수정 시각',
-    PRIMARY KEY (PAYMENT_ID)
-) COMMENT '결제';
+CREATE TABLE payment (
+                         payment_id         VARCHAR(100)  NOT NULL,
+                         transaction_id     VARCHAR(100),
+                         payment_no         VARCHAR(100)  NOT NULL,
+                         amount             BIGINT        NOT NULL,
+                         order_no           VARCHAR(100)  NOT NULL,
+                         pg_provider_type   VARCHAR(50)   NOT NULL,
+                         payment_status     VARCHAR(50)   NOT NULL,
+                         payment_method     VARCHAR(20),
+                         approval_date_time TIMESTAMP,
+                         buyer_phone        VARCHAR(20),
+                         buyer_email        VARCHAR(50),
+                         created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         PRIMARY KEY (payment_id)
+);
+
+COMMENT ON TABLE payment IS '결제';
+COMMENT ON COLUMN payment.payment_id IS '결제 ID';
+COMMENT ON COLUMN payment.transaction_id IS 'PG사 거래 번호';
+COMMENT ON COLUMN payment.payment_no IS '결제 번호';
+COMMENT ON COLUMN payment.amount IS '금액';
+COMMENT ON COLUMN payment.order_no IS '주문 번호';
+COMMENT ON COLUMN payment.pg_provider_type IS '결제 대행사 타입';
+COMMENT ON COLUMN payment.payment_status IS '결제 상태';
+COMMENT ON COLUMN payment.payment_method IS '결제 수단';
+COMMENT ON COLUMN payment.approval_date_time IS '결제 승인 일시';
+COMMENT ON COLUMN payment.buyer_phone IS '구매자 휴대폰 번호';
+COMMENT ON COLUMN payment.buyer_email IS '구매자 이메일 주소';
+COMMENT ON COLUMN payment.created_at IS '데이터 생성 시각';
+COMMENT ON COLUMN payment.updated_at IS '데이터 수정 시각';
+
 
 -- 이니시스 결제 테이블
-CREATE TABLE PAYMENT_INICIS
-(
-    PAYMENT_ID         VARCHAR(100)                        NOT NULL COMMENT '결제 ID',
-    AUTH_TOKEN         TEXT                                NOT NULL COMMENT '승인 요청 검증 토큰',
-    IDC_CODE           VARCHAR(20)                         NOT NULL COMMENT 'IDC 센터 코드',
-    APPROVAL_URL       VARCHAR(255)                        NOT NULL COMMENT '승인 요청 URL',
-    NETWORK_CANCEL_URL VARCHAR(255)                        NOT NULL COMMENT '망취소 요청 URL',
-    CREATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 생성 시각',
-    UPDATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 수정 시각',
-    PRIMARY KEY (PAYMENT_ID),
-    FOREIGN KEY (PAYMENT_ID) REFERENCES PAYMENT (PAYMENT_ID)
-) COMMENT '이니시스 결제';
+CREATE TABLE payment_inicis (
+                                payment_id         VARCHAR(100)  NOT NULL,
+                                auth_token         TEXT          NOT NULL,
+                                idc_code           VARCHAR(20)   NOT NULL,
+                                approval_url       VARCHAR(255)  NOT NULL,
+                                network_cancel_url VARCHAR(255)  NOT NULL,
+                                created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                PRIMARY KEY (payment_id),
+                                FOREIGN KEY (payment_id) REFERENCES payment (payment_id)
+);
+
+COMMENT ON TABLE payment_inicis IS '이니시스 결제';
+COMMENT ON COLUMN payment_inicis.payment_id IS '결제 ID';
+COMMENT ON COLUMN payment_inicis.auth_token IS '승인 요청 검증 토큰';
+COMMENT ON COLUMN payment_inicis.idc_code IS 'IDC 센터 코드';
+COMMENT ON COLUMN payment_inicis.approval_url IS '승인 요청 URL';
+COMMENT ON COLUMN payment_inicis.network_cancel_url IS '망취소 요청 URL';
+COMMENT ON COLUMN payment_inicis.created_at IS '데이터 생성 시각';
+COMMENT ON COLUMN payment_inicis.updated_at IS '데이터 수정 시각';
+
 
 -- 결제 취소 테이블
-CREATE TABLE PAYMENT_CANCEL
-(
-    PAYMENT_CANCEL_ID     BIGINT AUTO_INCREMENT COMMENT '결제 취소 ID',
-    PAYMENT_ID            VARCHAR(100)                        NOT NULL COMMENT '결제 ID',
-    CANCEL_TRANSACTION_ID VARCHAR(100) NULL COMMENT '취소 PG 거래 번호',
-    PAYMENT_CANCEL_TYPE   VARCHAR(50)                         NOT NULL COMMENT '결제 취소 타입',
-    CANCEL_AMOUNT         BIGINT                              NOT NULL COMMENT '취소 금액',
-    REASON                VARCHAR(255) NULL COMMENT '취소 사유',
-    CREATED_AT            TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 생성 시각',
-    UPDATED_AT            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL COMMENT '데이터 수정 시각',
-    PRIMARY KEY (PAYMENT_CANCEL_ID),
-    FOREIGN KEY (PAYMENT_ID) REFERENCES PAYMENT (PAYMENT_ID)
-) COMMENT '결제 취소';
+CREATE TABLE payment_cancel (
+                                payment_cancel_id     BIGINT GENERATED ALWAYS AS IDENTITY,
+                                payment_id            VARCHAR(100)  NOT NULL,
+                                cancel_transaction_id VARCHAR(100),
+                                payment_cancel_type   VARCHAR(50)   NOT NULL,
+                                cancel_amount         BIGINT        NOT NULL,
+                                reason                VARCHAR(255),
+                                created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                PRIMARY KEY (payment_cancel_id),
+                                FOREIGN KEY (payment_id) REFERENCES payment (payment_id)
+);
+
+COMMENT ON TABLE payment_cancel IS '결제 취소';
+COMMENT ON COLUMN payment_cancel.payment_cancel_id IS '결제 취소 ID';
+COMMENT ON COLUMN payment_cancel.payment_id IS '결제 ID';
+COMMENT ON COLUMN payment_cancel.cancel_transaction_id IS '취소 PG 거래 번호';
+COMMENT ON COLUMN payment_cancel.payment_cancel_type IS '결제 취소 타입';
+COMMENT ON COLUMN payment_cancel.cancel_amount IS '취소 금액';
+COMMENT ON COLUMN payment_cancel.reason IS '취소 사유';
+COMMENT ON COLUMN payment_cancel.created_at IS '데이터 생성 시각';
+COMMENT ON COLUMN payment_cancel.updated_at IS '데이터 수정 시각';
+
 
 -- 결제 로그 테이블
-CREATE TABLE PAYMENT_LOG
-(
-    PAYMENT_LOG_ID BIGINT AUTO_INCREMENT NOT NULL COMMENT '로그 ID',
-    PAYMENT_ID     VARCHAR(100)                              NOT NULL COMMENT '결제 ID',
-    PAYMENT_STATUS VARCHAR(50)                               NOT NULL COMMENT '결제 상태',
-    MESSAGE        TEXT NULL COMMENT '메시지',
-    CREATED_AT     TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) NOT NULL COMMENT '데이터 생성 시각',
-    UPDATED_AT     TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) NOT NULL COMMENT '데이터 수정 시각',
-    PRIMARY KEY (PAYMENT_LOG_ID),
-    FOREIGN KEY (PAYMENT_ID) REFERENCES PAYMENT (PAYMENT_ID)
-) COMMENT '결제 로그';
+CREATE TABLE payment_log (
+                             payment_log_id BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL,
+                             payment_id     VARCHAR(100) NOT NULL,
+                             payment_status VARCHAR(50)  NOT NULL,
+                             message        TEXT,
+                             created_at     TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             updated_at     TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             PRIMARY KEY (payment_log_id),
+                             FOREIGN KEY (payment_id) REFERENCES payment (payment_id)
+);
+
+COMMENT ON TABLE payment_log IS '결제 로그';
+COMMENT ON COLUMN payment_log.payment_log_id IS '로그 ID';
+COMMENT ON COLUMN payment_log.payment_id IS '결제 ID';
+COMMENT ON COLUMN payment_log.payment_status IS '결제 상태';
+COMMENT ON COLUMN payment_log.message IS '메시지';
+COMMENT ON COLUMN payment_log.created_at IS '데이터 생성 시각';
+COMMENT ON COLUMN payment_log.updated_at IS '데이터 수정 시각';

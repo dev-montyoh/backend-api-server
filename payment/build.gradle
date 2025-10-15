@@ -27,16 +27,16 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    //	DB
-    implementation 'com.mysql:mysql-connector-j'
-    implementation 'com.h2database:h2'
+    //  DB
+    implementation 'org.postgresql:postgresql'
+    testImplementation 'com.h2database:h2'
 
     //	JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     //	flyway
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-mysql'
+    implementation 'org.postgresql:postgresql'
 
     //  mapstruct
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -123,6 +123,7 @@ dependencyManagement {
 
 tasks.register('LOCAL_DATABASE_SETUP', Exec) {
     description 'build local develop setup on docker'
+    println "${projectDir}/src/main/resources/db/docker-compose.yaml"
     commandLine 'docker-compose', '-f', "${projectDir}/src/main/resources/db/docker-compose.yaml", '-p', 'backend-api-server-local', 'up', '-d'
     group 'build setup'
 }

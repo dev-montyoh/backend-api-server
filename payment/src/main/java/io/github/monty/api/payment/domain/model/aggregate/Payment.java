@@ -26,7 +26,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "PAYMENT")
+@Table(name = "payment", schema = "payment")
 public class Payment extends BaseEntity {
 
     /**
