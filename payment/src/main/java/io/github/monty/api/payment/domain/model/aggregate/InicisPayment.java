@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "PAYMENT_INICIS")
+@Table(name = "payment_inicis", schema = "payment")
 public class InicisPayment extends Payment {
 
     /**

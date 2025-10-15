@@ -1,17 +1,17 @@
-# local 용 Spring Profile
+# develop 용 Spring Profile
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: develop
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:43306/payment
-    username: payment
-    password: welcome
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+#    TODO: Secret Values
+    username:
+    password:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
   flyway:
     enabled: true
     validate-migration-naming: true

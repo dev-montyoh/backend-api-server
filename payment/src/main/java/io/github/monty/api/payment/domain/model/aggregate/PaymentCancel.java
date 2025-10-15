@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "PAYMENT_CANCEL")
+@Table(name = "PAYMENT_CANCEL", schema = "payment")
 public class PaymentCancel extends BaseEntity {
 
     public PaymentCancel(Payment payment, long cancelAmount, String reason, PaymentCancelType paymentCancelType) {
