@@ -123,7 +123,6 @@ dependencyManagement {
 
 tasks.register('LOCAL_DATABASE_SETUP', Exec) {
     description 'build local develop setup on docker'
-    println "${projectDir}/src/main/resources/db/docker-compose.yaml"
     commandLine 'docker-compose', '-f', "${projectDir}/src/main/resources/db/docker-compose.yaml", '-p', 'backend-api-server-local', 'up', '-d'
     group 'build setup'
 }

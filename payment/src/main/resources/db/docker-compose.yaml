@@ -1,5 +1,5 @@
 services:
-  content_local_database_postgres:
+  payment_local_database:
     platform: linux/x86_64
     image: postgres:13
     hostname: payment_local_database
