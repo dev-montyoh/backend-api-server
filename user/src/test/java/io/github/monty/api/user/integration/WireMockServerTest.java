@@ -2,7 +2,7 @@ package io.github.monty.api.user.integration;
 
 import io.github.monty.api.user.common.utils.EncryptUtil;
 import io.github.monty.api.user.domain.model.aggregate.Member;
-import io.github.monty.api.user.domain.repository.UserRepository;
+import io.github.monty.api.user.domain.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class WireMockServerTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -37,6 +37,6 @@ public class WireMockServerTest {
                 .loginId(loginId)
                 .password(encryptedPassword)
                 .build();
-        userRepository.save(member);
+        memberRepository.save(member);
     }
 }

@@ -5,7 +5,7 @@ import io.github.monty.api.user.common.exception.ApplicationException;
 import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.model.vo.AuthCreateTokenVo;
 import io.github.monty.api.user.domain.repository.AuthRepository;
-import io.github.monty.api.user.domain.repository.UserRepository;
+import io.github.monty.api.user.domain.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class AuthCreateTokenServiceTest {
     private AuthCreateTokenService authCreateTokenService;
 
     @Mock
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
     @Mock
     private AuthRepository authRepository;
 
@@ -39,7 +39,7 @@ class AuthCreateTokenServiceTest {
         Member member = Member.builder()
                 .userNo("testUserNo")
                 .build();
-        given(userRepository.findByLoginId(anyString())).willReturn(Optional.of(member));
+        given(memberRepository.findByLoginId(anyString())).willReturn(Optional.of(member));
         AuthCreateTokenVo authCreateTokenVo = AuthCreateTokenVo.builder()
                 .accessToken("testAccessToken")
                 .refreshToken("testRefreshToken")

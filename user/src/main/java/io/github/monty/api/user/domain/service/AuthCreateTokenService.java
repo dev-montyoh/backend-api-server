@@ -5,7 +5,7 @@ import io.github.monty.api.user.common.exception.ApplicationException;
 import io.github.monty.api.user.domain.model.aggregate.Member;
 import io.github.monty.api.user.domain.model.vo.AuthCreateTokenVo;
 import io.github.monty.api.user.domain.repository.AuthRepository;
-import io.github.monty.api.user.domain.repository.UserRepository;
+import io.github.monty.api.user.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthCreateTokenService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final AuthRepository authRepository;
 
     /**
@@ -27,7 +27,7 @@ public class AuthCreateTokenService {
      * @return 토큰 생성 결과
      */
     public AuthCreateTokenVo getTokens(String loginId) {
-        Member member = userRepository.findByLoginId(loginId)
+        Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_USER_INFO));
 
         return authRepository.createAccessTokenAndRefreshToken(member.getUserNo());

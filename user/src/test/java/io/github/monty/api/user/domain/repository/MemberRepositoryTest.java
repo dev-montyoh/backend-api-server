@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.yaml")
 @Import({UserRepositoryTestConfig.class})
-class UserRepositoryTest {
+class MemberRepositoryTest {
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("user 조회에 성공한다.")
@@ -31,10 +31,10 @@ class UserRepositoryTest {
                 .userNo("testUserNo")
                 .loginId("testLoginId")
                 .build();
-        userRepository.save(member);
+        memberRepository.save(member);
 
         //  when
-        Optional<Member> result = userRepository.findByUserNo(member.getUserNo());
+        Optional<Member> result = memberRepository.findByUserNo(member.getUserNo());
 
         //  then
         assertTrue(result.isPresent());

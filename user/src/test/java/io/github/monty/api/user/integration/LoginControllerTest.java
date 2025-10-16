@@ -1,8 +1,8 @@
 package io.github.monty.api.user.integration;
 
 import io.github.monty.api.user.interfaces.rest.constants.UserApiUrl;
-import io.github.monty.api.user.interfaces.rest.dto.UserLoginReqDto;
-import io.github.monty.api.user.interfaces.rest.dto.UserLoginRspDto;
+import io.github.monty.api.user.interfaces.rest.dto.MemberLoginReqDto;
+import io.github.monty.api.user.interfaces.rest.dto.MemberLoginRspDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -25,22 +25,22 @@ public class LoginControllerTest extends WireMockServerTest {
         String loginId = "testLoginId";
         String password = "testPassword";
         this.insertUserData(userNo, loginId, password);
-        UserLoginReqDto userLoginReqDto = UserLoginReqDto.builder()
+        MemberLoginReqDto memberLoginReqDto = MemberLoginReqDto.builder()
                 .loginId(loginId)
                 .password(password)
                 .build();
-        HttpEntity<UserLoginReqDto> requestHttpEntity = new HttpEntity<>(userLoginReqDto);
+        HttpEntity<MemberLoginReqDto> requestHttpEntity = new HttpEntity<>(memberLoginReqDto);
 
         //  when
-        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
-        Optional<UserLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
+        ResponseEntity<MemberLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, MemberLoginRspDto.class);
+        Optional<MemberLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then
         assertAll(
                 () -> assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK),
                 () -> assertTrue(actual.isPresent()),
-                () -> assertTrue(actual.map(UserLoginRspDto::accessToken).isPresent()),
-                () -> assertTrue(actual.map(UserLoginRspDto::refreshToken).isPresent())
+                () -> assertTrue(actual.map(MemberLoginRspDto::accessToken).isPresent()),
+                () -> assertTrue(actual.map(MemberLoginRspDto::refreshToken).isPresent())
         );
     }
 
@@ -51,15 +51,15 @@ public class LoginControllerTest extends WireMockServerTest {
         String loginId = "testLoginId";
         String password = "testPassword";
 
-        UserLoginReqDto userLoginReqDto = UserLoginReqDto.builder()
+        MemberLoginReqDto memberLoginReqDto = MemberLoginReqDto.builder()
                 .loginId(loginId)
                 .password(password)
                 .build();
-        HttpEntity<UserLoginReqDto> requestHttpEntity = new HttpEntity<>(userLoginReqDto);
+        HttpEntity<MemberLoginReqDto> requestHttpEntity = new HttpEntity<>(memberLoginReqDto);
 
         //  when
-        ResponseEntity<UserLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, UserLoginRspDto.class);
-        Optional<UserLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
+        ResponseEntity<MemberLoginRspDto> responseEntity = restTemplate.postForEntity(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_LOGIN_URL, requestHttpEntity, MemberLoginRspDto.class);
+        Optional<MemberLoginRspDto> actual = Optional.ofNullable(responseEntity.getBody());
 
         //  then
         assertAll(

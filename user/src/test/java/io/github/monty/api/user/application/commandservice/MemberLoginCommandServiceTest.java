@@ -1,9 +1,9 @@
 package io.github.monty.api.user.application.commandservice;
 
-import io.github.monty.api.user.domain.model.command.UserLoginCommand;
+import io.github.monty.api.user.domain.model.command.MemberLoginCommand;
 import io.github.monty.api.user.domain.model.vo.AuthCreateTokenVo;
 import io.github.monty.api.user.domain.service.AuthCreateTokenService;
-import io.github.monty.api.user.domain.service.UserVerifyPasswordService;
+import io.github.monty.api.user.domain.service.MemberVerifyPasswordService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +19,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class UserLoginCommandServiceTest {
+class MemberLoginCommandServiceTest {
     @InjectMocks
-    private UserLoginCommandService userLoginCommandService;
+    private MemberLoginCommandService memberLoginCommandService;
 
     @Mock
-    private UserVerifyPasswordService userVerifyPasswordService;
+    private MemberVerifyPasswordService memberVerifyPasswordService;
 
     @Mock
     private AuthCreateTokenService authCreateTokenService;
@@ -38,19 +38,19 @@ class UserLoginCommandServiceTest {
                 .refreshToken("testRefreshToken")
                 .build();
         given(authCreateTokenService.getTokens(anyString())).willReturn(authCreateTokenVo);
-        UserLoginCommand userLoginCommand = UserLoginCommand.builder()
+        MemberLoginCommand memberLoginCommand = MemberLoginCommand.builder()
                 .loginId("testLoginId")
                 .password("testPassword")
                 .build();
 
         //  when
-        AuthCreateTokenVo actual = userLoginCommandService.login(userLoginCommand);
+        AuthCreateTokenVo actual = memberLoginCommandService.login(memberLoginCommand);
 
         //  then
         assertAll(
                 () -> assertThat(actual.accessToken()).isEqualTo(authCreateTokenVo.accessToken()),
                 () -> assertThat(actual.refreshToken()).isEqualTo(authCreateTokenVo.refreshToken()),
-                () -> verify(userVerifyPasswordService, times(1)).verifyPassword(anyString(), anyString())
+                () -> verify(memberVerifyPasswordService, times(1)).verifyPassword(anyString(), anyString())
         );
     }
 }
