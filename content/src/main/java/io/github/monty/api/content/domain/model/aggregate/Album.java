@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "content_album")
+@Table(name = "content_album", schema = "content")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

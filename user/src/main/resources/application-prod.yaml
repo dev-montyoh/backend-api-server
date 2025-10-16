@@ -1,14 +1,15 @@
-# develop 용 Spring Profile
 spring:
   config:
     activate:
-      on-profile: develop
+      on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
-    #    TODO: Secret Values
-    username:
-    password:
+    url: ${DB_PROD_URL}
+    username: ${DB_PROD_USERNAME}
+    password: ${DB_PROD_PASSWORD}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 3
   jpa:
     hibernate:
       ddl-auto: validate
