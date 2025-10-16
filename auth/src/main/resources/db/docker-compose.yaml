@@ -1,23 +1,20 @@
 services:
   auth_local_database:
     platform: linux/x86_64
-    image: mysql:8.0
+    image: postgres:13
     hostname: auth_local_database
     container_name: auth_local_database
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: welcome
+      POSTGRES_PASSWORD: welcome
     ports:
-      - "13306:3306"
+      - "15432:5432"
     volumes:
       - ./database/schema_initialisation.sql:/docker-entrypoint-initdb.d/schema_initialisation.sql
     command:
-      - --default-time-zone=Asia/Seoul
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --character-set-client-handshake=0
-      - --slow-query-log=ON
-      - --long-query-time=2
+      - postgres
+      - -c
+      - log_min_duration_statement=2000
 
   auth_local_redis:
     platform: linux/x86_64
@@ -25,10 +22,13 @@ services:
     hostname: auth_local_redis
     container_name: auth_local_redis
     restart: always
+    environment:
+      REDIS_PASSWORD: welcome
     ports:
       - "16379:6379"
     networks:
       - backend-api-server-redis-network
+    command: ["redis-server", "--requirepass", "welcome"]
 
 networks:
   backend-api-server-redis-network:

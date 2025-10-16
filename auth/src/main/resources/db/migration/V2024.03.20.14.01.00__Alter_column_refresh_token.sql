@@ -1,1 +1,0 @@
-ALTER TABLE auth MODIFY refresh_token VARCHAR(255);

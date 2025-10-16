@@ -1,4 +1,4 @@
-create database `auth`;
-create member `auth` identified by 'welcome';
-grant all privileges on `auth`.* to `auth`;
-grant super on *.* to `auth`;
+CREATE DATABASE "auth";
+CREATE USER "auth" WITH PASSWORD 'welcome';
+GRANT ALL PRIVILEGES ON DATABASE "auth" TO "auth";
+ALTER USER "auth" WITH SUPERUSER;

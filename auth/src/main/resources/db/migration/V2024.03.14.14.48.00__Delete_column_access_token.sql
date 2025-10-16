@@ -1,1 +1,0 @@
-ALTER TABLE auth DROP access_token;
