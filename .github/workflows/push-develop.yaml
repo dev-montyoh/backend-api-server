@@ -63,5 +63,3 @@ jobs:
         uses: ./.github/actions/package_push
         with:
           target: ${{matrix.service}}
-
-      # TODO: EC2 접근 후 각 서비스 업데이트
