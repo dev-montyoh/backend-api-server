@@ -89,8 +89,8 @@ jobs:
       - name: Service ${{matrix.service}} Build Docker Image
         if: steps.changed.outputs.any_changed == 'true'
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:latest \
-          -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:${{ github.run_number }} .
+          cd .github/docker
+          ./package.sh ${{ inputs.target }} master ${{ github.run_number }} ${{ github.repository_owner }}
 
       # Docker Push
       - name: Deploy
