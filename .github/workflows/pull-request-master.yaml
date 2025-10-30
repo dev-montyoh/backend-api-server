@@ -64,20 +64,6 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      #      # 각 모듈 패키징 작업
-      #      - name: Service ${{matrix.service}} package
-      #        if: steps.changed.outputs.any_changed == 'true'
-      #        uses: ./.github/actions/package
-      #        with:
-      #          target: ${{matrix.service}}
-      #
-      #      # 각 모듈 Docker 이미지 생성 및 Github Registry 배포
-      #      - name: Service ${{matrix.service}} docker image upload
-      #        if: steps.changed.outputs.any_changed == 'true'
-      #        uses: ./.github/actions/package_push
-      #        with:
-      #          target: ${{matrix.service}}
-
       # 애플리케이션 빌드
       - name: Service ${{matrix.service}} Gradle build jar
         if: steps.changed.outputs.any_changed == 'true'
@@ -93,7 +79,7 @@ jobs:
           ./package.sh ${{ matrix.service }} master ${{ github.run_number }} ${{ github.repository_owner }}
 
       # Docker Push
-      - name: Deploy
+      - name: Service ${{matrix.service}} Push Docker Image
         if: steps.changed.outputs.any_changed == 'true'
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:latest
