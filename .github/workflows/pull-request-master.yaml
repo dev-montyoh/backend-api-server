@@ -1,4 +1,4 @@
-name: Push Workflow (develop)
+name: Pull Request Workflow (master)
 
 on:
   pull_request:
@@ -82,7 +82,7 @@ jobs:
       - name: Service ${{matrix.service}} Gradle build jar
         if: steps.changed.outputs.any_changed == 'true'
         run: |
-          cd ${{maxtix.service}}
+          cd ${{matrix.service}}
           ./gradlew bootJar
 
       # Docker Image Build
