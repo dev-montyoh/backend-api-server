@@ -90,7 +90,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd .github/docker
-          ./package.sh ${{ inputs.target }} master ${{ github.run_number }} ${{ github.repository_owner }}
+          ./package.sh ${{ matrix.service }} master ${{ github.run_number }} ${{ github.repository_owner }}
 
       # Docker Push
       - name: Deploy
