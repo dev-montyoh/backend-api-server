@@ -1,6 +1,7 @@
 whitelist:
   urls:
     - "/swagger-ui"
+    - "/healthcheck"
     - "/user/v1/users/login"
     - "/user/monitor/healthcheck"
     - "/content/v1/public/**"
