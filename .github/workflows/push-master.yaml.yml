@@ -58,22 +58,17 @@ jobs:
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
           DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
           TARGET_SERVICE: ${{ matrix.service }}
-          JWT_SECRET_KEY: ${{env.JWT_SECRET_KEY}}
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key_path: ./secrets-store/key/ec2-ssh-key
-          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,JWT_SECRET_KEY,TARGET_SERVICE
+          allenvs: true
+          envs: "*"
           script: |
             # 기존 서비스 및 이미지 삭제
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
-
-            # 실행에 필요한 각 환경변수 등록
-            for pair in "${env[@]}"; do
-              export "$pair"
-            done
 
             # docker-compose.yml 연결 및 특정 서비스 시작
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin

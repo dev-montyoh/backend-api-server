@@ -24,7 +24,10 @@ public class PaymentRouteConfig {
         return builder.routes()
                 .route(
                         route -> route.path("/api/payment/**")
-                                .uri(paymentUrl)
+                                .filters(f -> f.rewritePath(
+                                        "/api/payment/(?<segment>.*)",
+                                        "/payment/${segment}"
+                                )).uri(paymentUrl)
                 )
                 .build()
                 ;
