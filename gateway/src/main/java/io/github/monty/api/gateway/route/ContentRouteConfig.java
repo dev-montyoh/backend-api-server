@@ -24,7 +24,7 @@ public class ContentRouteConfig {
         return builder.routes()
                 .route(
                     route -> route
-                            .path("/content/**")
+                            .path("/api/content/**")
                             .uri(contentUrl)
                 )
                 .build()
