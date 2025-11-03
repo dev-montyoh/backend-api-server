@@ -24,7 +24,7 @@ public class AuthRouteConfig {
         return builder.routes()
                 .route(
                         route -> route
-                                .path("/auth/**")
+                                .path("/api/auth/**")
                                 .uri(authUrl)
                 )
                 .build()
