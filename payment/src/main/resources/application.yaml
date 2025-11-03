@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: local # default profile
+    group:
+      local:
+        - common
+      test:
+        - common
+      develop:
+        - common
+
+---
+# 공통
+spring:
+  config:
+    activate:
+      on-profile: common
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+server:
+  port: 3003
+
+springdoc:
+  swagger-ui:
+    path: /docs

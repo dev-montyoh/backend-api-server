@@ -1,0 +1,17 @@
+services:
+  content_local_database_postgres:
+    platform: linux/x86_64
+    image: postgres:13
+    hostname: payment_local_database
+    container_name: payment_local_database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: welcome
+    ports:
+      - "43306:5432"
+    volumes:
+      - ./database/schema_initialisation.sql:/docker-entrypoint-initdb.d/schema_initialisation.sql
+    command:
+      - postgres
+      - -c
+      - log_min_duration_statement=2000

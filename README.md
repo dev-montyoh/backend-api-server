@@ -1,11 +1,17 @@
 # Backend API Server 
 개인 프로젝트에 쓰이는 Backend 서버  
 
+## 서비스 구성
+![backend-api-server](assets/backend-api-server.drawio.png)
+
+## CICD 구성  
+![CICD](assets/cicd.drawio.png)
+
 ---
 ## Getting Started
-깃허브 URL: https://github.com/Monty-Oh/inmemory  
-HTTPS clone URL: https://github.com/Monty-Oh/inmemory.git  
-깃허브 프로젝트 URL: https://github.com/users/Monty-Oh/projects/4
+깃허브 URL: https://github.com/dev-montyoh/backend-api-server  
+HTTPS clone URL: https://github.com/dev-montyoh/backend-api-server.git  
+깃허브 프로젝트 URL: https://github.com/users/dev-montyoh/projects/4
 
 ---
 ## Local 개발 환경 구성
@@ -13,7 +19,7 @@ HTTPS clone URL: https://github.com/Monty-Oh/inmemory.git
 ```
 1. IDE는 IntelliJ 를 사용함.
 
-2. 깃 클론 -> 개발하려고 하는 모듈의 build.gradle 우클릭 -> Link Gradle Project 클릭 -> gradle build 확인 후 진행
+2. Git Clone -> 각 서비스의 build.gradle 우클릭 -> Link Gradle Project 클릭 -> gradle build 확인 후 진행
 ```
 
 ### Docker 사용 시
@@ -44,8 +50,7 @@ HTTPS clone URL: https://github.com/Monty-Oh/inmemory.git
 4. Application 실행
 ```
 
-## Git Flow
-### branch 구조
+## branch 전략
 ```
 origin
     ㄴ master
@@ -56,10 +61,10 @@ origin
 ```
 ```
 1. develop 기준으로 features/branch1... 와 같이 브랜치 생성
-
-2. 개발 완료 후 develop 으로 Pull Request 생성, Merge
-
-(추후 변경 예정)
+2. 개발 완료 후 develop 으로 Pull Request 생성
+3. Github Actions 에서 각 모듈 Build 성공 확인
+4. develop 을 master 로 Pull Request 생성, 및 Merge
+5. Github Actions 에서 각 모듈 BUild 성공 및 Docker Image 생성 확인
 ```
 
 ---

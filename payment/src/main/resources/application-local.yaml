@@ -1,0 +1,21 @@
+# local 용 Spring Profile
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:43306/payment
+    username: payment
+    password: welcome
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+    validate-migration-naming: true
+    schemas: payment
+    default-schema: payment
+server:
+  port: 3003

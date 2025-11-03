@@ -18,4 +18,8 @@ spring:
   flyway:
     enabled: false
 server:
-  port: 8080
+  port: 3002
+
+springdoc:
+  swagger-ui:
+    path: /docs

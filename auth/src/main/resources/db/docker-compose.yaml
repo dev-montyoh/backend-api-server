@@ -1,5 +1,3 @@
-version: '0.1'
-
 services:
   auth_local_database:
     platform: linux/x86_64
@@ -30,8 +28,8 @@ services:
     ports:
       - "16379:6379"
     networks:
-      - inmemory-redis-network
+      - backend-api-server-redis-network
 
 networks:
-  inmemory-redis-network:
+  backend-api-server-redis-network:
     driver: bridge

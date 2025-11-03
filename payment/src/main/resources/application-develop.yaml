@@ -1,0 +1,21 @@
+# develop 용 Spring Profile
+spring:
+  config:
+    activate:
+      on-profile: develop
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+#    TODO: Secret Values
+    username:
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    validate-migration-naming: true
+    schemas: payment
+    default-schema: payment
+server:
+  port: 3003

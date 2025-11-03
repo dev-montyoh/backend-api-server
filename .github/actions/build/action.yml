@@ -1,0 +1,17 @@
+name: Build Workflow
+description: "Gradle Build Module"
+
+inputs:
+  target:
+    description: "Gradle Build Target"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Gradle Build (${{ inputs.target }})
+      run: |
+        cd ${{ inputs.target }}
+        chmod +x ./gradlew
+        ./gradlew build
+      shell: bash
