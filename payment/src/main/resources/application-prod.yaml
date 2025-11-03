@@ -1,14 +1,13 @@
-# develop 용 Spring Profile
+# prod 용 Spring Profile
 spring:
   config:
     activate:
-      on-profile: develop
+      on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
-#    TODO: Secret Values
-    username:
-    password:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -19,3 +18,7 @@ spring:
     default-schema: payment
 server:
   port: 3003
+
+logging:
+  level:
+    root: error
