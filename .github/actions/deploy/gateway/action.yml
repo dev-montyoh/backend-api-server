@@ -43,5 +43,10 @@ runs:
           echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
           cd /home/ec2-user/app
           curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+          
+          # 환경변수 주입
+          export JWT_SECRET_KEY=$JWT_SECRET_KEY
+          
+          # Docker 실행
           docker-compose pull backend-api-server-gateway
           docker-compose up -d backend-api-server-gateway
