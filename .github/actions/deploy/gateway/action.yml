@@ -1,0 +1,47 @@
+name: deploy application gateway
+description: Deploy Service
+
+inputs:
+  DOCKER_REGISTRY_USERNAME:
+    description: Target Docker Registry User Name
+    required: false
+    default: ${{ github.repository_owner }}
+  DOCKER_REGISTRY_ACCESS_TOKEN:
+    description: Docker Registry Access Token
+    required: true
+  JWT_SECRET_KEY:
+    description: Auth Token Secret Key
+    required: true
+  EC2_PUBLIC_IP:
+    description: EC2 Container Public IP
+    required: true
+  EC2_SSH_KEY_PATH:
+    description: EC2 SSH Access Key
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Deploy Gateway Service
+      uses: appleboy/ssh-action@v1
+      env:
+        DOCKER_REGISTRY_ACCESS_TOKEN: ${{ inputs.DOCKER_REGISTRY_ACCESS_TOKEN }}
+        DOCKER_REGISTRY_USERNAME: ${{ inputs.DOCKER_REGISTRY_USERNAME }}
+        JWT_SECRET_KEY: ${{JWT_SECRET_KEY}}
+      with:
+        host: ${{ inputs.EC2_PUBLIC_IP }}
+        username: ec2-user
+        key_path: ${{ inputs.EC2_SSH_KEY_PATH }}
+        envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,JWT_SECRET_KEY
+        script: |
+          # 기존 서비스 및 이미지 삭제
+          docker ps -q --filter "name=backend-api-server-gateway" | xargs -r docker stop
+          docker ps -a -q --filter "name=backend-api-server-gateway" | xargs -r docker rm
+          docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-gateway:latest | xargs -r docker rmi -f
+          
+          # docker-compose.yml 연결 및 특정 서비스 시작
+          echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+          cd /home/ec2-user/app
+          curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+          docker-compose pull backend-api-server-gateway
+          docker-compose up -d backend-api-server-gateway
