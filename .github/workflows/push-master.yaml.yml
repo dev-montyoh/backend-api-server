@@ -10,12 +10,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ auth, content, gateway, payment, user ]
+        # 임시 gateway 하나만 지정
+        service: [ gateway ]
+    #        service: [ auth, content, gateway, payment, user ]
 
     steps:
       # 코드 체크아웃
       - name: Check out repository
         uses: actions/checkout@v4
+
+      # 외부 private secrets store 접근
+      - name: Check out Secrets store
+        uses: actions/checkout@v5
+        with:
+          repository: 'dev-montyoh/secrets-store'
+          token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+          path: secrets-store
+
+      # 외부 private secrets store 로드
+      - name: Load secrets
+        uses: ./secrets-store/.github/actions/load-secrets
+        with:
+          SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
 
       # Github Registry 로그인
       - name: Log in to Github Registry
@@ -23,12 +39,29 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
-      # 서비스 배포
-      - name: Deploy ${{matrix.service}} service
-        uses: ./.github/actions/deploy
+      # SSH 연결
+      - name: Set up SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+          TARGET_SERVICE: ${{ matrix.service }}
         with:
-          target: ${{matrix.service}}
+          host: ${{ env.EC2_PUBLIC_IP }}
+          username: ec2-user
+          key_path: ./secrets-store/key/ec2-ssh-key
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME
+          script: |
+            # 기존 서비스 및 이미지 삭제
+            docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
+            docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
+            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
 
-# TODO: EC2 접근 후 각 서비스 업데이트
+            # docker-compose.yml 연결 및 특정 서비스 시작
+            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+            cd /home/ec2-user/app
+            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+            docker-compose pull backend-api-server-$TARGET_SERVICE
+            docker-compose up -d backend-api-server-$TARGET_SERVICE

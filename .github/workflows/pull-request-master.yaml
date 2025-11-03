@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ auth, content, gateway, payment, user ]
+        # 임시 payment 하나만 지정
+        service: [ gateway ]
+#        service: [ auth, content, gateway, payment, user ]
 
     steps:
       # 코드 체크아웃
@@ -76,7 +78,7 @@ jobs:
         if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd .github/docker
-          ./package.sh ${{ matrix.service }} master ${{ github.run_number }} ${{ github.repository_owner }}
+          ./package.sh ${{ matrix.service }} prod ${{ github.run_number }} ${{ github.repository_owner }}
 
       # Docker Push
       - name: Service ${{matrix.service}} Push Docker Image
