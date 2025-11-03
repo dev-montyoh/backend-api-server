@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+  # 배포 테스트 임시 추가
+  pull_request:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -51,28 +55,33 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
-      # SSH 연결
-      - name: Set up SSH
-        uses: appleboy/ssh-action@v1
+      - name: Deploy to EC2
         env:
+          EC2_KEY_PATH: ./secrets-store/key/ec2-ssh-key
+          EC2_USER: ec2-user
+          EC2_HOST: ${{ env.EC2_PUBLIC_IP }}
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
           DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
           TARGET_SERVICE: ${{ matrix.service }}
-        with:
-          host: ${{ env.EC2_PUBLIC_IP }}
-          username: ec2-user
-          key_path: ./secrets-store/key/ec2-ssh-key
-          allenvs: true
-          envs: "*"
-          script: |
+        run: |
+          chmod 600 $EC2_KEY_PATH
+          
+          # SSH 연결 후 배포
+          ssh -o StrictHostKeyChecking=no -i $EC2_KEY_PATH $EC2_USER@$EC2_HOST '
+            # 환경변수 모두 export
+            set -a
+            '"$(env)"'
+            set +a
+          
             # 기존 서비스 및 이미지 삭제
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
-
+          
             # docker-compose.yml 연결 및 특정 서비스 시작
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
             cd /home/ec2-user/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
             docker-compose pull backend-api-server-$TARGET_SERVICE
             docker-compose up -d backend-api-server-$TARGET_SERVICE
+          '
