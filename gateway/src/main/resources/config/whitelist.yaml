@@ -1,7 +1,11 @@
 whitelist:
   urls:
     - "/swagger-ui"
-    - "/api/gateway/healthcheck"
+    - "/api/healthcheck"
+    - "/api/auth/healthcheck"
+    - "/api/content/healthcheck"
+    - "/api/payment/healthcheck"
+    - "/api/user/healthcheck"
     - "/user/v1/users/login"
     - "/user/monitor/healthcheck"
     - "/content/v1/public/**"
