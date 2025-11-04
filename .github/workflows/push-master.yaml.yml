@@ -67,6 +67,9 @@ jobs:
       # 3. SSH 접속 및 export 실행
       - name: Export ENV and Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1
+        # env: 필드는 appleboy/ssh-action의 with: envs:와 함께 사용하는 것이 일반적이지만,
+        # 모든 변수를 JSON으로 전달하므로 이 부분은 삭제하거나 유지할 수 있습니다.
+        # 여기서는 유지한다고 가정합니다.
         env:
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
           DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
@@ -80,27 +83,73 @@ jobs:
             # 1. GitHub Actions에서 전달받은 JSON 문자열 변수를 쉘 변수에 할당
             ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
 
-            # 2. jq를 사용하여 반복문으로 환경 변수 export 명령어 생성 및 실행
-            echo "$ENV_JSON" | jq -r 'to_entries[] | "export \(.key)=\"\(.value)\""' | while read -r export_cmd
-            do
-              # GITHUB_*, RUNNER_* 등 불필요한 기본 변수는 제외하고 사용자 정의 변수만 export
-              if [[ ! "$export_cmd" =~ ^export\ GITHUB_ || ! "$export_cmd" =~ ^export\ RUNNER_ ]]; then
-                 echo "Executing: $export_cmd"
-                 eval $export_cmd
-              fi
-            done
+            # 2. (핵심 수정) jq를 사용하여 'export KEY="VALUE";' 형태의 단일 문자열을 메인 쉘에서 실행합니다.
+            #    이 명령어는 GITHUB_*, RUNNER_* 변수를 제외하고 export 명령을 메이 쉘에 적용합니다.
+            eval $(echo "$ENV_JSON" | jq -r '
+              to_entries[] 
+              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
+              | "export \(.key)=\"\(.value)\";"
+            ' | tr -d '\n')
             
-            # 기존 서비스 및 이미지 삭제
+            # --- Environment check --- (디버깅용)
+            echo "--- Environment check ---"
+            echo "JWT_SECRET_KEY is: $JWT_SECRET_KEY" 
+            echo "DB_URL is: $DB_URL"
+            # --- (디버깅 끝) ---
+            
+            # 3. 기존 서비스 및 이미지 삭제 (동작하는지 확인했으므로 유지)
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
             
-            # docker-compose.yml 연결 및 특정 서비스 시작
+            # 4. docker login 및 docker-compose 실행 (변수 사용)
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
             cd /home/ec2-user/app
+            # curl은 변수를 사용하지 않으므로 그대로 둡니다.
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+            
+            # docker-compose 실행 시 JWT_SECRET_KEY 변수를 포함하여 실행합니다.
+            # 이 시점에 메인 쉘에 변수가 설정되어 있으므로 docker-compose가 상속받아 사용합니다.
             docker-compose pull backend-api-server-$TARGET_SERVICE
             docker-compose up -d backend-api-server-$TARGET_SERVICE
+
+#      # 3. SSH 접속 및 export 실행
+#      - name: Export ENV and Run Docker Compose on EC2
+#        uses: appleboy/ssh-action@v1
+#        env:
+#          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+#          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+#          TARGET_SERVICE: ${{ matrix.service }}
+#        with:
+#          host: ${{ env.EC2_PUBLIC_IP }}
+#          username: ec2-user
+#          key_path: ./secrets-store/key/ec2-ssh-key
+#          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
+#          script: |
+#            # 1. GitHub Actions에서 전달받은 JSON 문자열 변수를 쉘 변수에 할당
+#            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
+#
+#            # 2. jq를 사용하여 반복문으로 환경 변수 export 명령어 생성 및 실행
+#            echo "$ENV_JSON" | jq -r 'to_entries[] | "export \(.key)=\"\(.value)\""' | while read -r export_cmd
+#            do
+#              # GITHUB_*, RUNNER_* 등 불필요한 기본 변수는 제외하고 사용자 정의 변수만 export
+#              if [[ ! "$export_cmd" =~ ^export\ GITHUB_ || ! "$export_cmd" =~ ^export\ RUNNER_ ]]; then
+#                 echo "Executing: $export_cmd"
+#                 eval $export_cmd
+#              fi
+#            done
+#
+#            # 기존 서비스 및 이미지 삭제
+#            docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
+#            docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
+#            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
+#
+#            # docker-compose.yml 연결 및 특정 서비스 시작
+#            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+#            cd /home/ec2-user/app
+#            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+#            docker-compose pull backend-api-server-$TARGET_SERVICE
+#            docker-compose up -d backend-api-server-$TARGET_SERVICE
 
       # SSH 연결
 #      - name: Set up SSH
