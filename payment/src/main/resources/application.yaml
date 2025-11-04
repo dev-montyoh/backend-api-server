@@ -6,7 +6,7 @@ spring:
         - common
       test:
         - common
-      develop:
+      prod:
         - common
 
 ---

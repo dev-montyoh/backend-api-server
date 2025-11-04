@@ -6,7 +6,7 @@ spring:
         - common
       unit-test:
         - common
-      develop:
+      prod:
         - common
   config:
     import:
