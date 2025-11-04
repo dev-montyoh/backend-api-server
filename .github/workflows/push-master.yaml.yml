@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - master
-  # 배포 테스트 임시 추가
-  pull_request:
-    branches:
-      - master
 
 jobs:
   deploy:
@@ -70,9 +66,6 @@ jobs:
           envs: "*"
           script: |
             # 기존 서비스 및 이미지 삭제
-            echo "$DOCKER_REGISTRY_ACCESS_TOKEN"
-            echo "$DOCKER_REGISTRY_USERNAME"
-            echo "$DB_URL"
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
