@@ -50,7 +50,7 @@ jobs:
 
       # JDK 설정
       - name: Setup JDK 19
-        if: steps.changed.outputs.any_changed == 'true'
+        #if: steps.changed.outputs.any_changed == 'true'
         uses: actions/setup-java@v5
         with:
           java-version: '19'
@@ -58,7 +58,7 @@ jobs:
 
       # Gradle 캐시 설정
       - name: Setup Gradle Cache
-        if: steps.changed.outputs.any_changed == 'true'
+        #if: steps.changed.outputs.any_changed == 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -68,21 +68,21 @@ jobs:
 
       # 애플리케이션 빌드
       - name: Service ${{matrix.service}} Gradle build jar
-        if: steps.changed.outputs.any_changed == 'true'
+        #if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd ${{matrix.service}}
           ./gradlew bootJar
 
       # Docker Image Build
       - name: Service ${{matrix.service}} Build Docker Image
-        if: steps.changed.outputs.any_changed == 'true'
+        #if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd .github/docker
           ./package.sh ${{ matrix.service }} prod ${{ github.run_number }} ${{ github.repository_owner }}
 
       # Docker Push
       - name: Service ${{matrix.service}} Push Docker Image
-        if: steps.changed.outputs.any_changed == 'true'
+        #if: steps.changed.outputs.any_changed == 'true'
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:latest
           docker push ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:${{ github.run_number }}
