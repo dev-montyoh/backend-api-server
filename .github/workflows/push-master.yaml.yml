@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         # 임시 gateway 하나만 지정
-        service: [ gateway ]
+        service: [ gateway, payment ]
     #        service: [ auth, content, gateway, payment, user ]
 
     steps:
@@ -28,7 +28,7 @@ jobs:
 
       # 외부 private secrets store 접근
       - name: Check out Secrets store
-        #if: steps.changed.outputs.any_changed == 'true'
+        if: steps.changed.outputs.any_changed == 'true'
         uses: actions/checkout@v5
         with:
           repository: 'dev-montyoh/secrets-store'
@@ -37,22 +37,30 @@ jobs:
 
       # 외부 private secrets store 로드
       - name: Load secrets
-        #if: steps.changed.outputs.any_changed == 'true'
+        if: steps.changed.outputs.any_changed == 'true'
         uses: ./secrets-store/.github/actions/load-secrets
         with:
           SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
 
       # Github Registry 로그인
       - name: Log in to Github Registry
-        #if: steps.changed.outputs.any_changed == 'true'
+        if: steps.changed.outputs.any_changed == 'true'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
-      # SSH 연결
-      - name: Set up SSH
+      # 모든 환경 변수를 JSON 문자열로 변환하여 변수에 저장
+      - name: ENV to JSON
+        if: steps.changed.outputs.any_changed == 'true'
+        id: set_env_json
+        run: |
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      # 서비스 배포
+      - name: Deploy
+        if: steps.changed.outputs.any_changed == 'true'
         uses: appleboy/ssh-action@v1
         env:
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
@@ -62,14 +70,21 @@ jobs:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key_path: ./secrets-store/key/ec2-ssh-key
-          allenvs: true
-          envs: "*"
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
           script: |
+            # 애플리케이션 환경변수 Export
+            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
+            eval $(echo "$ENV_JSON" | jq -r '
+              to_entries[] 
+              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
+              | "export \(.key)=\"\(.value)\";"
+            ' | tr -d '\n')
+            
             # 기존 서비스 및 이미지 삭제
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
-
+            
             # docker-compose.yml 연결 및 특정 서비스 시작
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
             cd /home/ec2-user/app
