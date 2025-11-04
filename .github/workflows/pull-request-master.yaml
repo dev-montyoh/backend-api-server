@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         # 임시 payment 하나만 지정
-        service: [ gateway ]
+        service: [ gateway, payment ]
 #        service: [ auth, content, gateway, payment, user ]
 
     steps:
