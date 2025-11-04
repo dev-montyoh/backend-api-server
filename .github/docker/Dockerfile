@@ -1,5 +1,5 @@
 # Base Image 설정
-FROM openjdk:19
+FROM openjdk:17-jdk-slim
 
 # 입력 변수 설정
 ARG SERVICE_NAME
