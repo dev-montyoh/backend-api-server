@@ -54,18 +54,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
-      # 애플리케이션 실행 환경변수 복사
-      - name: Set ENV vars as JSON string
-        id: set_env_json
-        run: |
-          # env 컨텍스트 전체를 JSON으로 변환합니다.
-          # 주의: GitHub Actions가 기본으로 설정하는 내부 변수들(GITHUB_*, RUNNER_*, HOME 등)도 포함됩니다.
-          # 필요한 변수만 필터링하려면 별도의 스크립트가 필요하지만, 여기서는 전체를 전달하는 예시입니다.
-          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
-
-      # 1. secrets-store에서 변수를 가져와 env에 설정하는 단계 (생략)
-      #    => ${{ env.YOUR_VAR_1 }}, ${{ env.YOUR_VAR_2 }} 등이 설정되어 있다고 가정
-
       # 2. 모든 환경 변수를 JSON 문자열로 변환하여 변수에 저장
       #    secrets-store에서 가져온 환경 변수들은 'env' 컨텍스트에 저장됩니다.
       - name: Set ENV vars as JSON string
