@@ -54,30 +54,76 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
 
-      # SSH 연결
-      - name: Set up SSH
+      # 애플리케이션 실행 환경변수 복사
+      - name: Set ENV vars as JSON string
+        id: set_env_json
+        run: |
+          # env 컨텍스트 전체를 JSON으로 변환합니다.
+          # 주의: GitHub Actions가 기본으로 설정하는 내부 변수들(GITHUB_*, RUNNER_*, HOME 등)도 포함됩니다.
+          # 필요한 변수만 필터링하려면 별도의 스크립트가 필요하지만, 여기서는 전체를 전달하는 예시입니다.
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      # 1. secrets-store에서 변수를 가져와 env에 설정하는 단계 (생략)
+      #    => ${{ env.YOUR_VAR_1 }}, ${{ env.YOUR_VAR_2 }} 등이 설정되어 있다고 가정
+
+      # 2. 모든 환경 변수를 JSON 문자열로 변환하여 변수에 저장
+      #    secrets-store에서 가져온 환경 변수들은 'env' 컨텍스트에 저장됩니다.
+      - name: Set ENV vars as JSON string
+        id: set_env_json
+        run: |
+          # env 컨텍스트 전체를 JSON으로 변환합니다.
+          # 주의: GitHub Actions가 기본으로 설정하는 내부 변수들(GITHUB_*, RUNNER_*, HOME 등)도 포함됩니다.
+          # 필요한 변수만 필터링하려면 별도의 스크립트가 필요하지만, 여기서는 전체를 전달하는 예시입니다.
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      # 3. SSH 접속 및 export 실행
+      - name: Export ENV and Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1
-        env:
-          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
-          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
-          TARGET_SERVICE: ${{ matrix.service }}
-          # JWT_SECRET_KEY: ${{env.JWT_SECRET_KEY}}
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key_path: ./secrets-store/key/ec2-ssh-key
-          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
-          allenvs: true
           script: |
-            # 기존 서비스 및 이미지 삭제
-            echo "TEST: $INPUT_JWT_SECRET_KEY"
-            docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
-            docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
-            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
+            # 1. GitHub Actions에서 전달받은 JSON 문자열 변수를 쉘 변수에 할당
+            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
 
-            # docker-compose.yml 연결 및 특정 서비스 시작
-            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
-            cd /home/ec2-user/app
-            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
-            docker-compose pull backend-api-server-$TARGET_SERVICE
-            docker-compose up -d backend-api-server-$TARGET_SERVICE
+            # 2. jq를 사용하여 반복문으로 환경 변수 export 명령어 생성 및 실행
+            echo "$ENV_JSON" | jq -r 'to_entries[] | "export \(.key)=\"\(.value)\""' | while read -r export_cmd
+            do
+              # GITHUB_*, RUNNER_* 등 불필요한 기본 변수는 제외하고 사용자 정의 변수만 export
+              if [[ ! "$export_cmd" =~ ^export\ GITHUB_ || ! "$export_cmd" =~ ^export\ RUNNER_ ]]; then
+                 echo "Executing: $export_cmd"
+                 eval $export_cmd
+              fi
+            done
+            
+            # 3. export된 환경 변수를 사용하여 Docker Compose 실행
+            echo "--- Environment check ---"
+            echo "JWT_SECRET_KEY is: $JWT_SECRET_KEY"
+
+      # SSH 연결
+#      - name: Set up SSH
+#        uses: appleboy/ssh-action@v1
+#        env:
+#          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+#          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+#          TARGET_SERVICE: ${{ matrix.service }}
+#          JWT_SECRET_KEY: ${{env.JWT_SECRET_KEY}}
+#        with:
+#          host: ${{ env.EC2_PUBLIC_IP }}
+#          username: ec2-user
+#          key_path: ./secrets-store/key/ec2-ssh-key
+#          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,JWT_SECRET_KEY,TARGET_SERVICE
+#          allenvs: true
+#          script: |
+#            # 기존 서비스 및 이미지 삭제
+#            docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
+#            docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
+#            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
+#
+#            # docker-compose.yml 연결 및 특정 서비스 시작
+#            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+#            cd /home/ec2-user/app
+#            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+#            docker-compose pull backend-api-server-$TARGET_SERVICE
+#            docker-compose up -d backend-api-server-$TARGET_SERVICE
