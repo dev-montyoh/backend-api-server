@@ -4,4 +4,4 @@ service:
     secret-key: ${JWT_SECRET_KEY}
 logging:
   level:
-    root: error
+    root: info
