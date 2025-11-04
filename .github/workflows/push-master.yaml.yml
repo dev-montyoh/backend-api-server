@@ -61,15 +61,16 @@ jobs:
           DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
           DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
           TARGET_SERVICE: ${{ matrix.service }}
-          JWT_SECRET_KEY: ${{env.JWT_SECRET_KEY}}
+          # JWT_SECRET_KEY: ${{env.JWT_SECRET_KEY}}
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key_path: ./secrets-store/key/ec2-ssh-key
-          envs: "*"
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
           allenvs: true
           script: |
             # 기존 서비스 및 이미지 삭제
+            echo "TEST: $INPUT_JWT_SECRET_KEY"
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
