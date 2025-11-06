@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PaymentServiceProviderType {
     INICIS("INICIS"),
-    NICEPAY("NICEPAY")
-    ;
+    NICEPAY("NICEPAY");
 
     private final String code;
 
