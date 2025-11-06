@@ -4,5 +4,5 @@ import lombok.Builder;
 import org.springframework.data.domain.Pageable;
 
 @Builder
-public record PaymentLogListQuery (String paymentNo, Pageable pageable) {
+public record PaymentLogListQuery(String paymentNo, Pageable pageable) {
 }

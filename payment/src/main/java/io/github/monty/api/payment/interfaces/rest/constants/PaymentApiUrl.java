@@ -23,4 +23,9 @@ public final class PaymentApiUrl {
         public static final String INICIS_URL = "/payments/inicis";
         public static final String INICIS_SIGNATURE_URL = "/payments/inicis/signature";
     }
+
+    @UtilityClass
+    public static final class System {
+        public static final String HEALTH_CHECK_URL = "/healthcheck";
+    }
 }

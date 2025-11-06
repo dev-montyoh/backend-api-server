@@ -1,0 +1,7 @@
+# prod
+service:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+logging:
+  level:
+    root: info

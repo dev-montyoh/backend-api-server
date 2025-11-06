@@ -1,12 +1,13 @@
+# prod 용 Spring Profile
 spring:
   config:
     activate:
       on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_PROD_URL}
-    username: ${DB_PROD_USERNAME}
-    password: ${DB_PROD_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       minimum-idle: 2
       maximum-pool-size: 3
@@ -20,3 +21,7 @@ spring:
     default-schema: payment
 server:
   port: 3003
+
+logging:
+  level:
+    root: info

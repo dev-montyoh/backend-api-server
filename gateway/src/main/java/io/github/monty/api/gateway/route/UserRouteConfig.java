@@ -24,7 +24,7 @@ public class UserRouteConfig {
         return builder.routes()
                 .route(
                         route -> route
-                                .path("/user/**")
+                                .path("/api/user/**")
                                 .uri(userUrl)
                 )
                 .build()

@@ -6,5 +6,12 @@ whitelist:
     - "/content/v1/public/**"
     - "/auth/v1/token"
 
+    # Health Check
+    - "/api/healthcheck"
+    - "/api/auth/healthcheck"
+    - "/api/content/healthcheck"
+    - "/api/payment/healthcheck"
+    - "/api/user/healthcheck"
+
     # 결제 테스트로 인한 임시 처리
-    - "/payment/**"
+    - "/api/payment/**"

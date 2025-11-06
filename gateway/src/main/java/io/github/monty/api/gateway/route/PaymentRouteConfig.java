@@ -23,8 +23,11 @@ public class PaymentRouteConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route(
-                        route -> route.path("/payment/**")
-                                .uri(paymentUrl)
+                        route -> route.path("/api/payment/**")
+                                .filters(f -> f.rewritePath(
+                                        "/api/payment/(?<segment>.*)",
+                                        "/payment/${segment}"
+                                )).uri(paymentUrl)
                 )
                 .build()
                 ;
