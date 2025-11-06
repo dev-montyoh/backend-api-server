@@ -8,5 +8,4 @@ import lombok.RequiredArgsConstructor;
 public enum PaymentMethod {
 
 
-
 }

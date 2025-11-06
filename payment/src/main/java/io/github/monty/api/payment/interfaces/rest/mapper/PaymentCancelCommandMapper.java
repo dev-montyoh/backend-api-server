@@ -6,7 +6,7 @@ import io.github.monty.api.payment.interfaces.rest.dto.PaymentCancelReqDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config =  MapStructConfig.class)
+@Mapper(config = MapStructConfig.class)
 public interface PaymentCancelCommandMapper {
 
     @Mapping(target = "cancelReason", source = "paymentCancelReqDto.cancelReason")

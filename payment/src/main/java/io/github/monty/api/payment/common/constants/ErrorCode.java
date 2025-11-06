@@ -25,8 +25,7 @@ public enum ErrorCode {
     ERROR_PAYMENT_CANCEL("0105", "결제 취소에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
 
     //  암호화 오류
-    NOT_EXIST_ENCRYPT_ALGORITHM("0004", "서버 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR)
-    ;
+    NOT_EXIST_ENCRYPT_ALGORITHM("0004", "서버 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
 
