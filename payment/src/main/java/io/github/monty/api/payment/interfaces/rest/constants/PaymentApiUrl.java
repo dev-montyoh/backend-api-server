@@ -25,6 +25,12 @@ public final class PaymentApiUrl {
     }
 
     @UtilityClass
+    public static final class Nicepay {
+        public static final String NICEPAY_URL = "/payments/nicepay";
+        public static final String NICEPAY_SIGNATURE_URL = "/payments/nicepay/signature";
+    }
+
+    @UtilityClass
     public static final class System {
         public static final String HEALTH_CHECK_URL = "/healthcheck";
     }

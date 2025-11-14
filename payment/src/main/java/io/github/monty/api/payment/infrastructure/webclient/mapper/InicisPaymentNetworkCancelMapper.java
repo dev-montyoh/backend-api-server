@@ -10,10 +10,6 @@ import org.mapstruct.Mapping;
 public interface InicisPaymentNetworkCancelMapper {
 
     @Mapping(target = "resultMessage", source = "inicisPaymentNetworkCancelResponse.resultMsg")
-    @Mapping(target = "timestamp", source = "inicisPaymentNetworkCancelResponse.timestamp")
     @Mapping(target = "tid", source = "inicisPaymentNetworkCancelResponse.tid")
-    @Mapping(target = "mid", source = "inicisPaymentNetworkCancelResponse.mid")
-    @Mapping(target = "moid", source = "inicisPaymentNetworkCancelResponse.moid")
-    @Mapping(target = "selectPayMethod", source = "inicisPaymentNetworkCancelResponse.selectPayMethod")
     InicisPaymentNetworkCancelResVo mapToVo(InicisPaymentNetworkCancelResponse inicisPaymentNetworkCancelResponse);
 }

@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class Payment extends BaseEntity {
      * 인증 후 결제 데이터 생성
      */
     public Payment(String paymentNo, PaymentCreateCommand paymentCreateCommand) {
-        this.transactionId = null;
+        this.transactionId = StringUtils.isEmpty(paymentCreateCommand.getTransactionId()) ? null : paymentCreateCommand.getTransactionId();
         this.paymentNo = paymentNo;
         this.amount = paymentCreateCommand.getPrice();
         this.orderNo = paymentCreateCommand.getOrderNo();

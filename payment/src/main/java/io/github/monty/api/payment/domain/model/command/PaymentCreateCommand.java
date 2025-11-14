@@ -10,4 +10,5 @@ public class PaymentCreateCommand {
     private PaymentServiceProviderType paymentServiceProviderType;
     private String orderNo;
     private long price;
+    private String transactionId;
 }

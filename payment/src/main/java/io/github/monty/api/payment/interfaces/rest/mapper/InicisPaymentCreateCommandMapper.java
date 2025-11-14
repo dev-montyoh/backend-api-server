@@ -13,6 +13,7 @@ import org.mapstruct.Mapping;
 public interface InicisPaymentCreateCommandMapper {
 
     @Mapping(target = "paymentServiceProviderType", source = "paymentServiceProviderType")
+    @Mapping(target = "transactionId", ignore = true)
     InicisPaymentCreateCommand mapToCommand(InicisPaymentCreateReqDto inicisPaymentCreateReqDto, PaymentServiceProviderType paymentServiceProviderType);
 
     InicisPaymentCreateResDto mapToDTO(InicisPaymentCreateResVo inicisPaymentCreateResVo);
