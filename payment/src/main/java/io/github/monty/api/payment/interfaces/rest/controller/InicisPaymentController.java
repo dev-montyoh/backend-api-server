@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(PaymentApiUrl.PAYMENT_URL)
-@Tag(name = "Inicis Payment API", description = "결제 API")
+@Tag(name = "Inicis Payment API", description = "이니시스 결제 API")
 public class InicisPaymentController {
 
     private final InicisPaymentSignatureQueryMapper inicisPaymentSignatureQueryMapper;
