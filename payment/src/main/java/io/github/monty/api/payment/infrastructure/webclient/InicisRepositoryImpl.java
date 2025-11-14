@@ -5,7 +5,7 @@ import io.github.monty.api.payment.common.exception.ApplicationException;
 import io.github.monty.api.payment.common.utils.ConvertUtils;
 import io.github.monty.api.payment.domain.model.vo.*;
 import io.github.monty.api.payment.domain.repository.InicisRepository;
-import io.github.monty.api.payment.infrastructure.constants.InicisApiUrl;
+import io.github.monty.api.payment.infrastructure.constants.ApiUrl;
 import io.github.monty.api.payment.infrastructure.webclient.dto.InicisPaymentApprovalResponse;
 import io.github.monty.api.payment.infrastructure.webclient.dto.InicisPaymentCancelResponse;
 import io.github.monty.api.payment.infrastructure.webclient.dto.InicisPaymentNetworkCancelResponse;
@@ -87,7 +87,7 @@ public class InicisRepositoryImpl implements InicisRepository {
     @Override
     public InicisPaymentCancelResVo requestCancelPayment(InicisPaymentCancelReqVo inicisPaymentCancelReqVo) {
         InicisPaymentCancelResponse inicisPaymentCancelResponse = webClient.post()
-                .uri(InicisApiUrl.INICIS_PAYMENT_CANCEL_URL)
+                .uri(ApiUrl.INICIS_PAYMENT_CANCEL_URL)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(inicisPaymentCancelReqVo)
                 .retrieve()
@@ -133,7 +133,7 @@ public class InicisRepositoryImpl implements InicisRepository {
                 .block();
 
         if (ObjectUtils.isEmpty(inicisPaymentNetworkCancelResponse)) {
-            throw new ApplicationException(ErrorCode.ERROR_PAYMENT_APPROVAL);
+            throw new ApplicationException(ErrorCode.ERROR_PAYMENT_CANCEL);
         }
 
         if (!inicisPaymentNetworkCancelResponse.getResultCode().equals(INICIS_RESPONSE_RESULT_CODE_SUCCESS)) {

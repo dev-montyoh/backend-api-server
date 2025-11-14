@@ -12,7 +12,7 @@ public class PaymentApprovalResVo {
 
     private String tid;
 
-    private long amount;
+    private String amount;
 
     private LocalDateTime approvalDateTime;
 

@@ -5,8 +5,5 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class PaymentNetworkCancelResVo {
-    private String resultMessage;
-
-    private String tid;
+public class NicepayPaymentCreateResVo extends PaymentCreateResVo {
 }
