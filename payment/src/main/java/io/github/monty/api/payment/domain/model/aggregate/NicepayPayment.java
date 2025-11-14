@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Table(name = "payment_nicepay")
+@Table(name = "payment_nicepay", schema = "payment")
 public class NicepayPayment extends Payment {
 
     /**
