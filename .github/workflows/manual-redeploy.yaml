@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ auth, content, gateway, payment, user ]
+        service: [ gateway, payment ]
 
     steps:
       - name: Check out repository
