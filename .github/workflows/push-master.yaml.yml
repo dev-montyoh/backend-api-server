@@ -10,9 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # 임시 gateway 하나만 지정
         service: [ gateway, payment ]
-    #        service: [ auth, content, gateway, payment, user ]
 
     steps:
       # 코드 체크아웃
