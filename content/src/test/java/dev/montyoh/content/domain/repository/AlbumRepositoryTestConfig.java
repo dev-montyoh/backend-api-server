@@ -1,0 +1,22 @@
+package dev.montyoh.content.domain.repository;
+
+import dev.montyoh.content.infrastructure.repository.AlbumRepositoryImpl;
+import dev.montyoh.content.infrastructure.repository.jpa.AlbumJpaRepository;
+import dev.montyoh.content.infrastructure.repository.querydsl.AlbumCustomRepository;
+import dev.montyoh.content.infrastructure.repository.querydsl.AlbumCustomRepositoryImpl;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+
+@TestConfiguration
+public class AlbumRepositoryTestConfig {
+    @Bean
+    public AlbumCustomRepository albumCustomRepository(JPAQueryFactory jpaQueryFactory) {
+        return new AlbumCustomRepositoryImpl(jpaQueryFactory);
+    }
+
+    @Bean
+    public AlbumRepository albumRepository(AlbumJpaRepository albumJpaRepository, AlbumCustomRepository albumCustomRepository) {
+        return new AlbumRepositoryImpl(albumJpaRepository, albumCustomRepository);
+    }
+}

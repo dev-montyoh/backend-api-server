@@ -5,11 +5,11 @@ plugins {
     id 'jacoco'
 }
 
-group = 'io.github.monty.api'
+group = 'dev.montyoh'
 version = '0.0.1'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '19'
 }
 
 repositories {
