@@ -1,0 +1,68 @@
+name: Manual Redeploy Oracle (master)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ gateway, payment ]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Check out Secrets store
+        uses: actions/checkout@v5
+        with:
+          repository: 'dev-montyoh/secrets-store'
+          token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+          path: secrets-store
+
+      - name: Load secrets
+        uses: ./secrets-store/.github/actions/load-secrets
+        with:
+          SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+
+      - name: Log in to Github Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+
+      - name: ENV to JSON
+        id: set_env_json
+        run: |
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Oracle
+        uses: appleboy/ssh-action@v1
+        env:
+          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+          TARGET_SERVICE: ${{ matrix.service }}
+        with:
+          host: oracle.ssh.montyoh.dev
+          username: ubuntu
+          key_path: ./secrets-store/key/ec2-ssh-key
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
+          script: |
+            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
+            eval $(echo "$ENV_JSON" | jq -r '
+              to_entries[]
+              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
+              | "export \(.key)=\"\(.value)\";"
+            ' | tr -d '\n')
+
+            docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
+            docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
+            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
+
+            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+            cd /home/ubuntu/app
+            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+            docker-compose pull backend-api-server-$TARGET_SERVICE
+            docker-compose up -d backend-api-server-$TARGET_SERVICE
