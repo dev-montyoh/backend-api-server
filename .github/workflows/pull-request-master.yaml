@@ -66,23 +66,33 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
+      - name: Set up QEMU
+        if: steps.changed.outputs.any_changed == 'true'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.changed.outputs.any_changed == 'true'
+        uses: docker/setup-buildx-action@v3
+
       # 애플리케이션 빌드
       - name: Service ${{matrix.service}} Gradle build jar
         if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd ${{matrix.service}}
+          chmod +x ./gradlew
           ./gradlew bootJar
 
-      # Docker Image Build
-      - name: Service ${{matrix.service}} Build Docker Image
+      # Docker Image Build and Push
+      - name: Service ${{matrix.service}} Build and Push ARM64 Docker Image
         if: steps.changed.outputs.any_changed == 'true'
         run: |
           cd .github/docker
-          ./package.sh ${{ matrix.service }} prod ${{ github.run_number }} ${{ github.repository_owner }}
-
-      # Docker Push
-      - name: Service ${{matrix.service}} Push Docker Image
-        if: steps.changed.outputs.any_changed == 'true'
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:latest
-          docker push ghcr.io/${{ github.repository_owner }}/backend-api-server-${{matrix.service}}:${{ github.run_number }}
+          docker buildx build \
+            --platform linux/arm64 \
+            -f Dockerfile \
+            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:latest \
+            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:${{ github.run_number }} \
+            --build-arg SERVICE_NAME=${{ matrix.service }} \
+            --build-arg PROFILE=prod \
+            --push \
+            ../../
