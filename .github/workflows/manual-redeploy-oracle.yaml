@@ -84,7 +84,7 @@ jobs:
           DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
           TARGET_SERVICE: ${{ matrix.service }}
         with:
-          host: oracle.ssh.montyoh.dev
+          host: ssh.montyoh.dev
           username: ubuntu
           key_path: ./secrets-store/key/ec2-ssh-key
           envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME,TARGET_SERVICE
