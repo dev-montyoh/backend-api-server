@@ -65,8 +65,8 @@ jobs:
           docker buildx build \
             --platform linux/arm64 \
             -f Dockerfile \
-            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:latest \
-            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:${{ github.run_number }} \
+            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:arm64 \
+            -t ghcr.io/${{ github.repository_owner }}/backend-api-server-${{ matrix.service }}:arm64-${{ github.run_number }} \
             --build-arg SERVICE_NAME=${{ matrix.service }} \
             --build-arg PROFILE=prod \
             --push \
@@ -98,10 +98,11 @@ jobs:
 
             docker ps -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker stop
             docker ps -a -q --filter "name=backend-api-server-$TARGET_SERVICE" | xargs -r docker rm
-            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest | xargs -r docker rmi -f
+            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:arm64 | xargs -r docker rmi -f
 
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
             cd /home/ubuntu/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+            sed -i "s#ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:latest#ghcr.io/$DOCKER_REGISTRY_USERNAME/backend-api-server-$TARGET_SERVICE:arm64#g" docker-compose.yml
             docker-compose pull backend-api-server-$TARGET_SERVICE
             docker-compose up -d backend-api-server-$TARGET_SERVICE
