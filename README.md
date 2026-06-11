@@ -6,21 +6,24 @@
 
 [![Push Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml)
 
-**개인 프로젝트에 사용되는 멀티모듈 백엔드 API 서버**
+**개인 프로젝트에 사용되는 MSA 기반 백엔드 API 서버**
 
 ---
 
-Spring Boot 기반의 멀티모듈 구조로, Gateway를 통해 각 서비스로 라우팅합니다. JWT 인증, 결제, 콘텐츠, 유저 관리 등 도메인별로 모듈을 분리하여 독립적으로 개발·배포할 수 있도록 설계했습니다.
+Java와 Gradle을 사용한 MSA 기반의 백엔드 API 서버입니다. auth, user, payment, content 등 기능별로 서비스를 분리하고, gateway를 통해 요청을 라우팅합니다. GitHub Actions와 Docker를 활용한 CI/CD 및 컨테이너 기반 배포 환경이 구축되어 있습니다.
+
+새로운 개인 프로젝트가 추가될 때 별도 레포를 만들지 않고, 이 프로젝트에서 서비스를 확장하는 방식으로 개발하고 있습니다.
 
 ---
 
 ## 사용 기술
 
-- Java 19, Spring Boot 3.2
-- Spring Cloud Gateway, Spring Security, Spring Data JPA
-- MySQL 8.0, Redis
-- Docker, GitHub Actions
-- Flyway, MapStruct, OpenFeign, Swagger (springdoc)
+- Spring Boot, Java
+- JPA, QueryDSL
+- OpenFeign, Flyway, MapStruct
+- JUnit
+- GitHub Actions
+- Docker
 
 ---
 
