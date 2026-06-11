@@ -1,70 +1,62 @@
-# Backend API Server 
-개인 프로젝트에 쓰이는 Backend 서버  
+<br/>
 
-## 서비스 구성
-![backend-api-server](assets/backend-api-server.drawio.png)
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring" width="72" />
 
-## CICD 구성  
-![CICD](assets/cicd.drawio.png)
+# backend-api-server
 
----
-## Getting Started
-깃허브 URL: https://github.com/dev-montyoh/backend-api-server  
-HTTPS clone URL: https://github.com/dev-montyoh/backend-api-server.git  
-깃허브 프로젝트 URL: https://github.com/users/dev-montyoh/projects/4
+[![Push Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml)
+
+**개인 프로젝트에 사용되는 MSA 기반 백엔드 API 서버**
 
 ---
-## Local 개발 환경 구성
-### 공통
-```
-1. IDE는 IntelliJ 를 사용함.
 
-2. Git Clone -> 각 서비스의 build.gradle 우클릭 -> Link Gradle Project 클릭 -> gradle build 확인 후 진행
-```
+Java와 Gradle을 사용한 MSA 기반의 백엔드 API 서버입니다. auth, user, payment, content 등 기능별로 서비스를 분리하고, gateway를 통해 요청을 라우팅합니다. GitHub Actions와 Docker를 활용한 CI/CD 및 컨테이너 기반 배포 환경이 구축되어 있습니다.
 
-### Docker 사용 시
-```
-1. Docker 설치
-
-2. Gradle 에서 :build setup:buildLocalSetup 실행
-    - src/main/resources/db/docker-compose.yaml 직접 실행 가능
-
-3. Docker 에 DB 컨테이너 확인
-
-4. DB 접속 확인
-    - application.yaml local 프로필 DB 정보 참고
-
-5. Application 실행
-```
-
-### 로컬 DB 사용 시
-```
-1. MySQL 8.0 설치
-
-2. 다음 위치 SQL 문 실행
-    - src/main/resources/db/database/schema_initialisation.sql
-
-3. DB 접속 확인
-    - application.yaml local 프로필 DB 정보 참고
-
-4. Application 실행
-```
-
-## branch 전략
-```
-origin
-    ㄴ master
-    ㄴ develop
-    ㄴ features
-        ㄴ branch1...
-        ㄴ branch2...
-```
-```
-1. develop 기준으로 features/branch1... 와 같이 브랜치 생성
-2. 개발 완료 후 develop 으로 Pull Request 생성
-3. Github Actions 에서 각 모듈 Build 성공 확인
-4. develop 을 master 로 Pull Request 생성, 및 Merge
-5. Github Actions 에서 각 모듈 BUild 성공 및 Docker Image 생성 확인
-```
+새로운 개인 프로젝트가 추가될 때 별도 레포를 만들지 않고, 이 프로젝트에서 서비스를 확장하는 방식으로 개발하고 있습니다.
 
 ---
+
+## 사용 기술
+
+- Spring Boot, Java
+- JPA, QueryDSL
+- OpenFeign, Flyway, MapStruct
+- JUnit
+- GitHub Actions
+- Docker
+
+---
+
+## 주요 특징
+
+- **멀티모듈** — 도메인별 독립 모듈로 관심사 분리
+- **API Gateway** — Spring Cloud Gateway + JWT 인증/인가 중앙 처리
+- **CI/CD 자동화** — PR → Build 검증, master push → Docker Image 빌드·배포
+- **테스트 커버리지** — JaCoCo 라인 커버리지 80% 이상 강제
+
+---
+
+## 모듈 구성
+
+| 모듈 | 역할 |
+|---|---|
+| `gateway` | 라우팅, JWT 인증·인가 |
+| `auth` | 로그인, 토큰 발급·갱신 (MySQL + Redis) |
+| `user` | 사용자 관리 |
+| `content` | 콘텐츠 관리 |
+| `payment` | 결제 처리 |
+
+---
+
+## CI/CD
+
+GitHub Actions로 두 단계 파이프라인을 구성합니다.
+
+- **PR → develop**: 각 모듈 빌드 및 테스트 검증
+- **push → master**: 빌드 + Docker Image 생성 및 배포
+
+---
+
+## 문서
+
+- **[개발 가이드 →](CONTRIBUTING.md)** — 로컬 환경 구성 · 브랜치 전략 · 커밋 규칙
