@@ -1,7 +1,7 @@
 package dev.montyoh.payment.domain.strategy;
 
 import dev.montyoh.payment.common.constants.ErrorCode;
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.common.exception.ApplicationException;
 import dev.montyoh.payment.domain.model.aggregate.Payment;
 import dev.montyoh.payment.domain.repository.PaymentRepository;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentCancelStrategyFactory {
     private final PaymentRepository paymentRepository;
-    private final Map<PaymentServiceProviderType, PaymentCancelStrategy> paymentCancelStrategyMap = new EnumMap<>(PaymentServiceProviderType.class);
+    private final Map<PgProviderType, PaymentCancelStrategy> paymentCancelStrategyMap = new EnumMap<>(PgProviderType.class);
 
     @Autowired
     public PaymentCancelStrategyFactory(List<PaymentCancelStrategy> paymentCancelStrategyList, PaymentRepository paymentRepository) {
@@ -31,14 +31,14 @@ public class PaymentCancelStrategyFactory {
     /**
      * 특정 결제 서비스 제공자 타입에 맞는 결제 전략을 반환한다.
      *
-     * @param PaymentServiceProviderType 결제 서비스 제공자 타입
+     * @param PgProviderType 결제 서비스 제공자 타입
      * @return 결제 전략
      */
-    public PaymentCancelStrategy getPaymentCancelStrategy(PaymentServiceProviderType PaymentServiceProviderType) {
-        if (!paymentCancelStrategyMap.containsKey(PaymentServiceProviderType)) {
+    public PaymentCancelStrategy getPaymentCancelStrategy(PgProviderType PgProviderType) {
+        if (!paymentCancelStrategyMap.containsKey(PgProviderType)) {
             throw new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_SERVICE);
         }
-        return paymentCancelStrategyMap.get(PaymentServiceProviderType);
+        return paymentCancelStrategyMap.get(PgProviderType);
     }
 
     /**
@@ -50,6 +50,6 @@ public class PaymentCancelStrategyFactory {
     public PaymentCancelStrategy getPaymentCancelStrategy(String paymentNo) {
         Optional<Payment> paymentOptional = paymentRepository.findByPaymentNo(paymentNo);
         Payment payment = paymentOptional.orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
-        return this.getPaymentCancelStrategy(payment.getPaymentServiceProviderType());
+        return this.getPaymentCancelStrategy(payment.getPgProviderType());
     }
 }

@@ -25,9 +25,9 @@ public class PaymentCancel extends BaseEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PAYMENT_CANCEL_ID", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "PAYMENT_CANCEL_ID", nullable = false, length = 100)
+    private String paymentCancelId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -2,7 +2,7 @@ package dev.montyoh.payment.interfaces.rest.controller;
 
 import dev.montyoh.payment.application.PaymentCommandService;
 import dev.montyoh.payment.application.PaymentQueryService;
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.domain.model.command.NicepayPaymentCreateCommand;
 import dev.montyoh.payment.domain.model.query.NicepayPaymentSignatureQuery;
 import dev.montyoh.payment.domain.model.vo.NicepayPaymentCreateResVo;
@@ -34,7 +34,7 @@ public class NicepayPaymentController {
     @Operation(summary = "나이스페이 결제 인증 정보 획득 API", description = "나이스페이 결제 인증 단계에 필요한 정보를 획득한다.")
     @GetMapping(value = PaymentApiUrl.Nicepay.NICEPAY_SIGNATURE_URL)
     public ResponseEntity<NicepayPaymentSignatureResDto> requestPaymentSignature(@RequestParam String price) {
-        NicepayPaymentSignatureQuery nicepayPaymentSignatureQuery = nicepayPaymentSignatureQueryMapper.mapToQuery(price, PaymentServiceProviderType.NICEPAY);
+        NicepayPaymentSignatureQuery nicepayPaymentSignatureQuery = nicepayPaymentSignatureQueryMapper.mapToQuery(price, PgProviderType.NICEPAY);
         NicepayPaymentSignatureResVo nicepayPaymentSignatureResVo = (NicepayPaymentSignatureResVo) paymentQueryService.requestPaymentSignature(nicepayPaymentSignatureQuery);
         NicepayPaymentSignatureResDto nicepayPaymentSignatureResDto = nicepayPaymentSignatureQueryMapper.mapToDto(nicepayPaymentSignatureResVo);
         return ResponseEntity.ok().body(nicepayPaymentSignatureResDto);
@@ -43,7 +43,7 @@ public class NicepayPaymentController {
     @Operation(summary = "나이스페이 결제 데이터 저장 API", description = "나이스페이 결제 인증 결과를 저장한다.")
     @PostMapping(value = PaymentApiUrl.Nicepay.NICEPAY_URL)
     public ResponseEntity<NicepayPaymentCreateResDto> requestCreatePayment(@RequestBody NicepayPaymentCreateReqDto nicepayPaymentCreateReqDto) {
-        NicepayPaymentCreateCommand nicepayPaymentCreateCommand = nicepayPaymentCreateCommandMapper.mapToCommand(nicepayPaymentCreateReqDto, PaymentServiceProviderType.NICEPAY);
+        NicepayPaymentCreateCommand nicepayPaymentCreateCommand = nicepayPaymentCreateCommandMapper.mapToCommand(nicepayPaymentCreateReqDto, PgProviderType.NICEPAY);
         NicepayPaymentCreateResVo nicepayPaymentCreateResVo = (NicepayPaymentCreateResVo) paymentCommandService.createPayment(nicepayPaymentCreateCommand);
         NicepayPaymentCreateResDto nicepayPaymentCreateResDto = nicepayPaymentCreateCommandMapper.mapToDto(nicepayPaymentCreateResVo);
         return ResponseEntity.ok().body(nicepayPaymentCreateResDto);

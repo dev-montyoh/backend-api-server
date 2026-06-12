@@ -1,13 +1,13 @@
 package dev.montyoh.payment.domain.model.command;
 
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
 public class PaymentCreateCommand {
-    private PaymentServiceProviderType paymentServiceProviderType;
+    private PgProviderType pgProviderType;
     private String orderNo;
     private long price;
     private String transactionId;

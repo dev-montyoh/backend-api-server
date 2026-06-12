@@ -51,8 +51,8 @@ public class InicisPaymentCancelStrategy implements PaymentCancelStrategy {
     private String iniApiKey;
 
     @Override
-    public PaymentServiceProviderType getPaymentType() {
-        return PaymentServiceProviderType.INICIS;
+    public PgProviderType getPaymentType() {
+        return PgProviderType.INICIS;
     }
 
     /**

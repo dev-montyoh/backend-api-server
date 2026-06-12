@@ -20,7 +20,7 @@ public interface PaymentListMapper {
     @Named("PaymentListResultVO.Payment")
     @Mapping(target = "paymentStatus", ignore = true)
     @Mapping(target = "approvalDateTime", ignore = true)
-    @Mapping(target = "paymentServiceProviderType", ignore = true)
+    @Mapping(target = "pgProviderType", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "cancelAmount", ignore = true)
     PaymentListResVo.Payment mapToVoPayment(Payment payment);
@@ -31,7 +31,7 @@ public interface PaymentListMapper {
         if (!ObjectUtils.isEmpty(payment.getApprovalDateTime())) {
             builder.approvalDateTime(payment.getApprovalDateTime().format(dateTimeFormatter));
         }
-        builder.paymentServiceProviderType(payment.getPaymentServiceProviderType().getCode());
+        builder.pgProviderType(payment.getPgProviderType().getCode());
         builder.createdAt(payment.getCreatedAt().format(dateTimeFormatter));
         //  총 취소 금액
         long totalCancelAmount = payment.getPaymentCancelList().stream()

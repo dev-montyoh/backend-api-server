@@ -1,6 +1,6 @@
 package dev.montyoh.payment.domain.strategy;
 
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.domain.model.command.PaymentCancelCommand;
 
 public interface PaymentCancelStrategy {
@@ -9,7 +9,7 @@ public interface PaymentCancelStrategy {
      *
      * @return 결제 타입
      */
-    PaymentServiceProviderType getPaymentType();
+    PgProviderType getPaymentType();
 
     /**
      * 해당 결제번호에 해당되는 결제를 망취소 요청한다.

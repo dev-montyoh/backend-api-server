@@ -31,7 +31,7 @@ public class PaymentCommandService {
      */
     @Transactional
     public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentCreateCommand.getPaymentServiceProviderType());
+        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentCreateCommand.getPgProviderType());
         return paymentStrategy.createPayment(paymentCreateCommand);
     }
 
@@ -44,6 +44,7 @@ public class PaymentCommandService {
     @Transactional(noRollbackFor = ApplicationException.class)
     public void approvePayment(PaymentApprovalCommand paymentApprovalCommand) {
         String paymentNo = paymentApprovalCommand.getPaymentNo();
+        paymentService.markAsRequested(paymentNo);
         PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentNo);
         try {
             paymentStrategy.approvePayment(paymentNo);

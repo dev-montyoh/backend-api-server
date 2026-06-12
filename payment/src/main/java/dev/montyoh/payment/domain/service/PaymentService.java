@@ -12,6 +12,8 @@ import dev.montyoh.payment.infrastructure.jpa.mapper.PaymentListMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,19 @@ public class PaymentService {
         Page<Payment> paymentPage = paymentRepository.findAllByOrderByCreatedAtDesc(paymentListQuery.pageable());
         List<Payment> paymentList = paymentPage.get().toList();
         return paymentListMapper.mapToVo(paymentList, (long) paymentPage.getTotalPages(), paymentPage.getTotalElements());
+    }
+
+    /**
+     * 결제 승인 요청 상태로 변경 후 즉시 커밋
+     *
+     * @param paymentNo 결제 번호
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markAsRequested(String paymentNo) {
+        Payment payment = paymentRepository.findByPaymentNo(paymentNo)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_EXIST_PAYMENT_DATA));
+        payment.markAsRequested();
+        paymentRepository.save(payment);
     }
 
     /**
