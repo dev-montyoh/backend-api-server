@@ -78,7 +78,7 @@ public class InicisPaymentStrategy implements PaymentStrategy {
     @Override
     public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
-        String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPaymentServiceProviderType());
+        String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPaymentServiceProviderType(), inicisMid);
         InicisPayment inicisPayment = new InicisPayment(paymentNo, inicisPaymentCreateCommand);
         Payment payment = paymentRepository.save(inicisPayment);
         return InicisPaymentCreateResVo.builder()

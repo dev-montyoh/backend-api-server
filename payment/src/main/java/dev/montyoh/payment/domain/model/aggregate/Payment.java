@@ -62,7 +62,7 @@ public class Payment extends BaseEntity {
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "PAYMENT_NO", nullable = false, length = 100)
+    @Column(name = "PAYMENT_NO", nullable = false, length = 100, unique = true)
     private String paymentNo;
 
     @NotNull

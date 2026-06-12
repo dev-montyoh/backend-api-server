@@ -17,13 +17,13 @@ public interface PaymentStrategy {
     /**
      * 해당 결제 수단의 결제번호 생성 후 반환
      *
-     * @param PaymentServiceProviderType 결제 타입
+     * @param paymentServiceProviderType 결제 타입
      * @return 결제 번호
      */
-    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
+    default String generatePaymentNo(PaymentServiceProviderType paymentServiceProviderType, String mid) {
         UUID uuid = UUID.randomUUID();
         String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
-        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
+        return PAYMENT_NO_PREFIX + paymentServiceProviderType.getCode() + mid + base62;
     }
 
     /**

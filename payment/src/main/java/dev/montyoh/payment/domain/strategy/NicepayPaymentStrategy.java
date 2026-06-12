@@ -82,7 +82,7 @@ public class NicepayPaymentStrategy implements PaymentStrategy {
     public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
         NicepayPaymentCreateCommand nicepayPaymentCreateCommand = (NicepayPaymentCreateCommand) paymentCreateCommand;
         this.validateSignature(AUTHENTICATION_RESPONSE_SIGNATURE_MESSAGE_FORMAT, nicepayPaymentCreateCommand.getSignature(), nicepayPaymentCreateCommand.getAuthToken(), nicepayMid, String.valueOf(nicepayPaymentCreateCommand.getPrice()), merchantKey);
-        String paymentNo = this.generatePaymentNo(nicepayPaymentCreateCommand.getPaymentServiceProviderType());
+        String paymentNo = this.generatePaymentNo(nicepayPaymentCreateCommand.getPaymentServiceProviderType(), nicepayMid);
         NicepayPayment nicepayPayment = new NicepayPayment(paymentNo, nicepayPaymentCreateCommand);
         Payment payment = paymentRepository.save(nicepayPayment);
         return NicepayPaymentCreateResVo.builder()
