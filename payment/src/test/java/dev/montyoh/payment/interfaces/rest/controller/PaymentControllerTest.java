@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,6 +35,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PaymentController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 class PaymentControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -132,7 +134,7 @@ class PaymentControllerTest {
         PaymentLogListQuery query = PaymentLogListQuery.builder().paymentNo(paymentNo).pageable(PageRequest.of(0, 50)).build();
         PaymentLogListResVo resVo = PaymentLogListResVo.builder().paymentLogList(List.of()).totalPages(0L).totalCount(0L).build();
         PaymentLogListResDto resDto = PaymentLogListResDto.builder().paymentLogList(List.of()).totalPages(0L).totalCount(0L).build();
-        given(paymentLogListQueryMapper.mapToQuery(any(), any(), any())).willReturn(query);
+        given(paymentLogListQueryMapper.mapToQuery(any(String.class), any(Long.class), any(Long.class))).willReturn(query);
         given(paymentLogQueryService.requestPaymentLogList(any())).willReturn(resVo);
         given(paymentLogListQueryMapper.mapToDto(any())).willReturn(resDto);
 

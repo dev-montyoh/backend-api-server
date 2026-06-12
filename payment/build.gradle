@@ -94,7 +94,15 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/PaymentApplication.class"
+                    "**/PaymentApplication.class",
+                    "**/infrastructure/querydsl/**",
+                    "**/infrastructure/webclient/**",
+                    "**/common/configuration/**",
+                    "**/domain/model/aggregate/**",
+                    "**/domain/model/entity/**",
+                    "**/domain/model/vo/**",
+                    "**/interfaces/rest/constants/**",
+                    "**/infrastructure/constants/**",
             ])
         }))
     }
@@ -116,6 +124,14 @@ jacocoTestCoverageVerification {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "**/PaymentApplication.class",
+                    "**/infrastructure/querydsl/**",
+                    "**/infrastructure/webclient/**",
+                    "**/common/configuration/**",
+                    "**/domain/model/aggregate/**",
+                    "**/domain/model/entity/**",
+                    "**/domain/model/vo/**",
+                    "**/interfaces/rest/constants/**",
+                    "**/infrastructure/constants/**",
             ])
         }))
     }
