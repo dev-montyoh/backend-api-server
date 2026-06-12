@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RoleJpaRepository extends JpaRepository<Role, Integer> {
-    List<Role> findAllByIdIn(List<Integer> ids);
+public interface RoleJpaRepository extends JpaRepository<Role, Long> {
+    List<Role> findAllByIdIn(List<Long> ids);
 }
