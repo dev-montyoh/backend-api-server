@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
 }
@@ -75,50 +76,50 @@ dependencyManagement {
 }
 
 //  TEST SETUP
-//test {
-//    outputs.upToDateWhen {false}
-//    useJUnitPlatform()
-//    systemProperty('spring.profiles.active', 'test')
-//    finalizedBy('jacocoTestReport')
-//}
-//
-//jacoco {
-//    toolVersion = '0.8.11'
-//}
-//
-//jacocoTestReport {
-//    dependsOn 'test'
-//    finalizedBy 'jacocoTestCoverageVerification'
-//
-//    afterEvaluate {
-//        classDirectories.setFrom(files(classDirectories.files.collect {
-//            fileTree(dir: it, exclude: [
-//                    "**/PaymentApplication.class"
-//            ])
-//        }))
-//    }
-//}
-//
-//jacocoTestCoverageVerification {
-//    dependsOn 'jacocoTestReport'
-//
-//    violationRules {
-//        rule {
-//            limit {
-//                counter = 'LINE'
-//                minimum = 0.8
-//            }
-//        }
-//    }
-//
-//    afterEvaluate {
-//        classDirectories.setFrom(files(classDirectories.files.collect {
-//            fileTree(dir: it, exclude: [
-//                    "**/UserApplication.class",
-//            ])
-//        }))
-//    }
-//}
+test {
+    outputs.upToDateWhen {false}
+    useJUnitPlatform()
+    systemProperty('spring.profiles.active', 'test')
+    finalizedBy('jacocoTestReport')
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+    dependsOn 'test'
+    finalizedBy 'jacocoTestCoverageVerification'
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/PaymentApplication.class"
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn 'jacocoTestReport'
+
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.8
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/PaymentApplication.class",
+            ])
+        }))
+    }
+}
 //  TEST SETUP END
 
 tasks.register('LOCAL_DATABASE_SETUP', Exec) {
