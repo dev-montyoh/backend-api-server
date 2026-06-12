@@ -104,6 +104,14 @@ public class Payment extends BaseEntity {
     private List<PaymentCancel> paymentCancelList;
 
     /**
+     * 결제 승인 요청 상태로 변경한다.
+     */
+    public void markAsRequested() {
+        this.paymentStatus = PaymentStatus.REQUESTED;
+        this.addPaymentLog(PaymentStatus.REQUESTED, StaticValues.DEFAULT_MESSAGE_REQUESTED);
+    }
+
+    /**
      * 결제 승인 결과를 반영한다.
      *
      * @param paymentApprovalResVo 승인 요청 결과 VO

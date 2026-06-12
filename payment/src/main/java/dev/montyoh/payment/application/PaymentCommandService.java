@@ -44,6 +44,7 @@ public class PaymentCommandService {
     @Transactional(noRollbackFor = ApplicationException.class)
     public void approvePayment(PaymentApprovalCommand paymentApprovalCommand) {
         String paymentNo = paymentApprovalCommand.getPaymentNo();
+        paymentService.markAsRequested(paymentNo);
         PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentNo);
         try {
             paymentStrategy.approvePayment(paymentNo);
