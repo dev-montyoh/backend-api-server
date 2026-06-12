@@ -1,24 +1,27 @@
-# local 용 Spring Profile
+# prod 용 Spring Profile
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
   data:
     redis:
-      host: localhost
-      port: 16379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:15432/auth
-    username: auth
-    password: welcome
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 3
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
         default_schema: auth
-    show-sql: true
   flyway:
     enabled: true
     validate-migration-naming: true
@@ -30,4 +33,3 @@ server:
 logging:
   level:
     root: info
-    dev.montyoh: debug

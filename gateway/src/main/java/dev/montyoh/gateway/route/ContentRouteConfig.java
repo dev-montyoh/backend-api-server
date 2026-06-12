@@ -25,6 +25,10 @@ public class ContentRouteConfig {
                 .route(
                     route -> route
                             .path("/api/content/**")
+                            .filters(f -> f.rewritePath(
+                                    "/api/content/(?<segment>.*)",
+                                    "/content/${segment}"
+                            ))
                             .uri(contentUrl)
                 )
                 .build()

@@ -64,7 +64,7 @@ class AuthCreateTokenServiceTest {
     void createTokenAndSaveRefreshToken_success() {
         //  given
         Role role = Role.builder()
-                .id(0)
+                .id(0L)
                 .name("ROLE_TEST")
                 .build();
 
@@ -72,7 +72,7 @@ class AuthCreateTokenServiceTest {
                 UserRole.builder()
                         .userRoleId(
                                 UserRoleId.builder()
-                                        .roleId(0)
+                                        .roleId(0L)
                                         .userNo("0")
                                         .build()
                         )
@@ -120,14 +120,14 @@ class AuthCreateTokenServiceTest {
         given(jwtUtils.parsingToken(any())).willReturn(claimsJws);
 
         Role role = Role.builder()
-                .id(0)
+                .id(0L)
                 .name("ROLE_TEST")
                 .build();
         List<UserRole> userRoleList = List.of(
                 UserRole.builder()
                         .userRoleId(
                                 UserRoleId.builder()
-                                        .roleId(0)
+                                        .roleId(0L)
                                         .userNo(userNo)
                                         .build()
                         )

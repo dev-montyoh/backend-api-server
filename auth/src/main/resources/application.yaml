@@ -6,7 +6,7 @@ spring:
         - common
       test:
         - common
-      develop:
+      prod:
         - common
 
 ---
@@ -17,6 +17,10 @@ spring:
       on-profile: common
   flyway:
     enabled: false
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 server:
   port: 3001
 

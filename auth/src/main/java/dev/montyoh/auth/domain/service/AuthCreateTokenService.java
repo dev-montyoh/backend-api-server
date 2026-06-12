@@ -101,7 +101,7 @@ public class AuthCreateTokenService {
      */
     private List<String> getUserRoleList(String userNo) {
         List<UserRole> userRoleList = userRoleRepository.findByUserRoleIdUserNo(userNo);
-        List<Integer> targetRoleIdList = userRoleList.stream()
+        List<Long> targetRoleIdList = userRoleList.stream()
                 .map(userRole -> userRole.getRole().getId())
                 .toList();
         List<Role> roleList = roleRepository.findAllByIdIn(targetRoleIdList);
