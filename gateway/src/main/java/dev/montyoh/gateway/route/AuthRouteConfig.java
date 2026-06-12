@@ -25,6 +25,10 @@ public class AuthRouteConfig {
                 .route(
                         route -> route
                                 .path("/api/auth/**")
+                                .filters(f -> f.rewritePath(
+                                        "/api/auth/(?<segment>.*)",
+                                        "/auth/${segment}"
+                                ))
                                 .uri(authUrl)
                 )
                 .build()

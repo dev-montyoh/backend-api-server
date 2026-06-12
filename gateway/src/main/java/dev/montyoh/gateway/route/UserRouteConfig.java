@@ -25,6 +25,10 @@ public class UserRouteConfig {
                 .route(
                         route -> route
                                 .path("/api/user/**")
+                                .filters(f -> f.rewritePath(
+                                        "/api/user/(?<segment>.*)",
+                                        "/user/${segment}"
+                                ))
                                 .uri(userUrl)
                 )
                 .build()
