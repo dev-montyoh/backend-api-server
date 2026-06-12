@@ -1,7 +1,7 @@
 package dev.montyoh.payment.domain.model.aggregate;
 
 import dev.montyoh.payment.common.constants.PaymentCancelType;
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.common.constants.PaymentStatus;
 import dev.montyoh.payment.common.constants.StaticValues;
 import dev.montyoh.payment.domain.model.command.PaymentCreateCommand;
@@ -38,7 +38,7 @@ public class Payment extends BaseEntity {
         this.paymentNo = paymentNo;
         this.amount = paymentCreateCommand.getPrice();
         this.orderNo = paymentCreateCommand.getOrderNo();
-        this.paymentServiceProviderType = paymentCreateCommand.getPaymentServiceProviderType();
+        this.pgProviderType = paymentCreateCommand.getPgProviderType();
         this.approvalDateTime = null;
         this.buyerPhone = null;
         this.buyerEmail = null;
@@ -76,7 +76,7 @@ public class Payment extends BaseEntity {
 
     @NotNull
     @Column(name = "PG_PROVIDER_TYPE", nullable = false, length = 50)
-    private PaymentServiceProviderType paymentServiceProviderType;
+    private PgProviderType pgProviderType;
 
     @NotNull
     @Column(name = "PAYMENT_STATUS", nullable = false, length = 50)

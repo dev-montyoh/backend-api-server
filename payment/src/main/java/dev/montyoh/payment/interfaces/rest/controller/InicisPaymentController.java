@@ -2,7 +2,7 @@ package dev.montyoh.payment.interfaces.rest.controller;
 
 import dev.montyoh.payment.application.PaymentCommandService;
 import dev.montyoh.payment.application.PaymentQueryService;
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.domain.model.command.InicisPaymentCreateCommand;
 import dev.montyoh.payment.domain.model.query.InicisPaymentSignatureQuery;
 import dev.montyoh.payment.domain.model.vo.InicisPaymentCreateResVo;
@@ -35,7 +35,7 @@ public class InicisPaymentController {
     @GetMapping(value = PaymentApiUrl.Inicis.INICIS_SIGNATURE_URL)
     public ResponseEntity<InicisPaymentSignatureResDto> requestPaymentSignature(@RequestParam String oid,
                                                                                 @RequestParam String price) {
-        InicisPaymentSignatureQuery inicisPaymentSignatureQuery = inicisPaymentSignatureQueryMapper.mapToQuery(oid, price, PaymentServiceProviderType.INICIS);
+        InicisPaymentSignatureQuery inicisPaymentSignatureQuery = inicisPaymentSignatureQueryMapper.mapToQuery(oid, price, PgProviderType.INICIS);
         InicisPaymentSignatureResVo inicisPaymentSignatureResVo = (InicisPaymentSignatureResVo) paymentQueryService.requestPaymentSignature(inicisPaymentSignatureQuery);
         InicisPaymentSignatureResDto inicisPaymentSignatureResDto = inicisPaymentSignatureQueryMapper.mapToDTO(inicisPaymentSignatureResVo);
         return ResponseEntity.ok().body(inicisPaymentSignatureResDto);
@@ -44,7 +44,7 @@ public class InicisPaymentController {
     @Operation(summary = "이니시스 결제 데이터 저장 API", description = "이니시스 결제 인증 결과를 저장한다.")
     @PostMapping(value = PaymentApiUrl.Inicis.INICIS_URL)
     public ResponseEntity<InicisPaymentCreateResDto> requestCreatePayment(@RequestBody InicisPaymentCreateReqDto inicisPaymentCreateReqDto) {
-        InicisPaymentCreateCommand inicisPaymentCreateCommand = inicisPaymentCreateCommandMapper.mapToCommand(inicisPaymentCreateReqDto, PaymentServiceProviderType.INICIS);
+        InicisPaymentCreateCommand inicisPaymentCreateCommand = inicisPaymentCreateCommandMapper.mapToCommand(inicisPaymentCreateReqDto, PgProviderType.INICIS);
         InicisPaymentCreateResVo inicisPaymentCreateResVo = (InicisPaymentCreateResVo) paymentCommandService.createPayment(inicisPaymentCreateCommand);
         InicisPaymentCreateResDto inicisPaymentCreateResDto = inicisPaymentCreateCommandMapper.mapToDTO(inicisPaymentCreateResVo);
         return ResponseEntity.ok().body(inicisPaymentCreateResDto);

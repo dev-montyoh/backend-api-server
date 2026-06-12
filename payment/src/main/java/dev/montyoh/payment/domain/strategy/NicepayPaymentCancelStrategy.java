@@ -50,8 +50,8 @@ public class NicepayPaymentCancelStrategy implements PaymentCancelStrategy {
     private String nicepayMid;
 
     @Override
-    public PaymentServiceProviderType getPaymentType() {
-        return PaymentServiceProviderType.NICEPAY;
+    public PgProviderType getPaymentType() {
+        return PgProviderType.NICEPAY;
     }
 
     /**

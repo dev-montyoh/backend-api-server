@@ -24,7 +24,7 @@ public class PaymentQueryService {
      * @return 생성 결과
      */
     public PaymentSignatureResVo requestPaymentSignature(PaymentSignatureQuery paymentSignatureQuery) {
-        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentSignatureQuery.getPaymentServiceProviderType());
+        PaymentStrategy paymentStrategy = paymentStrategyFactory.getPaymentStrategy(paymentSignatureQuery.getPgProviderType());
         return paymentStrategy.getSignature(paymentSignatureQuery);
     }
 

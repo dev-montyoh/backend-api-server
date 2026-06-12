@@ -42,8 +42,8 @@ public class InicisPaymentStrategy implements PaymentStrategy {
     private String inicisMid;
 
     @Override
-    public PaymentServiceProviderType getPaymentType() {
-        return PaymentServiceProviderType.INICIS;
+    public PgProviderType getPaymentType() {
+        return PgProviderType.INICIS;
     }
 
     /**
@@ -78,7 +78,7 @@ public class InicisPaymentStrategy implements PaymentStrategy {
     @Override
     public PaymentCreateResVo createPayment(PaymentCreateCommand paymentCreateCommand) {
         InicisPaymentCreateCommand inicisPaymentCreateCommand = (InicisPaymentCreateCommand) paymentCreateCommand;
-        String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPaymentServiceProviderType(), inicisMid);
+        String paymentNo = this.generatePaymentNo(paymentCreateCommand.getPgProviderType(), inicisMid);
         InicisPayment inicisPayment = new InicisPayment(paymentNo, inicisPaymentCreateCommand);
         Payment payment = paymentRepository.save(inicisPayment);
         return InicisPaymentCreateResVo.builder()

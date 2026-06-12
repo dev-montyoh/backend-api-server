@@ -1,7 +1,7 @@
 package dev.montyoh.payment.interfaces.rest.mapper;
 
 import dev.montyoh.payment.common.configuration.MapStructConfig;
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.domain.model.query.InicisPaymentSignatureQuery;
 import dev.montyoh.payment.domain.model.vo.InicisPaymentSignatureResVo;
 import dev.montyoh.payment.interfaces.rest.dto.InicisPaymentSignatureResDto;
@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapStructConfig.class)
 public interface InicisPaymentSignatureQueryMapper {
 
-    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PaymentServiceProviderType paymentServiceProviderType);
+    InicisPaymentSignatureQuery mapToQuery(String oid, String price, PgProviderType pgProviderType);
 
     @Mapping(target = "signature", source = "signature")
     @Mapping(target = "verification", source = "verification")
