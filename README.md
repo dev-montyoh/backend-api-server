@@ -5,6 +5,7 @@
 # backend-api-server
 
 [![Push Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml)
+[![Build Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-develop.yaml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-develop.yaml)
 
 **개인 프로젝트에 사용되는 MSA 기반 백엔드 API 서버**
 

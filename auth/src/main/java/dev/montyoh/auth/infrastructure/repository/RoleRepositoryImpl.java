@@ -14,7 +14,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private final RoleJpaRepository roleJpaRepository;
 
     @Override
-    public List<Role> findAllByIdIn(List<Integer> ids) {
+    public List<Role> findAllByIdIn(List<Long> ids) {
         return roleJpaRepository.findAllByIdIn(ids);
     }
 
@@ -29,7 +29,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findById(int id) {
+    public Role findById(Long id) {
         return roleJpaRepository.findById(id).orElse(null);
     }
 }

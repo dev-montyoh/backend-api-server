@@ -8,16 +8,26 @@ spring:
       host: localhost
       port: 16379
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:13306/auth
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/auth
     username: auth
     password: welcome
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: auth
     show-sql: true
   flyway:
     enabled: true
     validate-migration-naming: true
+    schemas: auth
+    default-schema: auth
 server:
   port: 3001
+
+logging:
+  level:
+    root: info
+    dev.montyoh: debug

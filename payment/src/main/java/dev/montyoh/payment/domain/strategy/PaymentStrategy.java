@@ -1,6 +1,6 @@
 package dev.montyoh.payment.domain.strategy;
 
-import dev.montyoh.payment.common.constants.PaymentServiceProviderType;
+import dev.montyoh.payment.common.constants.PgProviderType;
 import dev.montyoh.payment.domain.model.command.PaymentCreateCommand;
 import dev.montyoh.payment.domain.model.query.PaymentSignatureQuery;
 import dev.montyoh.payment.domain.model.vo.PaymentCreateResVo;
@@ -17,13 +17,13 @@ public interface PaymentStrategy {
     /**
      * 해당 결제 수단의 결제번호 생성 후 반환
      *
-     * @param PaymentServiceProviderType 결제 타입
+     * @param pgProviderType 결제 타입
      * @return 결제 번호
      */
-    default String generatePaymentNo(PaymentServiceProviderType PaymentServiceProviderType) {
+    default String generatePaymentNo(PgProviderType pgProviderType, String mid) {
         UUID uuid = UUID.randomUUID();
         String base62 = new BigInteger(uuid.toString().replace("-", ""), 16).toString(36);
-        return PAYMENT_NO_PREFIX + PaymentServiceProviderType.getCode() + base62;
+        return PAYMENT_NO_PREFIX + pgProviderType.getCode() + mid + base62;
     }
 
     /**
@@ -31,7 +31,7 @@ public interface PaymentStrategy {
      *
      * @return 결제 타입
      */
-    PaymentServiceProviderType getPaymentType();
+    PgProviderType getPaymentType();
 
     /**
      * 해당 결제의 결제 인증 정보를 반환한다.

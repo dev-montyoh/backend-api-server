@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # 임시 payment 하나만 지정
-        service: [ gateway, payment ]
+        service: [ gateway, payment, auth ]
 #        service: [ auth, content, gateway, payment, user ]
 
     steps:

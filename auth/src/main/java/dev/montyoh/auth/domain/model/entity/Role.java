@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,12 +16,9 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String name;
 
     private String description;
-
-//    @OneToMany(mappedBy = "role")
-//    private List<UserRole> userRoleIdList;
 }
