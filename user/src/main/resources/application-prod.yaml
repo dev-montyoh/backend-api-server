@@ -1,20 +1,22 @@
-# local 용 Spring Profile
+# prod 용 Spring Profile
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:25432/user
-    username: user
-    password: welcome
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 3
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
         default_schema: user
-    show-sql: true
   flyway:
     enabled: true
     validate-migration-naming: true
@@ -22,11 +24,11 @@ spring:
     default-schema: user
 server:
   port: 3004
+
 feign:
   api:
-    auth-url: http://localhost:3001
+    auth-url: ${AUTH_URL}
 
 logging:
   level:
     root: info
-    dev.montyoh: debug
