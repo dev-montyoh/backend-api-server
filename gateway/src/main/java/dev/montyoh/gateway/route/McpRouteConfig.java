@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class VikunjaMcpRouteConfig {
+public class McpRouteConfig {
 
     @Value("${mapping.url.vikunja-mcp}")
     private String vikunjaMcpUrl;
