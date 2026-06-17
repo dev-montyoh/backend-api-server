@@ -18,7 +18,6 @@ import org.springframework.security.web.server.util.matcher.PathPatternParserSer
 public class SpringSecurityConfig {
 
     private static final String MCP_BASE_PATH = "/api/mcp/**";
-    private static final String VIKUNJA_MCP_PATH = "/api/mcp/vikunja/**";
 
     private final SpringSecurityAuthenticationConverter springSecurityAuthenticationConverter;
     private final SpringSecurityAuthenticationManager springSecurityAuthenticationManager;
@@ -39,7 +38,7 @@ public class SpringSecurityConfig {
         AuthenticationWebFilter mcpAuthenticationWebFilter = new AuthenticationWebFilter(mcpAuthenticationManager);
         mcpAuthenticationWebFilter.setServerAuthenticationConverter(springSecurityAuthenticationConverter);
         mcpAuthenticationWebFilter.setRequiresAuthenticationMatcher(
-                new PathPatternParserServerWebExchangeMatcher(VIKUNJA_MCP_PATH)
+                new PathPatternParserServerWebExchangeMatcher(MCP_BASE_PATH)
         );
 
         serverHttpSecurity
