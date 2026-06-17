@@ -20,16 +20,16 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "USER_ID", nullable = false, length = 100)
+    private String userId;
 
-    @Column(name = "no")
+    @Column(name = "USER_NO", nullable = false, length = 100)
     private String userNo;
 
-    @Column(name = "login_id")
+    @Column(name = "USER_LOGIN_ID", nullable = false, length = 100)
     private String loginId;
 
-    @Column(name = "password")
+    @Column(name = "USER_PASSWORD", nullable = false, length = 255)
     private String password;
 }
