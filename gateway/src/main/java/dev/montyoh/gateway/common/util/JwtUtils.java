@@ -16,20 +16,27 @@ import javax.crypto.SecretKey;
 public class JwtUtils {
 
     private final SecretKey jwtSecretKey;
+    private final SecretKey mcpSecretKey;
 
-    public JwtUtils(@Value("${service.jwt.secret-key}") String secretKey) {
+    public JwtUtils(
+            @Value("${service.jwt.secret-key}") String secretKey,
+            @Value("${service.jwt.mcp-secret-key}") String mcpSecretKey
+    ) {
         this.jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        this.mcpSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(mcpSecretKey));
     }
 
-    /**
-     * 전달 받은 토큰을 파싱한다.
-     *
-     * @param token JsonWebToken
-     * @return Jws<Claims> 객체
-     */
     public Jws<Claims> parsingToken(String token) {
+        return parsing(token, jwtSecretKey);
+    }
+
+    public Jws<Claims> parsingMcpToken(String token) {
+        return parsing(token, mcpSecretKey);
+    }
+
+    private Jws<Claims> parsing(String token, SecretKey key) {
         return Jwts.parser()
-                .verifyWith(jwtSecretKey)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token);
     }

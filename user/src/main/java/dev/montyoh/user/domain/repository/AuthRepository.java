@@ -1,5 +1,6 @@
 package dev.montyoh.user.domain.repository;
 
+import dev.montyoh.user.domain.model.vo.AuthCreateMcpTokenVo;
 import dev.montyoh.user.domain.model.vo.AuthCreateTokenVo;
 
 public interface AuthRepository {
@@ -11,4 +12,12 @@ public interface AuthRepository {
      * @return 토큰 생성 결과
      */
     AuthCreateTokenVo createAccessTokenAndRefreshToken(String userNo);
+
+    /**
+     * Auth 애플리케이션에게 MCP 토큰 생성 요청을 한다.
+     *
+     * @param userNo 로그인 요청 대상
+     * @return MCP 토큰 생성 결과
+     */
+    AuthCreateMcpTokenVo createMcpToken(String userNo);
 }

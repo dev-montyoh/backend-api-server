@@ -9,6 +9,8 @@ public interface UserRepository {
 
     Optional<User> findByLoginId(String loginId);
 
+    boolean existsByLoginId(String loginId);
+
     User save(User user);
 
 }

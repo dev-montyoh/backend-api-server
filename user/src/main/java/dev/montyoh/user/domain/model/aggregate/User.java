@@ -2,6 +2,8 @@ package dev.montyoh.user.domain.model.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,13 +20,16 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @Column(name = "id")
-    private int userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "USER_ID", nullable = false, length = 100)
+    private String userId;
 
-    @Column(name = "no")
+    @Column(name = "USER_NO", nullable = false, length = 100)
     private String userNo;
 
+    @Column(name = "USER_LOGIN_ID", nullable = false, length = 100)
     private String loginId;
 
+    @Column(name = "USER_PASSWORD", nullable = false, length = 255)
     private String password;
 }
