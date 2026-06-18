@@ -1,13 +1,13 @@
 package dev.montyoh.user.interfaces.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.montyoh.user.application.commandservice.UserMcpTokenCommandService;
+import dev.montyoh.user.application.commandservice.UserMcpLoginCommandService;
 import dev.montyoh.user.domain.model.command.UserLoginCommand;
 import dev.montyoh.user.domain.model.vo.AuthCreateMcpTokenVo;
 import dev.montyoh.user.interfaces.rest.constants.UserApiUrl;
-import dev.montyoh.user.interfaces.rest.dto.UserMcpTokenReqDto;
-import dev.montyoh.user.interfaces.rest.dto.UserMcpTokenRspDto;
-import dev.montyoh.user.interfaces.rest.mapper.UserMcpTokenCommandMapper;
+import dev.montyoh.user.interfaces.rest.dto.UserMcpLoginReqDto;
+import dev.montyoh.user.interfaces.rest.dto.UserMcpLoginRspDto;
+import dev.montyoh.user.interfaces.rest.mapper.UserMcpLoginCommandMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(McpTokenController.class)
-class McpTokenControllerTest {
+@WebMvcTest(LoginMcpController.class)
+class LoginMcpControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -31,41 +31,41 @@ class McpTokenControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserMcpTokenCommandMapper userMcpTokenCommandMapper;
+    private UserMcpLoginCommandMapper userMcpLoginCommandMapper;
 
     @MockBean
-    private UserMcpTokenCommandService userMcpTokenCommandService;
+    private UserMcpLoginCommandService userMcpLoginCommandService;
 
     @Test
-    @DisplayName("MCP 토큰 발급 API 요청에 성공한다.")
-    void getMcpToken_success() throws Exception {
+    @DisplayName("MCP 로그인 API 요청에 성공한다.")
+    void login_success() throws Exception {
         //  given
-        UserMcpTokenReqDto userMcpTokenReqDto = UserMcpTokenReqDto.builder()
+        UserMcpLoginReqDto userMcpLoginReqDto = UserMcpLoginReqDto.builder()
                 .loginId("testLoginId")
                 .password("testPassword")
                 .build();
         UserLoginCommand userLoginCommand = UserLoginCommand.builder()
-                .loginId(userMcpTokenReqDto.loginId())
-                .password(userMcpTokenReqDto.password())
+                .loginId(userMcpLoginReqDto.loginId())
+                .password(userMcpLoginReqDto.password())
                 .build();
-        given(userMcpTokenCommandMapper.mapToCommand(any())).willReturn(userLoginCommand);
+        given(userMcpLoginCommandMapper.mapToCommand(any())).willReturn(userLoginCommand);
         AuthCreateMcpTokenVo authCreateMcpTokenVo = AuthCreateMcpTokenVo.builder()
                 .token("testMcpToken")
                 .build();
-        given(userMcpTokenCommandService.getMcpToken(any())).willReturn(authCreateMcpTokenVo);
-        UserMcpTokenRspDto userMcpTokenRspDto = UserMcpTokenRspDto.builder()
+        given(userMcpLoginCommandService.login(any())).willReturn(authCreateMcpTokenVo);
+        UserMcpLoginRspDto userMcpLoginRspDto = UserMcpLoginRspDto.builder()
                 .token(authCreateMcpTokenVo.token())
                 .build();
-        given(userMcpTokenCommandMapper.mapToRspDto(any())).willReturn(userMcpTokenRspDto);
+        given(userMcpLoginCommandMapper.mapToRspDto(any())).willReturn(userMcpLoginRspDto);
 
         //  when,   then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Mcp.MCP_TOKEN_URL)
-                                .content(objectMapper.writeValueAsString(userMcpTokenReqDto))
+                        MockMvcRequestBuilders.post(UserApiUrl.USER_V1_BASE_URL + UserApiUrl.Login.USER_MCP_LOGIN_URL)
+                                .content(objectMapper.writeValueAsString(userMcpLoginReqDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(userMcpTokenRspDto)))
+                .andExpect(content().string(objectMapper.writeValueAsString(userMcpLoginRspDto)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

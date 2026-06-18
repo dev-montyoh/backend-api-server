@@ -17,10 +17,6 @@ public final class UserApiUrl {
     @UtilityClass
     public static final class Login {
         public static final String USER_LOGIN_URL = "/users/login";
-    }
-
-    @UtilityClass
-    public static final class Mcp {
-        public static final String MCP_TOKEN_URL = "/mcp/token";
+        public static final String USER_MCP_LOGIN_URL = "/users/login/mcp";
     }
 }
