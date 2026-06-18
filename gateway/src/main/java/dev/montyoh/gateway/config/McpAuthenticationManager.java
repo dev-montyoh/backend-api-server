@@ -56,6 +56,9 @@ public class McpAuthenticationManager implements ReactiveAuthenticationManager {
 
     private List<SimpleGrantedAuthority> getUserRoleFromClaims(Jws<Claims> tokenClaims) {
         List<?> userRoleList = (List<?>) tokenClaims.getPayload().get(StaticValues.TOKEN_PAYLOAD_USER_ROLE_KEY);
+        if (userRoleList == null) {
+            return List.of();
+        }
         return userRoleList.stream()
                 .map(value -> new SimpleGrantedAuthority((String) value))
                 .collect(Collectors.toList());
