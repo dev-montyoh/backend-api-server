@@ -5,6 +5,7 @@ whitelist:
 
     # User
     - "/api/user/v1/users/login"
+    - "/api/user/v1/users/login/mcp"
 
     # Health Check
     - "/api/healthcheck"

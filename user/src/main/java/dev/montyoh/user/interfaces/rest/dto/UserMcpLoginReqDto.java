@@ -3,5 +3,5 @@ package dev.montyoh.user.interfaces.rest.dto;
 import lombok.Builder;
 
 @Builder
-public record UserMcpTokenRspDto(String token) {
+public record UserMcpLoginReqDto(String loginId, String password) {
 }
