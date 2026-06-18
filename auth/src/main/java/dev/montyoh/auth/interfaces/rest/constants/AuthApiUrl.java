@@ -19,4 +19,9 @@ public final class AuthApiUrl {
         public static final String CREATE_TOKEN = "/token";
         public static final String REFRESH_TOKEN = "/token";
     }
+
+    @UtilityClass
+    public static final class Mcp {
+        public static final String CREATE_MCP_TOKEN = "/mcp/token";
+    }
 }
