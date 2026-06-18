@@ -17,7 +17,7 @@ public class AuthRouteConfig {
 
     /**
      * auth 서비스 라우터
-     * 토큰 갱신(PUT /api/auth/v1/token)만 허용한다.
+     * 토큰 갱신(PUT /api/auth/v1/token)과 헬스체크만 허용한다.
      * MCP 토큰 발급(POST /auth/v1/mcp/token)은 user 서비스 내부에서만 호출하므로 외부 노출하지 않는다.
      */
     @Bean
@@ -28,6 +28,15 @@ public class AuthRouteConfig {
                                 .path("/api/auth/v1/token")
                                 .and()
                                 .method(HttpMethod.PUT)
+                                .filters(f -> f.rewritePath(
+                                        "/api/auth/(?<segment>.*)",
+                                        "/auth/${segment}"
+                                ))
+                                .uri(authUrl)
+                )
+                .route(
+                        route -> route
+                                .path("/api/auth/v1/monitor/healthcheck")
                                 .filters(f -> f.rewritePath(
                                         "/api/auth/(?<segment>.*)",
                                         "/auth/${segment}"
