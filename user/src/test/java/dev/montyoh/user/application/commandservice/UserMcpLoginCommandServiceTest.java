@@ -19,10 +19,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class UserMcpTokenCommandServiceTest {
+class UserMcpLoginCommandServiceTest {
 
     @InjectMocks
-    private UserMcpTokenCommandService userMcpTokenCommandService;
+    private UserMcpLoginCommandService userMcpLoginCommandService;
 
     @Mock
     private UserVerifyPasswordService userVerifyPasswordService;
@@ -31,8 +31,8 @@ class UserMcpTokenCommandServiceTest {
     private AuthCreateMcpTokenService authCreateMcpTokenService;
 
     @Test
-    @DisplayName("MCP 토큰 발급 애플리케이션 서비스 호출을 한다.")
-    void getMcpToken() {
+    @DisplayName("MCP 로그인 애플리케이션 서비스 호출을 한다.")
+    void login() {
         //  given
         AuthCreateMcpTokenVo authCreateMcpTokenVo = AuthCreateMcpTokenVo.builder()
                 .token("testMcpToken")
@@ -44,7 +44,7 @@ class UserMcpTokenCommandServiceTest {
                 .build();
 
         //  when
-        AuthCreateMcpTokenVo actual = userMcpTokenCommandService.getMcpToken(userLoginCommand);
+        AuthCreateMcpTokenVo actual = userMcpLoginCommandService.login(userLoginCommand);
 
         //  then
         assertAll(
