@@ -4,4 +4,7 @@ public class AuthUrl {
 
     //  인증 토큰 발급
     public static final String AUTH_CREATE_TOKEN = "/auth/v1/token";
+
+    //  MCP 토큰 발급
+    public static final String AUTH_CREATE_MCP_TOKEN = "/auth/v1/mcp/token";
 }

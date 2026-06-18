@@ -24,6 +24,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public boolean existsByLoginId(String loginId) {
+        return userJpaRepository.existsByLoginId(loginId);
+    }
+
+    @Override
     public User save(User user) {
         return userJpaRepository.save(user);
     }

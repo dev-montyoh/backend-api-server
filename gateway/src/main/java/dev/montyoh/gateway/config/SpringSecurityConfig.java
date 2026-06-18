@@ -9,24 +9,41 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher;
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
+
+    private static final String MCP_BASE_PATH = "/api/mcp/**";
+
     private final SpringSecurityAuthenticationConverter springSecurityAuthenticationConverter;
     private final SpringSecurityAuthenticationManager springSecurityAuthenticationManager;
+    private final McpAuthenticationManager mcpAuthenticationManager;
 
     private final WhiteListProperties whiteListProperties;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
+        // 기존 필터: MCP 경로 제외
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(springSecurityAuthenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(springSecurityAuthenticationConverter);
+        authenticationWebFilter.setRequiresAuthenticationMatcher(
+                new NegatedServerWebExchangeMatcher(new PathPatternParserServerWebExchangeMatcher(MCP_BASE_PATH))
+        );
 
-        //  인증 매니저 설정
+        // MCP 전용 필터
+        AuthenticationWebFilter mcpAuthenticationWebFilter = new AuthenticationWebFilter(mcpAuthenticationManager);
+        mcpAuthenticationWebFilter.setServerAuthenticationConverter(springSecurityAuthenticationConverter);
+        mcpAuthenticationWebFilter.setRequiresAuthenticationMatcher(
+                new PathPatternParserServerWebExchangeMatcher(MCP_BASE_PATH)
+        );
+
         serverHttpSecurity
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(mcpAuthenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
         ;
 
         //  TODO: 추후 상세히 작업할 것. 지금은 false

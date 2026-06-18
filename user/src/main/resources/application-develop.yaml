@@ -1,6 +1,0 @@
-# develop 용 Spring Profile
-spring:
-  config:
-    activate:
-      on-profile: develop
-## 홈서버 환경에 맞게 작성할 것
