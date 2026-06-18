@@ -31,9 +31,11 @@ class JwtUtilsTest {
     @BeforeEach
     void setUp() {
         String secretKey = "2cb6363001584512e547b1e327a0404dd48ba9e2452b277c0d0bb4aec3024aff5a82fe17c50e5ed573223b7139cd476252d6082673c33fe1677be106d5223252";
-        jwtUtils = new JwtUtils(secretKey);
+        String mcpSecretKey = "PByEX8DJoiGvW67S6UMyBIo4+W7qGLSb2USUQEeQRY5hoMpyy0hKmT+/w7YyRBGP1RnPs7gcfOf9a4gBbTOMgw==";
+        jwtUtils = new JwtUtils(secretKey, mcpSecretKey);
         ReflectionTestUtils.setField(jwtUtils, "accessTokenValidTime", 30);
         ReflectionTestUtils.setField(jwtUtils, "refreshTokenValidTime", 43200);
+        ReflectionTestUtils.setField(jwtUtils, "mcpTokenValidTime", 525600);
 
         jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
@@ -141,5 +143,24 @@ class JwtUtilsTest {
                 () -> assertThat(userRoleList.get(0)).isEqualTo(actualUserRoleList.get(0))
         );
 
+    }
+
+    @Test
+    @DisplayName("MCP 토큰을 생성한다.")
+    void createMcpToken() {
+        //  given
+        String userNo = "testUserNo";
+        SecretKey mcpKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode("PByEX8DJoiGvW67S6UMyBIo4+W7qGLSb2USUQEeQRY5hoMpyy0hKmT+/w7YyRBGP1RnPs7gcfOf9a4gBbTOMgw=="));
+
+        //  when
+        String actual = jwtUtils.createMcpToken(userNo);
+
+        //  then
+        Jws<Claims> actualClaims = Jwts.parser()
+                .verifyWith(mcpKey)
+                .build()
+                .parseSignedClaims(actual);
+        String actualUserNo = (String) actualClaims.getPayload().get("userNo");
+        assertThat(actualUserNo).isEqualTo(userNo);
     }
 }

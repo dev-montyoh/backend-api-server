@@ -18,6 +18,7 @@ import java.util.List;
 public class JwtUtils {
 
     private final SecretKey jwtSecretKey;
+    private final SecretKey mcpSecretKey;
 
     @Value("${service.jwt.valid-time.access}")
     private long accessTokenValidTime;
@@ -25,8 +26,14 @@ public class JwtUtils {
     @Value("${service.jwt.valid-time.refresh}")
     private long refreshTokenValidTime;
 
-    public JwtUtils(@Value("${service.jwt.secret-key}") String secretKey) {
+    @Value("${service.jwt.valid-time.mcp}")
+    private long mcpTokenValidTime;
+
+    public JwtUtils(
+            @Value("${service.jwt.secret-key}") String secretKey,
+            @Value("${service.jwt.mcp-secret-key}") String mcpSecret) {
         this.jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        this.mcpSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(mcpSecret));
     }
 
     /**
@@ -67,6 +74,23 @@ public class JwtUtils {
      */
     public String createRefreshToken(String userNo, Date expirationDate) {
         return this.createToken(userNo, null, expirationDate);
+    }
+
+    /**
+     * MCP 전용 장기 토큰 생성 후 반환
+     *
+     * @param userNo 회원 번호
+     * @return MCP 토큰
+     */
+    public String createMcpToken(String userNo) {
+        return Jwts.builder()
+                .claims()
+                .add(StaticValues.USER_NO, userNo)
+                .and()
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + Duration.ofMinutes(mcpTokenValidTime).toMillis()))
+                .signWith(mcpSecretKey)
+                .compact();
     }
 
     /**
