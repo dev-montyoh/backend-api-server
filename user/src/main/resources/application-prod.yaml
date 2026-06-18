@@ -27,7 +27,7 @@ server:
 
 feign:
   api:
-    auth-url: ${AUTH_URL}
+    auth-url: http://backend-api-server-auth
 
 logging:
   level:
