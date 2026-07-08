@@ -74,3 +74,13 @@ jobs:
             --build-arg SERVICE_NAME=${{ matrix.service }} \
             --build-arg PROFILE=prod \
             ../../
+
+  pull_request_master_check_result:
+    needs: pull_request_master
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check result
+        run: |
+          result="${{ needs.pull_request_master.result }}"
+          [ "$result" = "success" ] || [ "$result" = "skipped" ] || exit 1
