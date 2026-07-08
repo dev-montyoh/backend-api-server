@@ -39,17 +39,15 @@
 ```
 origin
   ├── master
-  ├── develop
   └── features/
         ├── branch1
         └── branch2
 ```
 
-1. `develop` 기준으로 `features/branch-name` 브랜치 생성
-2. 개발 완료 후 `develop`으로 Pull Request 생성
+1. `master` 기준으로 `features/branch-name` 브랜치 생성
+2. 개발 완료 후 `master`으로 Pull Request 생성
 3. GitHub Actions — 각 모듈 빌드 성공 확인
-4. `develop` → `master` Pull Request 생성 및 Merge
-5. GitHub Actions — 빌드 성공 및 Docker Image 생성 확인
+4. Merge 후 GitHub Actions — 빌드 및 Docker Image 생성/배포 확인
 
 ---
 
