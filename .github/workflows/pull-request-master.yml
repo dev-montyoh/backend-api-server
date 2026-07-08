@@ -30,7 +30,7 @@ jobs:
   pull_request_master:
     needs: detect_changes
     if: needs.detect_changes.outputs.services != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
         service: ${{ fromJSON(needs.detect_changes.outputs.services) }}
@@ -52,9 +52,6 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
