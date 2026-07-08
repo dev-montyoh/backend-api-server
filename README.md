@@ -4,8 +4,8 @@
 
 # backend-api-server
 
-[![Push Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yaml.yml)
-[![Build Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-develop.yaml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-develop.yaml)
+[![Push Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/push-master.yml)
+[![Pull Request Workflow](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-master.yml/badge.svg)](https://github.com/dev-montyoh/backend-api-server/actions/workflows/pull-request-master.yml)
 
 **개인 프로젝트에 사용되는 MSA 기반 백엔드 API 서버**
 
@@ -53,7 +53,7 @@ Java와 Gradle을 사용한 MSA 기반의 백엔드 API 서버입니다. auth, u
 
 GitHub Actions로 두 단계 파이프라인을 구성합니다.
 
-- **PR → develop**: 각 모듈 빌드 및 테스트 검증
+- **PR → master**: 각 모듈 빌드 및 테스트 검증
 - **push → master**: 빌드 + Docker Image 생성 및 배포
 
 ---

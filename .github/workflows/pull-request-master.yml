@@ -1,47 +1,50 @@
-name: pull-request-master-module.yml
+name: Pull Request Workflow (master)
 
 on:
-  workflow_call:
-    inputs:
-      service:
-        type: string
-        required: true
+  pull_request:
+    branches:
+      - master
 
 jobs:
   detect_changes:
     runs-on: ubuntu-latest
     outputs:
-      any_changed: ${{ steps.changed.outputs.any_changed }}
+      services: ${{ steps.changed.outputs.all_changed_files }}
     steps:
-      # 코드 체크아웃
       - name: Check out repository
         uses: actions/checkout@v5
 
-      # 변경 감지
-      - name: Get changed files
+      - name: Get changed services
         id: changed
         uses: tj-actions/changed-files@v47
         with:
-          files: '${{ inputs.service }}/**'
+          matrix: true
+          dir_names: true
+          dir_names_max_depth: 1
+          files: |
+            gateway/**
+            payment/**
+            auth/**
+            user/**
 
   pull_request_master:
     needs: detect_changes
-    if: needs.detect_changes.outputs.any_changed == 'true'
+    if: needs.detect_changes.outputs.services != '[]'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ${{ fromJSON(needs.detect_changes.outputs.services) }}
 
     steps:
-      # 코드 체크아웃
       - name: Check out repository
         uses: actions/checkout@v5
 
-      # JDK 설정
       - name: Setup JDK 19
         uses: actions/setup-java@v5
         with:
           java-version: '19'
           distribution: 'temurin'
 
-      # Gradle 캐시 설정
       - name: Setup Gradle Cache
         uses: actions/cache@v4
         with:
@@ -56,20 +59,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      # 애플리케이션 빌드 (검증)
-      - name: Service ${{ inputs.service }} Gradle build jar
+      - name: Service ${{ matrix.service }} Gradle build jar
         run: |
-          cd ${{ inputs.service }}
+          cd ${{ matrix.service }}
           chmod +x ./gradlew
           ./gradlew bootJar
 
-      # Docker Image 빌드 검증
-      - name: Service ${{ inputs.service }} Build ARM64 Docker Image (verify)
+      - name: Service ${{ matrix.service }} Build ARM64 Docker Image (verify)
         run: |
           cd .github/docker
           docker buildx build \
             --platform linux/arm64 \
             -f Dockerfile \
-            --build-arg SERVICE_NAME=${{ inputs.service }} \
+            --build-arg SERVICE_NAME=${{ matrix.service }} \
             --build-arg PROFILE=prod \
             ../../
