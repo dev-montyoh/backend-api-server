@@ -27,9 +27,10 @@ class UserRepositoryTest {
     void user_get_success() {
         //  given
         User user = User.builder()
-                .userId(1)
+                .userId("1")
                 .userNo("testUserNo")
                 .loginId("testLoginId")
+                .password("testPassword")
                 .build();
         userRepository.save(user);
 
