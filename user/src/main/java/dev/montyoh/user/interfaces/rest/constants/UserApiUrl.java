@@ -18,4 +18,9 @@ public final class UserApiUrl {
     public static final class Login {
         public static final String USER_LOGIN_URL = "/users/login";
     }
+
+    @UtilityClass
+    public static final class Signup {
+        public static final String USER_SIGNUP_URL = "/users";
+    }
 }

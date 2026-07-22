@@ -23,8 +23,9 @@ public class UserCreateService {
      * loginId 중복 여부를 확인하고, 비밀번호를 암호화하여 저장한다.
      *
      * @param command 유저 생성 Command
+     * @return 저장된 User
      */
-    public void create(UserCreateCommand command) {
+    public User create(UserCreateCommand command) {
         if (userRepository.existsByLoginId(command.getLoginId())) {
             throw new ApplicationException(ErrorCode.DUPLICATE_USER_INFO);
         }
@@ -34,7 +35,7 @@ public class UserCreateService {
                 .loginId(command.getLoginId())
                 .password(EncryptUtil.encode(command.getPassword()))
                 .build();
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     /**

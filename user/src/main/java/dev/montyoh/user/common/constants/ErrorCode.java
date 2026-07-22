@@ -26,7 +26,8 @@ public enum ErrorCode {
     //  회원 정보 에러
     NOT_FOUND_USER_INFO("0301", "사용자 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     INVALID_PASSWORD("0302", "비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
-    DUPLICATE_USER_INFO("0303", "이미 존재하는 사용자입니다.", HttpStatus.CONFLICT);
+    DUPLICATE_USER_INFO("0303", "이미 존재하는 사용자입니다.", HttpStatus.CONFLICT),
+    INVALID_INPUT("0304", "입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
 
